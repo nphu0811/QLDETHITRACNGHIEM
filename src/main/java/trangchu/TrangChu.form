@@ -1,0 +1,949 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<Form version="1.9" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JFrameFormInfo">
+  <Properties>
+    <Property name="defaultCloseOperation" type="int" value="3" />
+    <Property name="title" type="java.lang.String" value="PTIT | TRANG CHỦ" />
+    <Property name="iconImage" type="java.awt.Image" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+      <Connection code="new javax.swing.ImageIcon(getClass().getResource(&quot;/ptit-logo.png&quot;)).getImage()" type="code" />
+    </Property>
+  </Properties>
+  <SyntheticProperties>
+    <SyntheticProperty name="formSizePolicy" type="int" value="1" />
+    <SyntheticProperty name="generateCenter" type="boolean" value="false" />
+  </SyntheticProperties>
+  <AuxValues>
+    <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="0" />
+    <AuxValue name="FormSettings_autoSetComponentName" type="java.lang.Boolean" value="false" />
+    <AuxValue name="FormSettings_generateFQN" type="java.lang.Boolean" value="true" />
+    <AuxValue name="FormSettings_generateMnemonicsCode" type="java.lang.Boolean" value="false" />
+    <AuxValue name="FormSettings_i18nAutoMode" type="java.lang.Boolean" value="false" />
+    <AuxValue name="FormSettings_layoutCodeTarget" type="java.lang.Integer" value="1" />
+    <AuxValue name="FormSettings_listenerGenerationStyle" type="java.lang.Integer" value="3" />
+    <AuxValue name="FormSettings_variablesLocal" type="java.lang.Boolean" value="false" />
+    <AuxValue name="FormSettings_variablesModifier" type="java.lang.Integer" value="2" />
+  </AuxValues>
+  <Layout>
+    <DimensionLayout dim="0">
+      <Group type="103" groupAlignment="0" attributes="0">
+        <Group type="102" attributes="0">
+          <EmptySpace min="-2" pref="16" max="-2" attributes="0" />
+          <Component id="pnlNoiDung" max="32767" attributes="0" />
+          <EmptySpace min="-2" pref="16" max="-2" attributes="0" />
+        </Group>
+      </Group>
+    </DimensionLayout>
+    <DimensionLayout dim="1">
+      <Group type="103" groupAlignment="0" attributes="0">
+        <Group type="102" attributes="0">
+          <EmptySpace min="-2" pref="16" max="-2" attributes="0" />
+          <Component id="pnlNoiDung" min="-2" max="-2" attributes="0" />
+          <EmptySpace min="-2" pref="16" max="-2" attributes="0" />
+        </Group>
+      </Group>
+    </DimensionLayout>
+  </Layout>
+  <SubComponents>
+    <Container class="javax.swing.JPanel" name="pnlNoiDung">
+      <Properties>
+        <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+          <Color blue="ff" green="ff" red="ff" type="rgb" />
+        </Property>
+        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+          <Border info="org.netbeans.modules.form.compat2.border.EmptyBorderInfo">
+            <EmptyBorder bottom="24" left="24" right="24" top="24" />
+          </Border>
+        </Property>
+      </Properties>
+      <Layout>
+        <DimensionLayout dim="0">
+          <Group type="103" groupAlignment="0" attributes="0">
+            <Group type="102" attributes="0">
+              <Component id="pnlMenu" min="-2" max="-2" attributes="0" />
+              <EmptySpace min="-2" pref="20" max="-2" attributes="0" />
+              <Component id="pnlManHinh" min="-2" max="32767" attributes="0" />
+            </Group>
+          </Group>
+        </DimensionLayout>
+        <DimensionLayout dim="1">
+          <Group type="103" groupAlignment="0" attributes="0">
+            <Component id="pnlMenu" min="-2" max="32767" attributes="0" />
+            <Component id="pnlManHinh" min="-2" max="32767" attributes="0" />
+          </Group>
+        </DimensionLayout>
+      </Layout>
+      <SubComponents>
+        <Container class="javax.swing.JPanel" name="pnlMenu">
+          <Properties>
+            <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+              <Color blue="f8" green="f6" red="f5" type="rgb" />
+            </Property>
+            <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+              <Border info="org.netbeans.modules.form.compat2.border.EmptyBorderInfo">
+                <EmptyBorder bottom="16" left="16" right="16" top="16" />
+              </Border>
+            </Property>
+          </Properties>
+          <Layout>
+            <DimensionLayout dim="0">
+              <Group type="103" groupAlignment="0" attributes="0">
+                <Component id="lblMenuBrand" min="-2" pref="230" max="32767" attributes="0" />
+                <Component id="btnTrangChu" min="-2" pref="230" max="32767" attributes="0" />
+                <Component id="lblQuanLy" min="-2" pref="230" max="32767" attributes="0" />
+                <Component id="btnMonHoc" min="-2" pref="230" max="32767" attributes="0" />
+                <Component id="btnLopSinhVien" min="-2" pref="230" max="32767" attributes="0" />
+                <Component id="btnGiaoVien" min="-2" pref="230" max="32767" attributes="0" />
+                <Component id="btnBoDe" min="-2" pref="230" max="32767" attributes="0" />
+                <Component id="btnChuanBiThi" min="-2" pref="230" max="32767" attributes="0" />
+                <Component id="lblThi" min="-2" pref="230" max="32767" attributes="0" />
+                <Component id="btnChonCaThi" min="-2" pref="230" max="32767" attributes="0" />
+                <Component id="btnLamBai" min="-2" pref="230" max="32767" attributes="0" />
+                <Component id="btnKetQua" min="-2" pref="230" max="32767" attributes="0" />
+                <Component id="btnXemBaiThi" min="-2" pref="230" max="32767" attributes="0" />
+                <Component id="btnBangDiem" min="-2" pref="230" max="32767" attributes="0" />
+                <Component id="lblTaiKhoan" min="-2" pref="230" max="32767" attributes="0" />
+                <Component id="btnTaoTaiKhoan" min="-2" pref="230" max="32767" attributes="0" />
+                <Component id="btnDoiMatKhau" min="-2" pref="230" max="32767" attributes="0" />
+                <Component id="btnSaoLuuPhucHoi" min="-2" pref="230" max="32767" attributes="0" />
+                <Component id="btnDangXuat" min="-2" pref="230" max="32767" attributes="0" />
+                <Component id="btnThoat" min="-2" pref="230" max="32767" attributes="0" />
+              </Group>
+            </DimensionLayout>
+            <DimensionLayout dim="1">
+              <Group type="103" groupAlignment="0" attributes="0">
+                <Group type="102" attributes="0">
+                  <Component id="lblMenuBrand" min="-2" pref="22" max="-2" attributes="0" />
+                  <EmptySpace min="-2" pref="4" max="-2" attributes="0" />
+                  <Component id="btnTrangChu" min="-2" pref="34" max="-2" attributes="0" />
+                  <EmptySpace min="-2" pref="4" max="-2" attributes="0" />
+                  <Component id="lblQuanLy" min="-2" pref="22" max="-2" attributes="0" />
+                  <EmptySpace min="-2" pref="4" max="-2" attributes="0" />
+                  <Component id="btnMonHoc" min="-2" pref="34" max="-2" attributes="0" />
+                  <EmptySpace min="-2" pref="4" max="-2" attributes="0" />
+                  <Component id="btnLopSinhVien" min="-2" pref="34" max="-2" attributes="0" />
+                  <EmptySpace min="-2" pref="4" max="-2" attributes="0" />
+                  <Component id="btnGiaoVien" min="-2" pref="34" max="-2" attributes="0" />
+                  <EmptySpace min="-2" pref="4" max="-2" attributes="0" />
+                  <Component id="btnBoDe" min="-2" pref="34" max="-2" attributes="0" />
+                  <EmptySpace min="-2" pref="4" max="-2" attributes="0" />
+                  <Component id="btnChuanBiThi" min="-2" pref="34" max="-2" attributes="0" />
+                  <EmptySpace min="-2" pref="4" max="-2" attributes="0" />
+                  <Component id="lblThi" min="-2" pref="22" max="-2" attributes="0" />
+                  <EmptySpace min="-2" pref="4" max="-2" attributes="0" />
+                  <Component id="btnChonCaThi" min="-2" pref="40" max="-2" attributes="0" />
+                  <EmptySpace min="0" pref="0" max="-2" attributes="0" />
+                  <Component id="btnLamBai" min="-2" pref="40" max="-2" attributes="0" />
+                  <EmptySpace min="0" pref="0" max="-2" attributes="0" />
+                  <Component id="btnKetQua" min="-2" pref="40" max="-2" attributes="0" />
+                  <EmptySpace min="0" pref="0" max="-2" attributes="0" />
+                  <Component id="btnXemBaiThi" min="-2" pref="40" max="-2" attributes="0" />
+                  <EmptySpace min="0" pref="0" max="-2" attributes="0" />
+                  <Component id="btnBangDiem" min="-2" pref="34" max="-2" attributes="0" />
+                  <EmptySpace min="-2" pref="4" max="-2" attributes="0" />
+                  <Component id="lblTaiKhoan" min="-2" pref="22" max="-2" attributes="0" />
+                  <EmptySpace min="-2" pref="4" max="-2" attributes="0" />
+                  <Component id="btnTaoTaiKhoan" min="-2" pref="34" max="-2" attributes="0" />
+                  <EmptySpace min="-2" pref="4" max="-2" attributes="0" />
+                  <Component id="btnDoiMatKhau" min="-2" pref="34" max="-2" attributes="0" />
+                  <EmptySpace min="-2" pref="4" max="-2" attributes="0" />
+                  <Component id="btnSaoLuuPhucHoi" min="-2" pref="34" max="-2" attributes="0" />
+                  <EmptySpace min="-2" pref="4" max="-2" attributes="0" />
+                  <Component id="btnDangXuat" min="-2" pref="34" max="-2" attributes="0" />
+                  <EmptySpace min="-2" pref="4" max="-2" attributes="0" />
+                  <Component id="btnThoat" min="-2" pref="34" max="-2" attributes="0" />
+                  <EmptySpace min="-2" pref="4" max="-2" attributes="0" />
+                </Group>
+              </Group>
+            </DimensionLayout>
+          </Layout>
+          <SubComponents>
+            <Component class="javax.swing.JLabel" name="lblMenuBrand">
+              <Properties>
+                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                  <Font name="Segoe UI" size="15" style="1" />
+                </Property>
+                <Property name="text" type="java.lang.String" value="PTIT  ·  THI TRẮC NGHIỆM" />
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JButton" name="btnTrangChu">
+              <Properties>
+                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                  <Font name="Segoe UI" size="14" style="0" />
+                </Property>
+                <Property name="text" type="java.lang.String" value="Trang chủ" />
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnTrangChuActionPerformed" />
+              </Events>
+            </Component>
+            <Component class="javax.swing.JLabel" name="lblQuanLy">
+              <Properties>
+                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                  <Font name="Segoe UI" size="16" style="1" />
+                </Property>
+                <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="2d" green="20" red="cd" type="rgb" />
+                </Property>
+                <Property name="text" type="java.lang.String" value="Quản lý và chuẩn bị thi" />
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JButton" name="btnMonHoc">
+              <Properties>
+                <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="f8" green="f6" red="f5" type="rgb" />
+                </Property>
+                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                  <Font name="Segoe UI" size="14" style="0" />
+                </Property>
+                <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="36" green="2b" red="24" type="rgb" />
+                </Property>
+                <Property name="text" type="java.lang.String" value="Môn học" />
+                <Property name="focusPainted" type="boolean" value="false" />
+                <Property name="opaque" type="boolean" value="true" />
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnMonHocActionPerformed" />
+              </Events>
+            </Component>
+            <Component class="javax.swing.JButton" name="btnLopSinhVien">
+              <Properties>
+                <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="f8" green="f6" red="f5" type="rgb" />
+                </Property>
+                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                  <Font name="Segoe UI" size="14" style="0" />
+                </Property>
+                <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="36" green="2b" red="24" type="rgb" />
+                </Property>
+                <Property name="text" type="java.lang.String" value="Lớp và sinh viên" />
+                <Property name="focusPainted" type="boolean" value="false" />
+                <Property name="opaque" type="boolean" value="true" />
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnLopSinhVienActionPerformed" />
+              </Events>
+            </Component>
+            <Component class="javax.swing.JButton" name="btnGiaoVien">
+              <Properties>
+                <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="f8" green="f6" red="f5" type="rgb" />
+                </Property>
+                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                  <Font name="Segoe UI" size="14" style="0" />
+                </Property>
+                <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="36" green="2b" red="24" type="rgb" />
+                </Property>
+                <Property name="text" type="java.lang.String" value="Giáo viên" />
+                <Property name="focusPainted" type="boolean" value="false" />
+                <Property name="opaque" type="boolean" value="true" />
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnGiaoVienActionPerformed" />
+              </Events>
+            </Component>
+            <Component class="javax.swing.JButton" name="btnBoDe">
+              <Properties>
+                <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="f8" green="f6" red="f5" type="rgb" />
+                </Property>
+                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                  <Font name="Segoe UI" size="14" style="0" />
+                </Property>
+                <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="36" green="2b" red="24" type="rgb" />
+                </Property>
+                <Property name="text" type="java.lang.String" value="Bộ đề trắc nghiệm" />
+                <Property name="focusPainted" type="boolean" value="false" />
+                <Property name="opaque" type="boolean" value="true" />
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnBoDeActionPerformed" />
+              </Events>
+            </Component>
+            <Component class="javax.swing.JButton" name="btnChuanBiThi">
+              <Properties>
+                <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="f8" green="f6" red="f5" type="rgb" />
+                </Property>
+                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                  <Font name="Segoe UI" size="14" style="0" />
+                </Property>
+                <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="36" green="2b" red="24" type="rgb" />
+                </Property>
+                <Property name="text" type="java.lang.String" value="Chuẩn bị thi" />
+                <Property name="focusPainted" type="boolean" value="false" />
+                <Property name="opaque" type="boolean" value="true" />
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnChuanBiThiActionPerformed" />
+              </Events>
+            </Component>
+            <Component class="javax.swing.JLabel" name="lblThi">
+              <Properties>
+                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                  <Font name="Segoe UI" size="16" style="1" />
+                </Property>
+                <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="2d" green="20" red="cd" type="rgb" />
+                </Property>
+                <Property name="text" type="java.lang.String" value="Thi và kết quả" />
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JButton" name="btnChonCaThi">
+              <Properties>
+                <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="f8" green="f6" red="f5" type="rgb" />
+                </Property>
+                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                  <Font name="Segoe UI" size="14" style="0" />
+                </Property>
+                <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="36" green="2b" red="24" type="rgb" />
+                </Property>
+                <Property name="text" type="java.lang.String" value="Chọn ca thi" />
+                <Property name="focusPainted" type="boolean" value="false" />
+                <Property name="opaque" type="boolean" value="true" />
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnChonCaThiActionPerformed" />
+              </Events>
+            </Component>
+            <Component class="javax.swing.JButton" name="btnLamBai">
+              <Properties>
+                <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="f8" green="f6" red="f5" type="rgb" />
+                </Property>
+                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                  <Font name="Segoe UI" size="14" style="0" />
+                </Property>
+                <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="36" green="2b" red="24" type="rgb" />
+                </Property>
+                <Property name="text" type="java.lang.String" value="Làm bài thi" />
+                <Property name="focusPainted" type="boolean" value="false" />
+                <Property name="opaque" type="boolean" value="true" />
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnLamBaiActionPerformed" />
+              </Events>
+            </Component>
+            <Component class="javax.swing.JButton" name="btnKetQua">
+              <Properties>
+                <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="f8" green="f6" red="f5" type="rgb" />
+                </Property>
+                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                  <Font name="Segoe UI" size="14" style="0" />
+                </Property>
+                <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="36" green="2b" red="24" type="rgb" />
+                </Property>
+                <Property name="text" type="java.lang.String" value="Kết quả thi" />
+                <Property name="focusPainted" type="boolean" value="false" />
+                <Property name="opaque" type="boolean" value="true" />
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnKetQuaActionPerformed" />
+              </Events>
+            </Component>
+            <Component class="javax.swing.JButton" name="btnXemBaiThi">
+              <Properties>
+                <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="f8" green="f6" red="f5" type="rgb" />
+                </Property>
+                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                  <Font name="Segoe UI" size="14" style="0" />
+                </Property>
+                <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="36" green="2b" red="24" type="rgb" />
+                </Property>
+                <Property name="text" type="java.lang.String" value="Xem lại bài thi" />
+                <Property name="focusPainted" type="boolean" value="false" />
+                <Property name="opaque" type="boolean" value="true" />
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnXemBaiThiActionPerformed" />
+              </Events>
+            </Component>
+            <Component class="javax.swing.JButton" name="btnBangDiem">
+              <Properties>
+                <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="f8" green="f6" red="f5" type="rgb" />
+                </Property>
+                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                  <Font name="Segoe UI" size="14" style="0" />
+                </Property>
+                <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="36" green="2b" red="24" type="rgb" />
+                </Property>
+                <Property name="text" type="java.lang.String" value="Bảng điểm môn học" />
+                <Property name="focusPainted" type="boolean" value="false" />
+                <Property name="opaque" type="boolean" value="true" />
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnBangDiemActionPerformed" />
+              </Events>
+            </Component>
+            <Component class="javax.swing.JLabel" name="lblTaiKhoan">
+              <Properties>
+                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                  <Font name="Segoe UI" size="16" style="1" />
+                </Property>
+                <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="2d" green="20" red="cd" type="rgb" />
+                </Property>
+                <Property name="text" type="java.lang.String" value="Người dùng và hệ thống" />
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JButton" name="btnTaoTaiKhoan">
+              <Properties>
+                <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="f8" green="f6" red="f5" type="rgb" />
+                </Property>
+                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                  <Font name="Segoe UI" size="14" style="0" />
+                </Property>
+                <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="36" green="2b" red="24" type="rgb" />
+                </Property>
+                <Property name="text" type="java.lang.String" value="Tạo tài khoản giáo viên" />
+                <Property name="focusPainted" type="boolean" value="false" />
+                <Property name="opaque" type="boolean" value="true" />
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnTaoTaiKhoanActionPerformed" />
+              </Events>
+            </Component>
+            <Component class="javax.swing.JButton" name="btnDoiMatKhau">
+              <Properties>
+                <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="f8" green="f6" red="f5" type="rgb" />
+                </Property>
+                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                  <Font name="Segoe UI" size="14" style="0" />
+                </Property>
+                <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="36" green="2b" red="24" type="rgb" />
+                </Property>
+                <Property name="text" type="java.lang.String" value="Đổi mật khẩu" />
+                <Property name="focusPainted" type="boolean" value="false" />
+                <Property name="opaque" type="boolean" value="true" />
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnDoiMatKhauActionPerformed" />
+              </Events>
+            </Component>
+            <Component class="javax.swing.JButton" name="btnSaoLuuPhucHoi">
+              <Properties>
+                <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="f8" green="f6" red="f5" type="rgb" />
+                </Property>
+                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                  <Font name="Segoe UI" size="14" style="0" />
+                </Property>
+                <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="36" green="2b" red="24" type="rgb" />
+                </Property>
+                <Property name="text" type="java.lang.String" value="Sao lưu / Phục hồi" />
+                <Property name="focusPainted" type="boolean" value="false" />
+                <Property name="opaque" type="boolean" value="true" />
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnSaoLuuPhucHoiActionPerformed" />
+              </Events>
+            </Component>
+            <Component class="javax.swing.JButton" name="btnDangXuat">
+              <Properties>
+                <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="f8" green="f6" red="f5" type="rgb" />
+                </Property>
+                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                  <Font name="Segoe UI" size="14" style="0" />
+                </Property>
+                <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="36" green="2b" red="24" type="rgb" />
+                </Property>
+                <Property name="text" type="java.lang.String" value="Đăng xuất" />
+                <Property name="focusPainted" type="boolean" value="false" />
+                <Property name="opaque" type="boolean" value="true" />
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnDangXuatActionPerformed" />
+              </Events>
+            </Component>
+            <Component class="javax.swing.JButton" name="btnThoat">
+              <Properties>
+                <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="f8" green="f6" red="f5" type="rgb" />
+                </Property>
+                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                  <Font name="Segoe UI" size="14" style="0" />
+                </Property>
+                <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="36" green="2b" red="24" type="rgb" />
+                </Property>
+                <Property name="text" type="java.lang.String" value="Thoát" />
+                <Property name="focusPainted" type="boolean" value="false" />
+                <Property name="opaque" type="boolean" value="true" />
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnThoatActionPerformed" />
+              </Events>
+            </Component>
+          </SubComponents>
+        </Container>
+        <Container class="javax.swing.JPanel" name="pnlManHinh">
+          <Properties>
+            <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+              <Color blue="ff" green="ff" red="ff" type="rgb" />
+            </Property>
+            <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+              <Border info="org.netbeans.modules.form.compat2.border.EmptyBorderInfo">
+                <EmptyBorder bottom="0" left="0" right="0" top="0" />
+              </Border>
+            </Property>
+          </Properties>
+          <Layout>
+            <DimensionLayout dim="0">
+              <Group type="103" groupAlignment="0" attributes="0">
+                <Component id="pnlThongTin" max="32767" attributes="0" />
+              </Group>
+            </DimensionLayout>
+            <DimensionLayout dim="1">
+              <Group type="103" groupAlignment="0" attributes="0">
+                <Component id="pnlThongTin" min="-2" max="32767" attributes="0" />
+              </Group>
+            </DimensionLayout>
+          </Layout>
+          <SubComponents>
+            <Container class="javax.swing.JPanel" name="pnlThongTin">
+              <Properties>
+                <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="ff" green="ff" red="ff" type="rgb" />
+                </Property>
+                <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                  <Border info="org.netbeans.modules.form.compat2.border.EmptyBorderInfo">
+                    <EmptyBorder bottom="28" left="28" right="28" top="28" />
+                  </Border>
+                </Property>
+              </Properties>
+              <Layout>
+                <DimensionLayout dim="0">
+                  <Group type="103" groupAlignment="0" attributes="0">
+                    <Component id="lblTieuDe" min="-2" pref="620" max="32767" attributes="0" />
+                    <Component id="lblMoTa" min="-2" pref="620" max="32767" attributes="0" />
+                    <Component id="lblVaiTro" min="-2" pref="620" max="32767" attributes="0" />
+                    <Component id="pnlTxtMaNguoiDung" min="-2" max="32767" attributes="0" />
+                    <Component id="pnlTxtHoTen" min="-2" max="32767" attributes="0" />
+                    <Component id="pnlTxtSoDTLL" min="-2" max="32767" attributes="0" />
+                    <Component id="pnlTxtDiaChi" min="-2" max="32767" attributes="0" />
+                    <Component id="pnlTxtMaLop" min="-2" max="32767" attributes="0" />
+                    <Component id="pnlTxtTenLop" min="-2" max="32767" attributes="0" />
+                    <Component id="pnlTxtNgaySinh" min="-2" max="32767" attributes="0" />
+                  </Group>
+                </DimensionLayout>
+                <DimensionLayout dim="1">
+                  <Group type="103" groupAlignment="0" attributes="0">
+                    <Group type="102" attributes="0">
+                      <Component id="lblTieuDe" min="-2" max="-2" attributes="0" />
+                      <EmptySpace min="-2" pref="12" max="-2" attributes="0" />
+                      <Component id="lblMoTa" min="-2" pref="44" max="-2" attributes="0" />
+                      <EmptySpace min="-2" pref="42" max="-2" attributes="0" />
+                      <Component id="lblVaiTro" min="-2" pref="26" max="-2" attributes="0" />
+                      <EmptySpace min="-2" pref="22" max="-2" attributes="0" />
+                      <Component id="pnlTxtMaNguoiDung" min="-2" max="-2" attributes="0" />
+                      <EmptySpace min="-2" pref="20" max="-2" attributes="0" />
+                      <Component id="pnlTxtHoTen" min="-2" max="-2" attributes="0" />
+                      <Component id="pnlTxtMaLop" min="-2" max="-2" attributes="0" />
+                      <Component id="pnlTxtTenLop" min="-2" max="-2" attributes="0" />
+                      <Component id="pnlTxtNgaySinh" min="-2" max="-2" attributes="0" />
+                      <EmptySpace min="-2" pref="20" max="-2" attributes="0" />
+                      <Component id="pnlTxtSoDTLL" min="-2" max="-2" attributes="0" />
+                      <EmptySpace min="-2" pref="20" max="-2" attributes="0" />
+                      <Component id="pnlTxtDiaChi" min="-2" max="-2" attributes="0" />
+                      <EmptySpace min="-2" pref="180" max="-2" attributes="0" />
+                    </Group>
+                  </Group>
+                </DimensionLayout>
+              </Layout>
+              <SubComponents>
+                <Component class="javax.swing.JLabel" name="lblTieuDe">
+                  <Properties>
+                    <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                      <Font name="Segoe UI" size="24" style="1" />
+                    </Property>
+                    <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                      <Color blue="2d" green="20" red="cd" type="rgb" />
+                    </Property>
+                    <Property name="text" type="java.lang.String" value="TRANG CHỦ" />
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JLabel" name="lblMoTa">
+                  <Properties>
+                    <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                      <Font name="Segoe UI" size="13" style="0" />
+                    </Property>
+                    <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                      <Color blue="80" green="72" red="6b" type="rgb" />
+                    </Property>
+                    <Property name="text" type="java.lang.String" value="Hệ thống thi trắc nghiệm · Học viện Công nghệ Bưu chính Viễn thông" />
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JLabel" name="lblVaiTro">
+                  <Properties>
+                    <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                      <Font name="Segoe UI" size="16" style="1" />
+                    </Property>
+                    <Property name="text" type="java.lang.String" value="THÔNG TIN GIẢNG VIÊN" />
+                  </Properties>
+                </Component>
+                <Container class="javax.swing.JPanel" name="pnlTxtMaNguoiDung">
+                  <Properties>
+                    <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                      <Color blue="ff" green="ff" red="ff" type="rgb" />
+                    </Property>
+                  </Properties>
+                  <Layout>
+                    <DimensionLayout dim="0">
+                      <Group type="103" groupAlignment="0" attributes="0">
+                        <Component id="lblTxtMaNguoiDung" max="32767" attributes="0" />
+                        <Component id="txtMaNguoiDung" max="32767" attributes="0" />
+                      </Group>
+                    </DimensionLayout>
+                    <DimensionLayout dim="1">
+                      <Group type="103" groupAlignment="0" attributes="0">
+                        <Group type="102" attributes="0">
+                          <Component id="lblTxtMaNguoiDung" min="-2" max="-2" attributes="0" />
+                          <EmptySpace min="-2" pref="8" max="-2" attributes="0" />
+                          <Component id="txtMaNguoiDung" min="-2" pref="36" max="-2" attributes="0" />
+                        </Group>
+                      </Group>
+                    </DimensionLayout>
+                  </Layout>
+                  <SubComponents>
+                    <Component class="javax.swing.JLabel" name="lblTxtMaNguoiDung">
+                      <Properties>
+                        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                          <Font name="Segoe UI" size="13" style="1" />
+                        </Property>
+                        <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                          <Color blue="36" green="2b" red="24" type="rgb" />
+                        </Property>
+                        <Property name="text" type="java.lang.String" value="Mã người dùng" />
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JTextField" name="txtMaNguoiDung">
+                      <Properties>
+                        <Property name="editable" type="boolean" value="false" />
+                        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                          <Font name="Segoe UI" size="14" style="0" />
+                        </Property>
+                        <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                          <Color blue="36" green="2b" red="24" type="rgb" />
+                        </Property>
+                      </Properties>
+                    </Component>
+                  </SubComponents>
+                </Container>
+                <Container class="javax.swing.JPanel" name="pnlTxtHoTen">
+                  <Properties>
+                    <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                      <Color blue="ff" green="ff" red="ff" type="rgb" />
+                    </Property>
+                  </Properties>
+                  <Layout>
+                    <DimensionLayout dim="0">
+                      <Group type="103" groupAlignment="0" attributes="0">
+                        <Component id="lblTxtHoTen" max="32767" attributes="0" />
+                        <Component id="txtHoTen" max="32767" attributes="0" />
+                      </Group>
+                    </DimensionLayout>
+                    <DimensionLayout dim="1">
+                      <Group type="103" groupAlignment="0" attributes="0">
+                        <Group type="102" attributes="0">
+                          <Component id="lblTxtHoTen" min="-2" max="-2" attributes="0" />
+                          <EmptySpace min="-2" pref="8" max="-2" attributes="0" />
+                          <Component id="txtHoTen" min="-2" pref="36" max="-2" attributes="0" />
+                        </Group>
+                      </Group>
+                    </DimensionLayout>
+                  </Layout>
+                  <SubComponents>
+                    <Component class="javax.swing.JLabel" name="lblTxtHoTen">
+                      <Properties>
+                        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                          <Font name="Segoe UI" size="13" style="1" />
+                        </Property>
+                        <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                          <Color blue="36" green="2b" red="24" type="rgb" />
+                        </Property>
+                        <Property name="text" type="java.lang.String" value="Họ tên" />
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JTextField" name="txtHoTen">
+                      <Properties>
+                        <Property name="editable" type="boolean" value="false" />
+                        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                          <Font name="Segoe UI" size="14" style="0" />
+                        </Property>
+                        <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                          <Color blue="36" green="2b" red="24" type="rgb" />
+                        </Property>
+                      </Properties>
+                    </Component>
+                  </SubComponents>
+                </Container>
+                <Container class="javax.swing.JPanel" name="pnlTxtSoDTLL">
+                  <Properties>
+                    <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                      <Color blue="ff" green="ff" red="ff" type="rgb" />
+                    </Property>
+                  </Properties>
+                  <Layout>
+                    <DimensionLayout dim="0">
+                      <Group type="103" groupAlignment="0" attributes="0">
+                        <Component id="lblTxtSoDTLL" alignment="0" max="32767" attributes="0" />
+                        <Component id="txtSoDTLL" alignment="0" max="32767" attributes="0" />
+                      </Group>
+                    </DimensionLayout>
+                    <DimensionLayout dim="1">
+                      <Group type="103" groupAlignment="0" attributes="0">
+                        <Group type="102" alignment="0" attributes="0">
+                          <Component id="lblTxtSoDTLL" min="-2" max="-2" attributes="0" />
+                          <EmptySpace min="-2" pref="8" max="-2" attributes="0" />
+                          <Component id="txtSoDTLL" min="-2" pref="36" max="-2" attributes="0" />
+                        </Group>
+                      </Group>
+                    </DimensionLayout>
+                  </Layout>
+                  <SubComponents>
+                    <Component class="javax.swing.JLabel" name="lblTxtSoDTLL">
+                      <Properties>
+                        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                          <Font name="Segoe UI" size="13" style="1" />
+                        </Property>
+                        <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                          <Color blue="36" green="2b" red="24" type="rgb" />
+                        </Property>
+                        <Property name="text" type="java.lang.String" value="Số Điện Thoại Liên Lạc" />
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JTextField" name="txtSoDTLL">
+                      <Properties>
+                        <Property name="editable" type="boolean" value="false" />
+                        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                          <Font name="Segoe UI" size="14" style="0" />
+                        </Property>
+                        <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                          <Color blue="36" green="2b" red="24" type="rgb" />
+                        </Property>
+                      </Properties>
+                    </Component>
+                  </SubComponents>
+                </Container>
+                <Container class="javax.swing.JPanel" name="pnlTxtDiaChi">
+                  <Properties>
+                    <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                      <Color blue="ff" green="ff" red="ff" type="rgb" />
+                    </Property>
+                  </Properties>
+                  <Layout>
+                    <DimensionLayout dim="0">
+                      <Group type="103" groupAlignment="0" attributes="0">
+                        <Component id="lblTxtDiaChi" alignment="0" max="32767" attributes="0" />
+                        <Component id="txtDiaChi" alignment="0" max="32767" attributes="0" />
+                      </Group>
+                    </DimensionLayout>
+                    <DimensionLayout dim="1">
+                      <Group type="103" groupAlignment="0" attributes="0">
+                        <Group type="102" alignment="0" attributes="0">
+                          <Component id="lblTxtDiaChi" min="-2" max="-2" attributes="0" />
+                          <EmptySpace min="-2" pref="8" max="-2" attributes="0" />
+                          <Component id="txtDiaChi" min="-2" pref="36" max="-2" attributes="0" />
+                        </Group>
+                      </Group>
+                    </DimensionLayout>
+                  </Layout>
+                  <SubComponents>
+                    <Component class="javax.swing.JLabel" name="lblTxtDiaChi">
+                      <Properties>
+                        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                          <Font name="Segoe UI" size="13" style="1" />
+                        </Property>
+                        <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                          <Color blue="36" green="2b" red="24" type="rgb" />
+                        </Property>
+                        <Property name="text" type="java.lang.String" value="Địa Chỉ" />
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JTextField" name="txtDiaChi">
+                      <Properties>
+                        <Property name="editable" type="boolean" value="false" />
+                        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                          <Font name="Segoe UI" size="14" style="0" />
+                        </Property>
+                        <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                          <Color blue="36" green="2b" red="24" type="rgb" />
+                        </Property>
+                      </Properties>
+                    </Component>
+                  </SubComponents>
+                </Container>
+                <Container class="javax.swing.JPanel" name="pnlTxtMaLop">
+                  <Properties>
+                    <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                      <Color blue="ff" green="ff" red="ff" type="rgb" />
+                    </Property>
+                    <Property name="visible" type="boolean" value="false" />
+                  </Properties>
+                  <Layout>
+                    <DimensionLayout dim="0">
+                      <Group type="103" groupAlignment="0" attributes="0">
+                        <Component id="lblTxtMaLop" max="32767" attributes="0" />
+                        <Component id="txtMaLop" max="32767" attributes="0" />
+                      </Group>
+                    </DimensionLayout>
+                    <DimensionLayout dim="1">
+                      <Group type="103" groupAlignment="0" attributes="0">
+                        <Group type="102" attributes="0">
+                          <Component id="lblTxtMaLop" min="-2" max="-2" attributes="0" />
+                          <EmptySpace min="-2" pref="8" max="-2" attributes="0" />
+                          <Component id="txtMaLop" min="-2" pref="36" max="-2" attributes="0" />
+                        </Group>
+                      </Group>
+                    </DimensionLayout>
+                  </Layout>
+                  <SubComponents>
+                    <Component class="javax.swing.JLabel" name="lblTxtMaLop">
+                      <Properties>
+                        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                          <Font name="Segoe UI" size="13" style="1" />
+                        </Property>
+                        <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                          <Color blue="36" green="2b" red="24" type="rgb" />
+                        </Property>
+                        <Property name="text" type="java.lang.String" value="Mã lớp" />
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JTextField" name="txtMaLop">
+                      <Properties>
+                        <Property name="editable" type="boolean" value="false" />
+                        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                          <Font name="Segoe UI" size="14" style="0" />
+                        </Property>
+                        <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                          <Color blue="36" green="2b" red="24" type="rgb" />
+                        </Property>
+                      </Properties>
+                    </Component>
+                  </SubComponents>
+                </Container>
+                <Container class="javax.swing.JPanel" name="pnlTxtTenLop">
+                  <Properties>
+                    <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                      <Color blue="ff" green="ff" red="ff" type="rgb" />
+                    </Property>
+                    <Property name="visible" type="boolean" value="false" />
+                  </Properties>
+                  <Layout>
+                    <DimensionLayout dim="0">
+                      <Group type="103" groupAlignment="0" attributes="0">
+                        <Component id="lblTxtTenLop" max="32767" attributes="0" />
+                        <Component id="txtTenLop" max="32767" attributes="0" />
+                      </Group>
+                    </DimensionLayout>
+                    <DimensionLayout dim="1">
+                      <Group type="103" groupAlignment="0" attributes="0">
+                        <Group type="102" attributes="0">
+                          <Component id="lblTxtTenLop" min="-2" max="-2" attributes="0" />
+                          <EmptySpace min="-2" pref="8" max="-2" attributes="0" />
+                          <Component id="txtTenLop" min="-2" pref="36" max="-2" attributes="0" />
+                        </Group>
+                      </Group>
+                    </DimensionLayout>
+                  </Layout>
+                  <SubComponents>
+                    <Component class="javax.swing.JLabel" name="lblTxtTenLop">
+                      <Properties>
+                        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                          <Font name="Segoe UI" size="13" style="1" />
+                        </Property>
+                        <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                          <Color blue="36" green="2b" red="24" type="rgb" />
+                        </Property>
+                        <Property name="text" type="java.lang.String" value="Tên lớp" />
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JTextField" name="txtTenLop">
+                      <Properties>
+                        <Property name="editable" type="boolean" value="false" />
+                        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                          <Font name="Segoe UI" size="14" style="0" />
+                        </Property>
+                        <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                          <Color blue="36" green="2b" red="24" type="rgb" />
+                        </Property>
+                      </Properties>
+                    </Component>
+                  </SubComponents>
+                </Container>
+                <Container class="javax.swing.JPanel" name="pnlTxtNgaySinh">
+                  <Properties>
+                    <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                      <Color blue="ff" green="ff" red="ff" type="rgb" />
+                    </Property>
+                    <Property name="visible" type="boolean" value="false" />
+                  </Properties>
+                  <Layout>
+                    <DimensionLayout dim="0">
+                      <Group type="103" groupAlignment="0" attributes="0">
+                        <Component id="lblTxtNgaySinh" max="32767" attributes="0" />
+                        <Component id="txtNgaySinh" max="32767" attributes="0" />
+                      </Group>
+                    </DimensionLayout>
+                    <DimensionLayout dim="1">
+                      <Group type="103" groupAlignment="0" attributes="0">
+                        <Group type="102" attributes="0">
+                          <Component id="lblTxtNgaySinh" min="-2" max="-2" attributes="0" />
+                          <EmptySpace min="-2" pref="8" max="-2" attributes="0" />
+                          <Component id="txtNgaySinh" min="-2" pref="36" max="-2" attributes="0" />
+                        </Group>
+                      </Group>
+                    </DimensionLayout>
+                  </Layout>
+                  <SubComponents>
+                    <Component class="javax.swing.JLabel" name="lblTxtNgaySinh">
+                      <Properties>
+                        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                          <Font name="Segoe UI" size="13" style="1" />
+                        </Property>
+                        <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                          <Color blue="36" green="2b" red="24" type="rgb" />
+                        </Property>
+                        <Property name="text" type="java.lang.String" value="Ngày sinh" />
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JTextField" name="txtNgaySinh">
+                      <Properties>
+                        <Property name="editable" type="boolean" value="false" />
+                        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                          <Font name="Segoe UI" size="14" style="0" />
+                        </Property>
+                        <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                          <Color blue="36" green="2b" red="24" type="rgb" />
+                        </Property>
+                      </Properties>
+                    </Component>
+                  </SubComponents>
+                </Container>
+              </SubComponents>
+            </Container>
+          </SubComponents>
+        </Container>
+      </SubComponents>
+    </Container>
+  </SubComponents>
+</Form>
