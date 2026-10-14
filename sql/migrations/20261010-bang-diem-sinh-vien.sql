@@ -1,0 +1,22 @@
+-- Chọn database THITRACNGHIEM trước khi chạy. Script chỉ thêm SP đọc điểm.
+SET ANSI_NULLS ON;
+SET QUOTED_IDENTIFIER ON;
+GO
+
+CREATE OR ALTER PROCEDURE dbo.SP_LayBangDiemSinhVien
+    @MASV NCHAR(8)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT RTRIM(bd.MAMH) AS MAMH, mh.TENMH, bd.NGAYTHI, bd.LAN, bd.DIEM
+    FROM dbo.BANGDIEM bd
+    JOIN dbo.MONHOC mh ON mh.MAMH = bd.MAMH
+    WHERE bd.MASV = @MASV
+    ORDER BY bd.NGAYTHI DESC, bd.MAMH, bd.LAN DESC;
+END;
+GO
+
+IF DATABASE_PRINCIPAL_ID(N'sv') IS NOT NULL
+    GRANT EXECUTE ON dbo.SP_LayBangDiemSinhVien TO sv;
+GO

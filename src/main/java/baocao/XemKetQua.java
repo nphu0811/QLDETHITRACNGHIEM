@@ -2,6 +2,12 @@ package baocao;
 
 import session.SessionDangNhap;
 import session.sessionSinhVien;
+import session.BaiThi;
+import session.CauHoi;
+import connectionSQLServer.ThiDAO;
+import javax.swing.JOptionPane;
+import javax.swing.SwingWorker;
+import javax.swing.table.DefaultTableModel;
 
 /**
  * Giao diện XemKetQua. Nghiệp vụ sẽ được bổ sung trong các event handler.
@@ -9,14 +15,24 @@ import session.sessionSinhVien;
  */
 public class XemKetQua extends javax.swing.JFrame {
     private final SessionDangNhap nguoiDung;
+    private final boolean veBangDiem;
 
     public XemKetQua() {
         this(null);
     }
 
     public XemKetQua(SessionDangNhap nguoiDung) {
+        this(nguoiDung, null);
+    }
+
+    public XemKetQua(SessionDangNhap nguoiDung, BaiThi baiThi) {
+        this(nguoiDung, baiThi, false);
+    }
+
+    public XemKetQua(SessionDangNhap nguoiDung, BaiThi baiThi, boolean veBangDiem) {
         initComponents();
         this.nguoiDung = nguoiDung;
+        this.veBangDiem = veBangDiem;
         // Đây là màn hình chi tiết, không cho nhập thông tin của người khác.
         txtLogin.setEditable(false);
         txtNgayThi.setEditable(false);
@@ -24,6 +40,10 @@ public class XemKetQua extends javax.swing.JFrame {
         txtMonHoc.setEditable(false);
         txtTrinhDo.setEditable(false);
         txtLanThi.setEditable(false);
+        txtHoTen.setEditable(false);
+        txtDiem.setEditable(false);
+        txtSoCauDung.setEditable(false);
+        txtTongSoCau.setEditable(false);
         btnTraCuu.setVisible(false);
         btnBaiLanTruoc.setVisible(false);
         boolean coSinhVien = nguoiDung instanceof sessionSinhVien;
@@ -40,6 +60,43 @@ public class XemKetQua extends javax.swing.JFrame {
         btnTroVe.setVisible(nguoiDung instanceof session.sessionSinhVien);
         getContentPane().setBackground(new java.awt.Color(245, 246, 248));
         setLocationRelativeTo(null);
+        if (baiThi != null) hienThiBai(baiThi);
+        else if (coSinhVien) taiBaiGanNhat();
+    }
+
+    private void hienThiBai(BaiThi baiThi) {
+        txtMonHoc.setText(baiThi.caThi.getTenMH());
+        txtNgayThi.setText(baiThi.caThi.getNgaythi());
+        txtLanThi.setText(String.valueOf(baiThi.caThi.getLan()));
+        txtTrinhDo.setText(baiThi.caThi.getTrinhDo());
+        txtDiem.setText(String.format(java.util.Locale.US, "%.2f", baiThi.diem));
+        txtSoCauDung.setText(String.valueOf(baiThi.soCauDung));
+        txtTongSoCau.setText(String.valueOf(baiThi.cauHoi.size()));
+        DefaultTableModel model = (DefaultTableModel) tblChiTietBaiThi.getModel();
+        model.setRowCount(0);
+        for (CauHoi cau : baiThi.cauHoi) {
+            model.addRow(new Object[]{cau.getMaCauHoi(), cau.getCauTraLoi(), cau.getDapAn()});
+        }
+    }
+
+    private void taiBaiGanNhat() {
+        new SwingWorker<BaiThi, Void>() {
+            @Override
+            protected BaiThi doInBackground() throws java.sql.SQLException {
+                return ThiDAO.xem(nguoiDung.getMaNguoiDung());
+            }
+
+            @Override
+            protected void done() {
+                if (!isDisplayable()) return;
+                try {
+                    hienThiBai(get());
+                } catch (Exception e) {
+                    Throwable loi = e.getCause() == null ? e : e.getCause();
+                    JOptionPane.showMessageDialog(XemKetQua.this, loi.getMessage());
+                }
+            }
+        }.execute();
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})
@@ -491,8 +548,11 @@ public class XemKetQua extends javax.swing.JFrame {
     }//GEN-LAST:event_btnBaiLanTruocActionPerformed
 
     private void btnTroVeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTroVeActionPerformed
-        // TODO: Bổ sung xử lý nút Trở về.
-        trangchu.DieuHuong.moForm(this, new trangchu.TrangChu(nguoiDung), nguoiDung);
+        if (veBangDiem) {
+            trangchu.DieuHuong.moForm(this, new BangDiemSinhVien(nguoiDung), nguoiDung);
+        } else {
+            trangchu.DieuHuong.moForm(this, new trangchu.TrangChu(nguoiDung), nguoiDung);
+        }
     }//GEN-LAST:event_btnTroVeActionPerformed
 
     public static void main(String[] args) {

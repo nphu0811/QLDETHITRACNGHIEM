@@ -1,0 +1,139 @@
+{
+  "database": "THITRACNGHIEM",
+  "server": "Chipiu\\SQLEXPRESS",
+  "seedFile": "seed-ca-thi-20261009.sql",
+  "cleanupFile": "xoa-ca-thi-20261009.sql",
+  "seededAtUtc": "2026-10-09T09:08:32.7938735Z",
+  "baseline": {
+    "BODE": 219,
+    "SINHVIEN": 10,
+    "GIAOVIEN": 4,
+    "MONHOC": 4,
+    "LOP": 7,
+    "BANGDIEM": 0,
+    "GIAOVIEN_DANGKY": 0
+  },
+  "addedCount": 12,
+  "rows": [
+    {
+      "MAGV": "TH234",
+      "MAMH": "AVCB",
+      "MALOP": "TH04",
+      "TRINHDO": "A",
+      "NGAYTHI": "2026-10-09T08:00:00",
+      "LAN": 1,
+      "SOCAUTHI": 20,
+      "THOIGIAN": 30
+    },
+    {
+      "MAGV": "TH123",
+      "MAMH": "MMTCB",
+      "MALOP": "TH04",
+      "TRINHDO": "A",
+      "NGAYTHI": "2026-10-09T09:00:00",
+      "LAN": 1,
+      "SOCAUTHI": 20,
+      "THOIGIAN": 30
+    },
+    {
+      "MAGV": "TH234",
+      "MAMH": "AVCB",
+      "MALOP": "TH04",
+      "TRINHDO": "B",
+      "NGAYTHI": "2026-10-10T14:00:00",
+      "LAN": 2,
+      "SOCAUTHI": 20,
+      "THOIGIAN": 30
+    },
+    {
+      "MAGV": "TH123",
+      "MAMH": "MMTCB",
+      "MALOP": "TH04",
+      "TRINHDO": "B",
+      "NGAYTHI": "2026-10-11T14:00:00",
+      "LAN": 2,
+      "SOCAUTHI": 20,
+      "THOIGIAN": 30
+    },
+    {
+      "MAGV": "TH234",
+      "MAMH": "AVCB",
+      "MALOP": "TH05",
+      "TRINHDO": "B",
+      "NGAYTHI": "2026-10-09T08:00:00",
+      "LAN": 1,
+      "SOCAUTHI": 10,
+      "THOIGIAN": 15
+    },
+    {
+      "MAGV": "TH123",
+      "MAMH": "MMTCB",
+      "MALOP": "TH05",
+      "TRINHDO": "B",
+      "NGAYTHI": "2026-10-09T09:00:00",
+      "LAN": 1,
+      "SOCAUTHI": 20,
+      "THOIGIAN": 30
+    },
+    {
+      "MAGV": "TH234",
+      "MAMH": "AVCB",
+      "MALOP": "TH05",
+      "TRINHDO": "C",
+      "NGAYTHI": "2026-10-10T14:00:00",
+      "LAN": 2,
+      "SOCAUTHI": 10,
+      "THOIGIAN": 15
+    },
+    {
+      "MAGV": "TH123",
+      "MAMH": "MMTCB",
+      "MALOP": "TH05",
+      "TRINHDO": "C",
+      "NGAYTHI": "2026-10-11T14:00:00",
+      "LAN": 2,
+      "SOCAUTHI": 20,
+      "THOIGIAN": 30
+    },
+    {
+      "MAGV": "TH234",
+      "MAMH": "AVCB",
+      "MALOP": "TH06",
+      "TRINHDO": "C",
+      "NGAYTHI": "2026-10-09T08:00:00",
+      "LAN": 1,
+      "SOCAUTHI": 10,
+      "THOIGIAN": 15
+    },
+    {
+      "MAGV": "TH123",
+      "MAMH": "MMTCB",
+      "MALOP": "TH06",
+      "TRINHDO": "C",
+      "NGAYTHI": "2026-10-09T09:00:00",
+      "LAN": 1,
+      "SOCAUTHI": 20,
+      "THOIGIAN": 30
+    },
+    {
+      "MAGV": "TH234",
+      "MAMH": "AVCB",
+      "MALOP": "TH06",
+      "TRINHDO": "B",
+      "NGAYTHI": "2026-10-10T14:00:00",
+      "LAN": 2,
+      "SOCAUTHI": 10,
+      "THOIGIAN": 15
+    },
+    {
+      "MAGV": "TH123",
+      "MAMH": "MMTCB",
+      "MALOP": "TH06",
+      "TRINHDO": "A",
+      "NGAYTHI": "2026-10-11T14:00:00",
+      "LAN": 2,
+      "SOCAUTHI": 20,
+      "THOIGIAN": 30
+    }
+  ]
+}

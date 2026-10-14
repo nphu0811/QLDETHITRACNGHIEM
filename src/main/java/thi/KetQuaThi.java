@@ -2,6 +2,10 @@ package thi;
 
 import session.SessionDangNhap;
 import session.sessionSinhVien;
+import session.BaiThi;
+import connectionSQLServer.ThiDAO;
+import javax.swing.JOptionPane;
+import javax.swing.SwingWorker;
 
 /**
  * Giao diện KetQuaThi. Nghiệp vụ sẽ được bổ sung trong các event handler.
@@ -9,12 +13,17 @@ import session.sessionSinhVien;
  */
 public class KetQuaThi extends javax.swing.JFrame {
     private final SessionDangNhap nguoiDung;
+    private BaiThi baiThi;
 
     public KetQuaThi() {
         this(null);
     }
 
     public KetQuaThi(SessionDangNhap nguoiDung) {
+        this(nguoiDung, null);
+    }
+
+    public KetQuaThi(SessionDangNhap nguoiDung, BaiThi baiThi) {
         initComponents();
         this.nguoiDung = nguoiDung;
         if(nguoiDung instanceof sessionSinhVien){
@@ -25,6 +34,40 @@ public class KetQuaThi extends javax.swing.JFrame {
         }
         getContentPane().setBackground(new java.awt.Color(245, 246, 248));
         setLocationRelativeTo(null);
+        btnXemChiTiet.setEnabled(false);
+        if (baiThi != null) hienThiKetQua(baiThi);
+        else if (nguoiDung instanceof sessionSinhVien) taiKetQuaGanNhat();
+    }
+
+    private void hienThiKetQua(BaiThi baiThi) {
+        this.baiThi = baiThi;
+        txtMonThi.setText(baiThi.caThi.getTenMH());
+        txtNgayThi.setText(baiThi.caThi.getNgaythi());
+        txtLanThi.setText(String.valueOf(baiThi.caThi.getLan()));
+        txtSoCauDung.setText(String.valueOf(baiThi.soCauDung));
+        txtTongSoCau.setText(String.valueOf(baiThi.cauHoi.size()));
+        lblDiem.setText(String.format(java.util.Locale.US, "%.2f / 10", baiThi.diem));
+        btnXemChiTiet.setEnabled(true);
+    }
+
+    private void taiKetQuaGanNhat() {
+        new SwingWorker<BaiThi, Void>() {
+            @Override
+            protected BaiThi doInBackground() throws java.sql.SQLException {
+                return ThiDAO.xem(nguoiDung.getMaNguoiDung());
+            }
+
+            @Override
+            protected void done() {
+                if (!isDisplayable()) return;
+                try {
+                    hienThiKetQua(get());
+                } catch (Exception e) {
+                    Throwable loi = e.getCause() == null ? e : e.getCause();
+                    JOptionPane.showMessageDialog(KetQuaThi.this, loi.getMessage());
+                }
+            }
+        }.execute();
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})
@@ -342,7 +385,7 @@ public class KetQuaThi extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnXemChiTietActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnXemChiTietActionPerformed
-        trangchu.DieuHuong.moForm(this, new baocao.XemKetQua(nguoiDung), nguoiDung);
+        trangchu.DieuHuong.moForm(this, new baocao.XemKetQua(nguoiDung, baiThi), nguoiDung);
     }//GEN-LAST:event_btnXemChiTietActionPerformed
 
     private void btnVeTrangChuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVeTrangChuActionPerformed

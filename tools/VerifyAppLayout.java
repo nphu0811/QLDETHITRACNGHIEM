@@ -7,7 +7,7 @@ import javax.swing.*;
 import session.*;
 import trangchu.TrangChu;
 
-/** Isolated UI checks: no SQL, exam, printing or data changes. */
+/** UI checks; constructors may read SQL, no exam or data changes. */
 public class VerifyAppLayout {
     static Object field(Object object, String name) throws Exception {
         Field f = object.getClass().getDeclaredField(name);
@@ -96,17 +96,17 @@ public class VerifyAppLayout {
             throw new AssertionError("Class field must show the session class and be read-only");
         }
         save(home, directory, "home-student");
-        JButton left = (JButton) field(home, "btnChonCaThi"), right = (JButton) field(home, "btnLamBai");
+        JButton left = (JButton) field(home, "btnKetQua"), right = (JButton) field(home, "btnBangDiem");
         if (left.getWidth() != right.getWidth() || left.getY() != right.getY()) throw new AssertionError("Student columns uneven");
         if (((JButton) field(home, "btnMonHoc")).isVisible()) throw new AssertionError("Student management menu visible");
-        click(home, "btnLamBai");
+        click(home, "btnChonCaThi");
         if (home.isDisplayable()) throw new AssertionError("Student navigation must dispose source");
         for (Window window : Window.getWindows()) if (window.isVisible()) {
             JFrame form = (JFrame) window;
             closePolicy(form);
             if (field(form, "nguoiDung") != sv) throw new AssertionError("Student session lost");
             if (!((JButton) field(form, "btnTroVe")).isVisible()) throw new AssertionError("Return button missing");
-            save(form, directory, "student-lambai");
+            save(form, directory, "student-choncathi");
             form.dispose();
         }
         JFrame review = new baocao.XemKetQua(sv);

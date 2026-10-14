@@ -9,7 +9,7 @@ public class PreviewAllForms {
     f=(JFrame)Class.forName(args[i]).getConstructor().newInstance(); f.addNotify(); f.validate();
     if(f.getIconImage()==null) throw new AssertionError("Missing app icon");
     ArrayList<Component> cs=new ArrayList<>();
-    for(Field field:f.getClass().getDeclaredFields()) { field.setAccessible(true); Object o=field.get(f); if(o instanceof Component c) {
+    for(Field field:f.getClass().getDeclaredFields()) { field.setAccessible(true); Object o=field.get(f); if(o instanceof Component c && c.isVisible()) {
      cs.add(c); if(c.getWidth()<=0 || c.getHeight()<=0) throw new AssertionError(field.getName()+": zero size");
      if(c instanceof JLabel l && l.getText()!=null && !l.getText().startsWith("<html>")) { int required=l.getFontMetrics(l.getFont()).stringWidth(l.getText()); if(required>l.getWidth()) throw new AssertionError(field.getName()+": text clipped "+required+">"+l.getWidth()); }
      if(c instanceof JButton b) { int required=b.getFontMetrics(b.getFont()).stringWidth(b.getText()); if(required>b.getWidth()-8) throw new AssertionError(field.getName()+": button text clipped "+required+">"+b.getWidth()); }

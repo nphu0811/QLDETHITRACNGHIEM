@@ -1,7 +1,9 @@
 C:\Users\admin\eclipse-workspace\THITRACNGHIEM\src\main\java\baocao\BangDiemMonHoc.java
+C:\Users\admin\eclipse-workspace\THITRACNGHIEM\src\main\java\baocao\BangDiemSinhVien.java
 C:\Users\admin\eclipse-workspace\THITRACNGHIEM\src\main\java\baocao\InBangDiem.java
 C:\Users\admin\eclipse-workspace\THITRACNGHIEM\src\main\java\baocao\XemKetQua.java
 C:\Users\admin\eclipse-workspace\THITRACNGHIEM\src\main\java\connectionSQLServer\connection.java
+C:\Users\admin\eclipse-workspace\THITRACNGHIEM\src\main\java\connectionSQLServer\ThiDAO.java
 C:\Users\admin\eclipse-workspace\THITRACNGHIEM\src\main\java\dangNhapdangKy\DangNhap.java
 C:\Users\admin\eclipse-workspace\THITRACNGHIEM\src\main\java\dangNhapdangKy\DangNhapSV.java
 C:\Users\admin\eclipse-workspace\THITRACNGHIEM\src\main\java\hethong\SaoLuuPhucHoi.java
@@ -10,6 +12,11 @@ C:\Users\admin\eclipse-workspace\THITRACNGHIEM\src\main\java\quanly\NhapBoDe.jav
 C:\Users\admin\eclipse-workspace\THITRACNGHIEM\src\main\java\quanly\NhapGiaoVien.java
 C:\Users\admin\eclipse-workspace\THITRACNGHIEM\src\main\java\quanly\NhapLopSinhVien.java
 C:\Users\admin\eclipse-workspace\THITRACNGHIEM\src\main\java\quanly\NhapMonHoc.java
+C:\Users\admin\eclipse-workspace\THITRACNGHIEM\src\main\java\session\BaiThi.java
+C:\Users\admin\eclipse-workspace\THITRACNGHIEM\src\main\java\session\CaThi.java
+C:\Users\admin\eclipse-workspace\THITRACNGHIEM\src\main\java\session\CauHoi.java
+C:\Users\admin\eclipse-workspace\THITRACNGHIEM\src\main\java\session\DiemThi.java
+C:\Users\admin\eclipse-workspace\THITRACNGHIEM\src\main\java\session\MonHoc.java
 C:\Users\admin\eclipse-workspace\THITRACNGHIEM\src\main\java\session\SessionDangNhap.java
 C:\Users\admin\eclipse-workspace\THITRACNGHIEM\src\main\java\session\sessionGiaoVien.java
 C:\Users\admin\eclipse-workspace\THITRACNGHIEM\src\main\java\session\sessionSinhVien.java

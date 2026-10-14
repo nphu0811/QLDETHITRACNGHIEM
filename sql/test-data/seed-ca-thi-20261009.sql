@@ -1,0 +1,74 @@
+USE [THITRACNGHIEM];
+GO
+
+-- Du lieu thu bo loc ca thi: 3 lop, 2 mon, moi mon 2 lan.
+-- Chay lai se bo qua khoa da ton tai, khong sua ca thi cu.
+-- Don du lieu bang xoa-ca-thi-20261009.sql trong cung thu muc.
+SET NOCOUNT ON;
+SET XACT_ABORT ON;
+
+DECLARE @Seed TABLE (
+    MAGV NCHAR(8), MAMH NCHAR(5), MALOP NCHAR(15),
+    TRINHDO CHAR(1), NGAYTHI DATETIME, LAN SMALLINT,
+    SOCAUTHI SMALLINT, THOIGIAN SMALLINT
+);
+
+INSERT INTO @Seed
+    (MAGV, MAMH, MALOP, TRINHDO, NGAYTHI, LAN, SOCAUTHI, THOIGIAN)
+VALUES
+    (N'TH234', N'AVCB',  N'TH04', 'A', '2026-10-09T08:00:00', 1, 20, 30),
+    (N'TH123', N'MMTCB', N'TH04', 'A', '2026-10-09T09:00:00', 1, 20, 30),
+    (N'TH234', N'AVCB',  N'TH04', 'B', '2026-10-10T14:00:00', 2, 20, 30),
+    (N'TH123', N'MMTCB', N'TH04', 'B', '2026-10-11T14:00:00', 2, 20, 30),
+    (N'TH234', N'AVCB',  N'TH05', 'B', '2026-10-09T08:00:00', 1, 10, 15),
+    (N'TH123', N'MMTCB', N'TH05', 'B', '2026-10-09T09:00:00', 1, 20, 30),
+    (N'TH234', N'AVCB',  N'TH05', 'C', '2026-10-10T14:00:00', 2, 10, 15),
+    (N'TH123', N'MMTCB', N'TH05', 'C', '2026-10-11T14:00:00', 2, 20, 30),
+    (N'TH234', N'AVCB',  N'TH06', 'C', '2026-10-09T08:00:00', 1, 10, 15),
+    (N'TH123', N'MMTCB', N'TH06', 'C', '2026-10-09T09:00:00', 1, 20, 30),
+    (N'TH234', N'AVCB',  N'TH06', 'B', '2026-10-10T14:00:00', 2, 10, 15),
+    (N'TH123', N'MMTCB', N'TH06', 'A', '2026-10-11T14:00:00', 2, 20, 30);
+
+DECLARE @Added TABLE (
+    MAGV NCHAR(8), MAMH NCHAR(5), MALOP NCHAR(15),
+    TRINHDO CHAR(1), NGAYTHI DATETIME, LAN SMALLINT,
+    SOCAUTHI SMALLINT, THOIGIAN SMALLINT
+);
+
+BEGIN TRY
+    BEGIN TRANSACTION;
+
+    IF EXISTS (
+        SELECT 1 FROM @Seed s
+        WHERE (SELECT COUNT(*) FROM dbo.BODE b
+               WHERE b.MAMH = s.MAMH AND b.TRINHDO = s.TRINHDO
+                 AND b.MAGV = s.MAGV) < s.SOCAUTHI
+    )
+        THROW 50001, N'Bo de chua du cau hoi cho ca thi thu.', 1;
+
+    INSERT INTO dbo.GIAOVIEN_DANGKY
+        (MAGV, MAMH, MALOP, TRINHDO, NGAYTHI, LAN, SOCAUTHI, THOIGIAN)
+    OUTPUT inserted.MAGV, inserted.MAMH, inserted.MALOP,
+           inserted.TRINHDO, inserted.NGAYTHI, inserted.LAN,
+           inserted.SOCAUTHI, inserted.THOIGIAN
+    INTO @Added
+    SELECT s.MAGV, s.MAMH, s.MALOP, s.TRINHDO,
+           s.NGAYTHI, s.LAN, s.SOCAUTHI, s.THOIGIAN
+    FROM @Seed s
+    WHERE NOT EXISTS (
+        SELECT 1 FROM dbo.GIAOVIEN_DANGKY dk WITH (UPDLOCK, HOLDLOCK)
+        WHERE dk.MAMH = s.MAMH AND dk.MALOP = s.MALOP AND dk.LAN = s.LAN
+    );
+
+    COMMIT TRANSACTION;
+
+    SELECT COUNT(*) AS AddedCount FROM @Added;
+    SELECT RTRIM(MAGV) AS MAGV, RTRIM(MAMH) AS MAMH,
+           RTRIM(MALOP) AS MALOP, TRINHDO, NGAYTHI,
+           LAN, SOCAUTHI, THOIGIAN
+    FROM @Added ORDER BY MALOP, NGAYTHI, MAMH;
+END TRY
+BEGIN CATCH
+    IF @@TRANCOUNT > 0 ROLLBACK TRANSACTION;
+    THROW;
+END CATCH;
