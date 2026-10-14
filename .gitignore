@@ -1,0 +1,27 @@
+# Maven build output
+/target/
+*.class
+
+# Local backups, working notes, and helper scripts
+/.codex-backups/
+/docs/
+/tools/
+
+# Local IDE settings
+/.idea/
+/.vscode/
+/.settings/
+/.classpath
+/.project
+/nbproject/private/
+
+# Python cache files
+__pycache__/
+*.py[cod]
+
+# Temporary files and logs
+*.log
+*.tmp
+*.swp
+.DS_Store
+Thumbs.db
