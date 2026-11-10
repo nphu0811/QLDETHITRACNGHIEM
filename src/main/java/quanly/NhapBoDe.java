@@ -1,23 +1,170 @@
 package quanly;
 
-import session.SessionDangNhap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JComboBox;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.text.JTextComponent;
+import connectionSQLServer.QuanLyDAO;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import javax.swing.JOptionPane;
+import javax.swing.ListSelectionModel;
+
+import session.sessionGiaoVien;
 
 /**
  * Giao diện NhapBoDe. Nghiệp vụ sẽ được bổ sung trong các event handler.
  * Chỉnh bố cục bằng tab Design của NetBeans và giữ file .form đi kèm.
  */
 public class NhapBoDe extends javax.swing.JFrame {
-    private final SessionDangNhap nguoiDung;
+    private final sessionGiaoVien nguoiDung;
+    private final DotChinhSua dot;
 
     public NhapBoDe() {
         this(null);
     }
 
-    public NhapBoDe(SessionDangNhap nguoiDung) {
+    public NhapBoDe(sessionGiaoVien nguoiDung) {
         initComponents();
         this.nguoiDung = nguoiDung;
         getContentPane().setBackground(new java.awt.Color(245, 246, 248));
         setLocationRelativeTo(null);
+
+        txtMaGV.setEditable(false);
+        tblBoDe.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        dot = new DotChinhSua(tblBoDe, new DotChinhSua.Nut(btnThem, btnHieuChinh, btnXoa, btnGhi, btnPhucHoi, btnTim),
+                this::docCauHoi, this::dienCauHoi, this::baoLoi,
+                List.of(cboMonHoc, cboTrinhDo, txtNoiDung, txtPhuongAnA, txtPhuongAnB, txtPhuongAnC, txtPhuongAnD, cboDapAn),
+                List.of(), 0);
+        boolean daDangNhap = nguoiDung != null && nguoiDung.coKetNoi();
+        if (daDangNhap) {
+            try {
+                List<Object[]> duLieu = QuanLyDAO.layDanhMucMonHoc(nguoiDung);
+                DefaultComboBoxModel<LuaChon> model = new DefaultComboBoxModel<>();
+                model.addElement(new LuaChon("", "Chọn môn học"));
+                for (Object[] dong : duLieu) {
+                    String ma = Objects.toString(dong[0], "");
+                    String ten = Objects.toString(dong[1], "");
+                    model.addElement(new LuaChon(ma, ten.isEmpty() ? ma : ma + " - " + ten));
+                }
+                cboMonHoc.setModel(model);
+            } catch (SQLException e) {
+                baoLoi(e);
+            }
+            taiBoDe();
+        }
+        capNhatCheDo();
+    }
+
+    private ArrayList<Object[]> danhSachCauHoi = new ArrayList<>();
+
+    private void capNhatCheDo() {
+        boolean daDangNhap = nguoiDung != null && nguoiDung.coKetNoi();
+        dot.capNhatGiaoDien(daDangNhap);
+        txtTuKhoa.setEditable(daDangNhap && !dot.dangNhap());
+    }
+
+    private void taiBoDe() {
+        try {
+            danhSachCauHoi = QuanLyDAO.layBoDe(nguoiDung);
+            napBang(tblBoDe, danhSachCauHoi);
+            dienCauHoi(null);
+            capNhatCheDo();
+        } catch (SQLException e) {
+            baoLoi(e);
+        }
+    }
+
+    private void dienCauHoi(Object[] dong) {
+        txtCauHoi.setText(DotChinhSua.chuoi(dong, 0));
+        chonMa(cboMonHoc, DotChinhSua.chuoi(dong, 1));
+        cboTrinhDo.setSelectedItem(dong == null || dong[2] == null ? "A" : dong[2]);
+        txtNoiDung.setText(DotChinhSua.chuoi(dong, 3));
+        txtPhuongAnA.setText(DotChinhSua.chuoi(dong, 4));
+        txtPhuongAnB.setText(DotChinhSua.chuoi(dong, 5));
+        txtPhuongAnC.setText(DotChinhSua.chuoi(dong, 6));
+        txtPhuongAnD.setText(DotChinhSua.chuoi(dong, 7));
+        cboDapAn.setSelectedItem(dong == null || dong[8] == null ? "A" : dong[8]);
+        txtMaGV.setText(dong == null ? nguoiDung.getMaGV() : DotChinhSua.chuoi(dong, 9));
+    }
+
+    private Object[] docCauHoi() {
+        String maMH = maDaChon(cboMonHoc);
+        if (maMH.isEmpty()) throw new IllegalArgumentException("Vui lòng chọn môn học.");
+        Integer soCau = dot.dangThem() ? null : Integer.valueOf(txtCauHoi.getText());
+        String noiDung = nhap(txtNoiDung, "Nội dung câu hỏi", 200, true);
+        String a = nhap(txtPhuongAnA, "Phương án A", 200, true);
+        String b = nhap(txtPhuongAnB, "Phương án B", 200, true);
+        String c = nhap(txtPhuongAnC, "Phương án C", 200, true);
+        String d = nhap(txtPhuongAnD, "Phương án D", 200, true);
+        return new Object[]{soCau, maMH, cboTrinhDo.getSelectedItem(), noiDung,
+            a, b, c, d, cboDapAn.getSelectedItem(), nguoiDung.getMaGV()};
+    }
+
+    private record LuaChon(String ma, String ten) {
+        @Override
+        public String toString() {
+            return ten;
+        }
+    }
+
+    private String maDaChon(JComboBox<?> combo) {
+        return combo.getSelectedItem() instanceof LuaChon muc ? muc.ma() : "";
+    }
+
+    private void chonMa(JComboBox<?> combo, String ma) {
+        for (int i = 0; i < combo.getItemCount(); i++) {
+            if (combo.getItemAt(i) instanceof LuaChon muc && muc.ma().equalsIgnoreCase(ma)) {
+                combo.setSelectedIndex(i);
+                return;
+            }
+        }
+        combo.setSelectedIndex(combo.getItemCount() == 0 ? -1 : 0);
+    }
+
+    private void napBang(JTable bang, List<Object[]> danhSach) {
+        DefaultTableModel model = (DefaultTableModel) bang.getModel();
+        model.setRowCount(0);
+        for (Object[] dong : danhSach) {
+            model.addRow(dong);
+        }
+    }
+
+    private String nhap(JTextComponent oNhap, String ten, int toiDa, boolean batBuoc) {
+        String giaTri = oNhap.getText().strip();
+        if (giaTri.length() > toiDa || (batBuoc && giaTri.isEmpty())) {
+            oNhap.requestFocusInWindow();
+            throw new IllegalArgumentException(ten + (batBuoc ? " phải có từ 1 đến " : " có tối đa ") + toiDa + " ký tự.");
+        }
+        return giaTri;
+    }
+
+    private Object[] dongDaChon(JTable bang) {
+        int viTri = bang.getSelectedRow();
+        if (viTri < 0) return null;
+        int dongModel = bang.convertRowIndexToModel(viTri);
+        Object[] dong = new Object[bang.getModel().getColumnCount()];
+        for (int cot = 0; cot < dong.length; cot++) {
+            dong[cot] = bang.getModel().getValueAt(dongModel, cot);
+        }
+        return dong;
+    }
+
+    private boolean khop(Object giaTri, String tuKhoa) {
+        return Objects.toString(giaTri, "").toLowerCase(Locale.ROOT).contains(tuKhoa.toLowerCase(Locale.ROOT));
+    }
+
+    private void baoLoi(SQLException e) {
+        String noiDung = switch (e.getErrorCode()) {
+            case 2601, 2627 -> "Mã đã tồn tại.";
+            case 547 -> "Dữ liệu đang được sử dụng hoặc thông tin liên quan không hợp lệ.";
+            default -> e.getMessage();
+        };
+        JOptionPane.showMessageDialog(pnlNoiDung, noiDung, "Thông báo", JOptionPane.ERROR_MESSAGE);
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})
@@ -376,6 +523,12 @@ public class NhapBoDe extends javax.swing.JFrame {
         tblBoDe.setModel(new javax.swing.table.DefaultTableModel(new Object[][] {}, new String[] {"Câu số", "Môn học", "Trình độ", "Nội dung", "A", "B", "C", "D", "Đáp án", "Mã GV"}) {
             @Override public boolean isCellEditable(int row, int column) { return false; }
         });
+        tblBoDe.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblBoDeMouseClicked(evt);
+            }
+        });
         scrTblBoDe.setViewportView(tblBoDe);
         lblTrinhDo = new javax.swing.JLabel();
         lblTrinhDo.setText("A: Đại học chuyên ngành · B: Đại học không chuyên ngành · C: Cao đẳng");
@@ -488,28 +641,71 @@ public class NhapBoDe extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnThemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnThemActionPerformed
-        // TODO: Bổ sung xử lý cho nút này sau khi hoàn thành giao diện.
+        dot.them();
+        capNhatCheDo();
+        cboMonHoc.requestFocusInWindow();
     }//GEN-LAST:event_btnThemActionPerformed
 
     private void btnXoaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnXoaActionPerformed
-        // TODO: Bổ sung xử lý cho nút này sau khi hoàn thành giao diện.
+        Object[] dong = dongDaChon(tblBoDe);
+        if (dong == null) {
+            JOptionPane.showMessageDialog(pnlNoiDung, "Vui lòng chọn câu hỏi để xóa.");
+            return;
+        }
+        int xacNhan = JOptionPane.showConfirmDialog(pnlNoiDung, "Xóa " + "câu hỏi " + dong[0] + "?",
+                "Xác nhận xóa", JOptionPane.YES_NO_OPTION);
+        if (xacNhan != JOptionPane.YES_OPTION) return;
+        try {
+            QuanLyDAO.xoaCauHoi(nguoiDung, ((Number) dong[0]).intValue());
+            taiBoDe();
+        } catch (SQLException e) {
+            baoLoi(e);
+        }
     }//GEN-LAST:event_btnXoaActionPerformed
 
     private void btnHieuChinhActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHieuChinhActionPerformed
-        // TODO: Bổ sung xử lý cho nút này sau khi hoàn thành giao diện.
+        dot.hieuChinh();
+        capNhatCheDo();
+        txtNoiDung.requestFocusInWindow();
     }//GEN-LAST:event_btnHieuChinhActionPerformed
 
     private void btnPhucHoiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPhucHoiActionPerformed
-        // TODO: Bổ sung xử lý cho nút này sau khi hoàn thành giao diện.
+        dot.phucHoi(() -> QuanLyDAO.phucHoiBoDe(nguoiDung), this::taiBoDe);
+        capNhatCheDo();
     }//GEN-LAST:event_btnPhucHoiActionPerformed
 
     private void btnTimActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTimActionPerformed
-        // TODO: Bổ sung xử lý cho nút này sau khi hoàn thành giao diện.
+        if (dot.dangNhap()) {
+            dot.huy();
+            capNhatCheDo();
+            return;
+        }
+        String maNhap = JOptionPane.showInputDialog(pnlNoiDung, "Mã môn học (để trống để tìm tất cả môn)");
+        if (maNhap == null) return;
+        String maMH = maNhap.strip();
+        String tuKhoa = txtTuKhoa.getText().strip();
+        ArrayList<Object[]> ketQua = new ArrayList<>();
+        for (Object[] dong : danhSachCauHoi) {
+            if ((maMH.isEmpty() || maMH.equalsIgnoreCase(Objects.toString(dong[1], "")))
+                    && (khop(dong[0], tuKhoa) || khop(dong[3], tuKhoa))) {
+                ketQua.add(dong);
+            }
+        }
+        napBang(tblBoDe, ketQua);
+        dienCauHoi(null);
+        capNhatCheDo();
     }//GEN-LAST:event_btnTimActionPerformed
 
     private void btnGhiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGhiActionPerformed
-        // TODO: Bổ sung xử lý cho nút này sau khi hoàn thành giao diện.
+        dot.ghi((thaoTac, truoc, sau) -> QuanLyDAO.ghiBoDe(nguoiDung, thaoTac, sau), this::taiBoDe);
+        capNhatCheDo();
     }//GEN-LAST:event_btnGhiActionPerformed
+
+    private void tblBoDeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblBoDeMouseClicked
+        if (!dot.dangNhap() && tblBoDe.rowAtPoint(evt.getPoint()) >= 0) {
+            dienCauHoi(dongDaChon(tblBoDe));
+        }
+    }//GEN-LAST:event_tblBoDeMouseClicked
 
     public static void main(String[] args) {
         try {

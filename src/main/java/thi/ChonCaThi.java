@@ -1,25 +1,23 @@
 package thi;
 
-import connectionSQLServer.connection;
+import Helper.DateHelper;
+import connectionSQLServer.ThiDAO;
 import java.awt.Component;
-import java.sql.CallableStatement;
-import java.sql.Connection;
 import java.sql.Date;
-import java.sql.ResultSet;
-import java.sql.Types;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
+import java.sql.SQLException;
+import java.time.YearMonth;
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JComboBox;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.SwingWorker;
 import javax.swing.table.DefaultTableModel;
-import session.MonHoc;
-import session.SessionDangNhap;
+import models.MonHoc;
 import session.sessionSinhVien;
-import session.CaThi;
+import models.CaThi;
+import trangchu.TrangChuSV;
 
 /**
  * Chọn và lọc ca thi của sinh viên đang đăng nhập.
@@ -27,12 +25,11 @@ import session.CaThi;
  */
 public class ChonCaThi extends javax.swing.JFrame {
 
-    private final SessionDangNhap nguoiDung;
+    private final sessionSinhVien nguoiDung;
     private boolean dangNapMonHoc = true;
     private boolean dangThongBaoNgayThi;
     private int lanTaiCaThi;
     private CaThi cathi;
-    private final DateTimeFormatter dinhDangNgay = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     // Chữ gợi ý chỉ hiện trên ô khi chưa chọn, không nằm trong danh sách.
     private void hienThiGoiY(JComboBox<?> comboBox, String goiY) {
@@ -66,20 +63,7 @@ public class ChonCaThi extends javax.swing.JFrame {
             return "Tháng phải từ 1 đến 12.";
         }
 
-        int soNgayTrongThang;
-        if (thang == 2) {
-            boolean namNhuan = (nam % 4 == 0 && nam % 100 != 0) || nam % 400 == 0;
-            if (namNhuan) {
-                soNgayTrongThang = 29;
-            } else {
-                soNgayTrongThang = 28;
-            }
-        } else if (thang == 4 || thang == 6 || thang == 9 || thang == 11) {
-            soNgayTrongThang = 30;
-        } else {
-            soNgayTrongThang = 31;
-        }
-
+        int soNgayTrongThang = YearMonth.of(nam, thang).lengthOfMonth();
         if (ngay < 1 || ngay > soNgayTrongThang) {
             return "Tháng " + thang + " năm " + nam
                     + " chỉ có ngày từ 1 đến " + soNgayTrongThang + ".";
@@ -88,12 +72,11 @@ public class ChonCaThi extends javax.swing.JFrame {
     }
 
     public void loadCaThiTable() {
-        if (!(nguoiDung instanceof sessionSinhVien) || dangThongBaoNgayThi) {
+        if (nguoiDung == null || dangThongBaoNgayThi) {
             return;
         }
 
         // Đọc các ô trên giao diện trước khi chạy SQL ở nền.
-        String maSV = nguoiDung.getMaNguoiDung();
         MonHoc monHoc = (MonHoc) cboMonHoc.getSelectedItem();
         String maMH;
         if (monHoc == null) {
@@ -123,10 +106,7 @@ public class ChonCaThi extends javax.swing.JFrame {
                 return;
             }
 
-            int ngay = Integer.parseInt(ngayNhap.substring(0, 2));
-            int thang = Integer.parseInt(ngayNhap.substring(3, 5));
-            int nam = Integer.parseInt(ngayNhap.substring(6, 10));
-            ngayThi = Date.valueOf(LocalDate.of(nam, thang, ngay));
+            ngayThi = DateHelper.docNgay(ngayNhap);
         }
 
         // Khi tải lại danh sách, bỏ ca đã chọn và chờ dữ liệu mới.
@@ -135,64 +115,10 @@ public class ChonCaThi extends javax.swing.JFrame {
         cathi = null;
         btnBatDauThi.setEnabled(false);
 
-        new SwingWorker<Void, Void>() {
-            ArrayList<Object[]> danhSachCaThi = new ArrayList<>();
-            String thongBao;
-
+        new SwingWorker<ArrayList<Object[]>, Void>() {
             @Override
-            protected Void doInBackground() {
-                try (Connection ketnoi = connection.getConnectionSV()) {
-                    if (ketnoi == null) {
-                        thongBao = "Không thể kết nối tới SQL Server!";
-                        return null;
-                    }
-                    try (CallableStatement cs = ketnoi.prepareCall("{call dbo.SP_LayCaThiSinhVien(?,?,?,?)}")) {
-                        cs.setQueryTimeout(15);
-                        cs.setString(1, maSV);
-
-                        if (maMH == null) {
-                            cs.setNull(2, Types.NCHAR);
-                        } else {
-                            cs.setString(2, maMH);
-                        }
-
-                        if (ngayThi == null) {
-                            cs.setNull(3, Types.DATE);
-                        } else {
-                            cs.setDate(3, ngayThi);
-                        }
-
-                        if (lanThi == null) {
-                            cs.setNull(4, Types.SMALLINT);
-                        } else {
-                            cs.setShort(4, lanThi);
-                        }
-
-                        try (ResultSet rs = cs.executeQuery()) {
-                            while (rs.next()) {
-                                Date ngay = rs.getDate("NGAYTHI");
-                                String ngayHienThi = "";
-                                if (ngay == null) {
-                                    continue;
-                                }
-                                ngayHienThi = ngay.toLocalDate().format(dinhDangNgay);
-                                Object[] row = {
-                                    new MonHoc(rs.getString("MAMH").trim(), rs.getString("TENMH")),
-                                    ngayHienThi,
-                                    rs.getString("LAN"),
-                                    rs.getString("TRINHDO"),
-                                    rs.getString("SOCAUTHI"),
-                                    rs.getString("THOIGIAN")
-                                };
-                                danhSachCaThi.add(row);
-                            }
-                        }
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    thongBao = "Không thể tải danh sách ca thi: " + e.getMessage();
-                }
-                return null;
+            protected ArrayList<Object[]> doInBackground() throws SQLException {
+                return ThiDAO.layCaThi(nguoiDung, maMH, ngayThi, lanThi);
             }
 
             @Override
@@ -205,12 +131,15 @@ public class ChonCaThi extends javax.swing.JFrame {
                 tblCaThi.clearSelection();
                 model.setRowCount(0);
                 btnBatDauThi.setEnabled(true);
-                if (thongBao != null) {
-                    JOptionPane.showMessageDialog(ChonCaThi.this, thongBao);
-                    return;
-                }
-                for (Object[] row : danhSachCaThi) {
-                    model.addRow(row);
+                try {
+                    for (Object[] dong : get()) {
+                        model.addRow(dong);
+                    }
+                } catch (ExecutionException e) {
+                    JOptionPane.showMessageDialog(ChonCaThi.this,
+                            "Không thể tải danh sách ca thi: " + e.getCause().getMessage());
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
                 }
             }
         }.execute();
@@ -221,36 +150,14 @@ public class ChonCaThi extends javax.swing.JFrame {
         cboMonHoc.removeAllItems();
         cboMonHoc.setEnabled(false);
 
-        // Tải môn ở nền để form không bị đơ khi chờ SQL.
-        new SwingWorker<Void, Void>() {
-            ArrayList<MonHoc> danhSachMonHoc = new ArrayList<>();
-            String thongBao;
+        // Bản xem thử chỉ đọc danh mục môn qua tài khoản SQL dùng chung.
+        sessionSinhVien phienDocMon = nguoiDung != null ? nguoiDung : new sessionSinhVien();
 
+        // Tải môn ở nền để form không bị đơ khi chờ SQL.
+        new SwingWorker<ArrayList<MonHoc>, Void>() {
             @Override
-            protected Void doInBackground() {
-                try (Connection ketnoi = connection.getConnectionSV()) {
-                    if (ketnoi == null) {
-                        thongBao = "Không thể kết nối tới SQL Server!";
-                        return null;
-                    }
-                    try (CallableStatement cs = ketnoi.prepareCall("{call dbo.SP_LayMonHoc}")) {
-                        cs.setQueryTimeout(15);
-                        try (ResultSet rs = cs.executeQuery()) {
-                            while (rs.next()) {
-                                String maMH = rs.getString("MAMH").trim();
-                                String tenMH = rs.getString("TENMH");
-                                if (tenMH == null) {
-                                    tenMH = maMH;
-                                }
-                                danhSachMonHoc.add(new MonHoc(maMH, tenMH.trim()));
-                            }
-                        }
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    thongBao = "Không thể tải danh sách môn học: " + e.getMessage();
-                }
-                return null;
+            protected ArrayList<MonHoc> doInBackground() throws SQLException {
+                return ThiDAO.layMonHoc(phienDocMon);
             }
 
             @Override
@@ -259,16 +166,19 @@ public class ChonCaThi extends javax.swing.JFrame {
                     return;
                 }
                 cboMonHoc.setEnabled(true);
-                if (thongBao != null) {
+                try {
+                    for (MonHoc monHoc : get()) {
+                        cboMonHoc.addItem(monHoc);
+                    }
+                    cboMonHoc.setSelectedIndex(-1);
+                } catch (ExecutionException e) {
+                    JOptionPane.showMessageDialog(ChonCaThi.this,
+                            "Không thể tải danh sách môn học: " + e.getCause().getMessage());
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                } finally {
                     dangNapMonHoc = false;
-                    JOptionPane.showMessageDialog(ChonCaThi.this, thongBao);
-                    return;
                 }
-                for (MonHoc monHoc : danhSachMonHoc) {
-                    cboMonHoc.addItem(monHoc);
-                }
-                cboMonHoc.setSelectedIndex(-1);
-                dangNapMonHoc = false;
             }
         }.execute();
     }
@@ -277,7 +187,7 @@ public class ChonCaThi extends javax.swing.JFrame {
         this(null);
     }
 
-    public ChonCaThi(SessionDangNhap nguoiDung) {
+    public ChonCaThi(sessionSinhVien nguoiDung) {
         initComponents();
         this.nguoiDung = nguoiDung;
         // Enter vẫn lọc được khi ô ngày trống hoặc chưa nhập đủ.
@@ -289,12 +199,11 @@ public class ChonCaThi extends javax.swing.JFrame {
         });
         hienThiGoiY(cboMonHoc, "Chọn môn thi");
         hienThiGoiY(cboLanThi, "Chọn lần thi");
-        if (nguoiDung instanceof sessionSinhVien) {
-            sessionSinhVien sinhVien = (sessionSinhVien) nguoiDung;
-            txtMaSV.setText(sinhVien.getMaSV());
-            txtHoTen.setText(sinhVien.getHo() + " " + sinhVien.getTen());
-            txtMaLop.setText(sinhVien.getMaLop());
-            txtTenLop.setText(sinhVien.getTenLop());
+        if (nguoiDung != null) {
+            txtMaSV.setText(nguoiDung.getMaSV());
+            txtHoTen.setText(nguoiDung.getHo() + " " + nguoiDung.getTen());
+            txtMaLop.setText(nguoiDung.getMaLop());
+            txtTenLop.setText(nguoiDung.getTenLop());
         }
         getContentPane().setBackground(new java.awt.Color(245, 246, 248));
         setLocationRelativeTo(null);
@@ -458,6 +367,7 @@ public class ChonCaThi extends javax.swing.JFrame {
 
         cboMonHoc.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         cboMonHoc.setForeground(new java.awt.Color(36, 43, 54));
+        cboMonHoc.setBackground(new java.awt.Color(255, 255, 255));
         cboMonHoc.addActionListener(this::cboMonHocActionPerformed);
 
         javax.swing.GroupLayout pnlCboMonHocLayout = new javax.swing.GroupLayout(pnlCboMonHoc);
@@ -523,6 +433,7 @@ public class ChonCaThi extends javax.swing.JFrame {
 
         cboLanThi.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         cboLanThi.setForeground(new java.awt.Color(36, 43, 54));
+        cboLanThi.setBackground(new java.awt.Color(255, 255, 255));
         cboLanThi.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "1", "2" }));
         cboLanThi.setSelectedIndex(-1);
         cboLanThi.addActionListener(this::cboLanThiActionPerformed);
@@ -695,11 +606,13 @@ public class ChonCaThi extends javax.swing.JFrame {
         cathi.setThoiGianThi(Integer.parseInt(model.getValueAt(row, 5).toString()));
 
         // SQL kiểm tra ngày được bắt đầu; Java chỉ đọc đúng dòng đang chọn.
-        trangchu.DieuHuong.moForm(this, new thi.LamBaiThi(nguoiDung, cathi), nguoiDung);
+        new thi.LamBaiThi(nguoiDung, cathi).setVisible(true);
+        dispose();
     }//GEN-LAST:event_btnBatDauThiActionPerformed
 
     private void btnTroVeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTroVeActionPerformed
-        trangchu.DieuHuong.moForm(this, new trangchu.TrangChu(nguoiDung), nguoiDung);
+        new TrangChuSV(nguoiDung).setVisible(true);
+        dispose();
     }//GEN-LAST:event_btnTroVeActionPerformed
 
     public static void main(String[] args) {

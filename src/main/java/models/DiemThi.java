@@ -1,4 +1,4 @@
-package session;
+package models;
 
 // Một dòng bảng điểm của sinh viên; chi tiết câu hỏi được đọc khi bấm xem.
 public class DiemThi {

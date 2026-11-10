@@ -6,32 +6,31 @@ import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import javax.swing.SwingWorker;
 import javax.swing.table.DefaultTableModel;
-import session.BaiThi;
-import session.DiemThi;
-import session.SessionDangNhap;
+import models.BaiThi;
+import models.DiemThi;
 import session.sessionSinhVien;
+import trangchu.TrangChuSV;
 
 /**
  * Bảng điểm và các bài thi đã hoàn thành của sinh viên đang đăng nhập.
  * Chỉnh bố cục bằng tab Design của NetBeans và giữ file .form đi kèm.
  */
 public class BangDiemSinhVien extends javax.swing.JFrame {
-    private final SessionDangNhap nguoiDung;
+    private final sessionSinhVien nguoiDung;
     private boolean dangTaiChiTiet;
 
     public BangDiemSinhVien() {
         this(null);
     }
 
-    public BangDiemSinhVien(SessionDangNhap nguoiDung) {
+    public BangDiemSinhVien(sessionSinhVien nguoiDung) {
         initComponents();
         this.nguoiDung = nguoiDung;
-        if (nguoiDung instanceof sessionSinhVien) {
-            sessionSinhVien sinhVien = (sessionSinhVien) nguoiDung;
-            txtMaSV.setText(sinhVien.getMaSV());
-            txtHoTen.setText(sinhVien.getHo() + " " + sinhVien.getTen());
-            txtMaLop.setText(sinhVien.getMaLop());
-            txtTenLop.setText(sinhVien.getTenLop());
+        if (nguoiDung != null) {
+            txtMaSV.setText(nguoiDung.getMaSV());
+            txtHoTen.setText(nguoiDung.getHo() + " " + nguoiDung.getTen());
+            txtMaLop.setText(nguoiDung.getMaLop());
+            txtTenLop.setText(nguoiDung.getTenLop());
         }
         tblBangDiem.getSelectionModel().addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
@@ -40,7 +39,7 @@ public class BangDiemSinhVien extends javax.swing.JFrame {
         });
         getContentPane().setBackground(new java.awt.Color(245, 246, 248));
         setLocationRelativeTo(null);
-        if (nguoiDung instanceof sessionSinhVien) taiBangDiem();
+        if (nguoiDung != null) taiBangDiem();
     }
 
     private void taiBangDiem() {
@@ -48,31 +47,31 @@ public class BangDiemSinhVien extends javax.swing.JFrame {
         new SwingWorker<ArrayList<DiemThi>, Void>() {
             @Override
             protected ArrayList<DiemThi> doInBackground() throws SQLException {
-                return ThiDAO.layBangDiem(nguoiDung.getMaNguoiDung());
+                return ThiDAO.layBangDiem(nguoiDung);
             }
 
             @Override
             protected void done() {
                 if (!isDisplayable()) return;
                 try {
-                    ArrayList<DiemThi> danhSach = get();
-                    DefaultTableModel model = (DefaultTableModel) tblBangDiem.getModel();
-                    model.setRowCount(0);
-                    for (DiemThi diem : danhSach) {
-                        model.addRow(new Object[]{diem.getMaMH(), diem.getTenMH(),
-                            diem.getNgayThi(), diem.getLan(), diem.getDiem()});
-                    }
-                    if (danhSach.isEmpty()) {
-                        lblTrangThai.setText("Bạn chưa có bài thi nào đã hoàn thành.");
-                    } else {
-                        lblTrangThai.setText("Có " + danhSach.size() + " bài thi. Chọn một bài để xem chi tiết.");
-                    }
+                    hienThiBangDiem(get());
                 } catch (Exception e) {
                     lblTrangThai.setText("Không tải được bảng điểm.");
                     hienThiLoi(e);
                 }
             }
         }.execute();
+    }
+
+    private void hienThiBangDiem(ArrayList<DiemThi> danhSach) {
+        DefaultTableModel model = (DefaultTableModel) tblBangDiem.getModel();
+        model.setRowCount(0);
+        for (DiemThi diem : danhSach) {
+            model.addRow(new Object[]{diem.getMaMH(), diem.getTenMH(),
+                diem.getNgayThi(), diem.getLan(), diem.getDiem()});
+        }
+        lblTrangThai.setText(danhSach.isEmpty() ? "Bạn chưa có bài thi nào đã hoàn thành."
+                : "Có " + danhSach.size() + " bài thi. Chọn một bài để xem chi tiết.");
     }
 
     private void hienThiLoi(Exception e) {
@@ -301,11 +300,12 @@ public class BangDiemSinhVien extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnTroVeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTroVeActionPerformed
-        trangchu.DieuHuong.moForm(this, new trangchu.TrangChu(nguoiDung), nguoiDung);
+        new TrangChuSV(nguoiDung).setVisible(true);
+        dispose();
     }//GEN-LAST:event_btnTroVeActionPerformed
 
     private void btnXemChiTietActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnXemChiTietActionPerformed
-        if (dangTaiChiTiet || !(nguoiDung instanceof sessionSinhVien)) return;
+        if (dangTaiChiTiet || nguoiDung == null) return;
         int dong = tblBangDiem.getSelectedRow();
         if (dong < 0) {
             JOptionPane.showMessageDialog(this, "Chọn một bài thi để xem chi tiết.");
@@ -321,7 +321,7 @@ public class BangDiemSinhVien extends javax.swing.JFrame {
         new SwingWorker<BaiThi, Void>() {
             @Override
             protected BaiThi doInBackground() throws SQLException {
-                return ThiDAO.xem(nguoiDung.getMaNguoiDung(), maMH, lan);
+                return ThiDAO.xem(nguoiDung, maMH, lan);
             }
 
             @Override
@@ -329,8 +329,8 @@ public class BangDiemSinhVien extends javax.swing.JFrame {
                 if (!isDisplayable()) return;
                 try {
                     BaiThi baiThi = get();
-                    trangchu.DieuHuong.moForm(BangDiemSinhVien.this,
-                            new XemKetQua(nguoiDung, baiThi, true), nguoiDung);
+                    new XemKetQua(nguoiDung, baiThi, true).setVisible(true);
+                    BangDiemSinhVien.this.dispose();
                 } catch (Exception e) {
                     dangTaiChiTiet = false;
                     btnXemChiTiet.setEnabled(tblBangDiem.getSelectedRow() >= 0);

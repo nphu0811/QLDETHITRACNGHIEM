@@ -75,12 +75,6 @@
               <EmptySpace min="-2" pref="8" max="-2" attributes="0" />
               <Component id="pnlTxtNgayThi" max="32767" attributes="0" />
             </Group>
-            <Group type="102" attributes="0">
-              <Component id="btnTraCuu" pref="0" max="32767" attributes="0" />
-              <EmptySpace min="-2" pref="8" max="-2" attributes="0" />
-              <Component id="btnBaiLanTruoc" pref="0" max="32767" attributes="0" />
-              <EmptySpace min="-2" pref="444" max="-2" attributes="0" />
-            </Group>
             <Component id="scrTblChiTietBaiThi" max="32767" attributes="0" />
             <Group type="102" attributes="0">
               <Component id="pnlTxtDiem" max="32767" attributes="0" />
@@ -112,10 +106,6 @@
                 <Component id="pnlTxtNgayThi" min="-2" max="-2" attributes="0" />
               </Group>
               <EmptySpace min="-2" pref="8" max="-2" attributes="0" />
-              <Group type="103" groupAlignment="0" attributes="0">
-                <Component id="btnTraCuu" min="-2" pref="40" max="-2" attributes="0" />
-                <Component id="btnBaiLanTruoc" min="-2" pref="40" max="-2" attributes="0" />
-              </Group>
               <EmptySpace type="separate" min="-2" max="-2" attributes="0" />
               <Component id="scrTblChiTietBaiThi" min="-2" pref="270" max="32767" attributes="0" />
               <EmptySpace min="-2" pref="8" max="-2" attributes="0" />
@@ -493,44 +483,6 @@
             </Component>
           </SubComponents>
         </Container>
-        <Component class="javax.swing.JButton" name="btnTraCuu">
-          <Properties>
-            <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-              <Color blue="2d" green="20" red="cd" type="rgb" />
-            </Property>
-            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-              <Font name="Segoe UI" size="14" style="1" />
-            </Property>
-            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-              <Color blue="ff" green="ff" red="ff" type="rgb" />
-            </Property>
-            <Property name="text" type="java.lang.String" value="Tra cứu" />
-            <Property name="focusPainted" type="boolean" value="false" />
-            <Property name="opaque" type="boolean" value="true" />
-          </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnTraCuuActionPerformed" />
-          </Events>
-        </Component>
-        <Component class="javax.swing.JButton" name="btnBaiLanTruoc">
-          <Properties>
-            <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-              <Color blue="f8" green="f6" red="f5" type="rgb" />
-            </Property>
-            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-              <Font name="Segoe UI" size="14" style="0" />
-            </Property>
-            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-              <Color blue="36" green="2b" red="24" type="rgb" />
-            </Property>
-            <Property name="text" type="java.lang.String" value="Bài thi lần trước" />
-            <Property name="focusPainted" type="boolean" value="false" />
-            <Property name="opaque" type="boolean" value="true" />
-          </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnBaiLanTruocActionPerformed" />
-          </Events>
-        </Component>
         <Container class="javax.swing.JScrollPane" name="scrTblChiTietBaiThi">
           <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout" />
           <SubComponents>

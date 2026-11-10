@@ -3,15 +3,13 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package dangNhapdangKy;
-import connectionSQLServer.connection;
-import java.sql.Connection;
-import java.sql.CallableStatement;
-import java.sql.ResultSet;
+import connectionSQLServer.QuanLyDAO;
 import java.sql.SQLException;
 import javax.swing.JOptionPane;
 import javax.swing.SwingWorker;
+import java.util.concurrent.ExecutionException;
 import session.sessionGiaoVien;
-import trangchu.TrangChu;
+import trangchu.TrangChuGV;
 /**
  *
  * @author admin
@@ -177,7 +175,6 @@ public class DangNhap extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnSVLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSVLoginActionPerformed
-        // TODO add your handling code here:
         DangNhapSV sv = new DangNhapSV();
         sv.setVisible(true);
         
@@ -186,7 +183,6 @@ public class DangNhap extends javax.swing.JFrame {
     }//GEN-LAST:event_btnSVLoginActionPerformed
 
     private void btnExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExitActionPerformed
-        // TODO add your handling code here:
         System.exit(0);
     }//GEN-LAST:event_btnExitActionPerformed
 
@@ -205,56 +201,36 @@ public class DangNhap extends javax.swing.JFrame {
         btnSVLogin.setEnabled(false);
         btnLogin.setText("Đang đăng nhập...");
 
-        // Phần này chạy nền để khi chờ SQL, cửa sổ vẫn bấm được.
-        new SwingWorker<Void, Void>() {
-            sessionGiaoVien giaoVien;
-            String thongBao;
-
+        new SwingWorker<sessionGiaoVien, Void>() {
             @Override
-            protected Void doInBackground() {
-                try (Connection ketnoi = connection.getConnectionGV(username, password);
-                     CallableStatement cs = ketnoi.prepareCall("{call dbo.SP_LayThongTinGiaoVien()}")) {
-                    cs.setQueryTimeout(15);
-                    try (ResultSet rs = cs.executeQuery()) {
-                        if (rs.next()) {
-                            giaoVien = new sessionGiaoVien();
-                            giaoVien.setMaGV(rs.getString("MAGV").trim());
-                            giaoVien.setHo(rs.getString("HO").trim());
-                            giaoVien.setTen(rs.getString("TEN").trim());
-                            giaoVien.setSoDTLL(rs.getString("SODTLL"));
-                            giaoVien.setDiaChi(rs.getString("DIACHI"));
-
-                            thongBao = "Đăng nhập thành công!\nChào mừng "
-                                    + giaoVien.getHo() + " " + giaoVien.getTen() + "!";
-                        } else {
-                            thongBao = "Tài khoản không tồn tại !";
-                        }
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    giaoVien = null;
-                    thongBao = "Lỗi đăng nhập: " + e.getMessage();
-                    if (e instanceof SQLException && ((SQLException) e).getErrorCode() == 18456) {
-                        thongBao = "Sai tên tài khoản hoặc mật khẩu !";
-                    }
-                }
-                return null;
+            protected sessionGiaoVien doInBackground() throws SQLException {
+                return QuanLyDAO.dangNhap(username, password);
             }
 
-            // Khi SQL làm xong, quay lại giao diện để hiện thông báo.
             @Override
             protected void done() {
                 btnLogin.setText("Đăng nhập");
                 btnLogin.setEnabled(true);
                 btnSVLogin.setEnabled(true);
-                if (!isDisplayable()) {
-                    return;
-                }
-                JOptionPane.showMessageDialog(DangNhap.this, thongBao);
-                if (giaoVien != null) {
-                    TrangChu tc = new TrangChu(giaoVien);
-                    tc.setVisible(true);
-                    DangNhap.this.dispose();
+                if (!isDisplayable()) return;
+
+                try {
+                    sessionGiaoVien giaoVien = get();
+                    if (giaoVien == null) {
+                        JOptionPane.showMessageDialog(DangNhap.this, "Tài khoản không tồn tại!");
+                        return;
+                    }
+                    JOptionPane.showMessageDialog(DangNhap.this, "Đăng nhập thành công!\nChào mừng "
+                            + giaoVien.getHo() + " " + giaoVien.getTen() + "!");
+                    new TrangChuGV(giaoVien).setVisible(true);
+                    dispose();
+                } catch (ExecutionException e) {
+                    Throwable loi = e.getCause();
+                    String thongBao = loi instanceof SQLException sql && sql.getErrorCode() == 18456
+                            ? "Sai tên tài khoản hoặc mật khẩu!" : "Lỗi đăng nhập: " + loi.getMessage();
+                    JOptionPane.showMessageDialog(DangNhap.this, thongBao);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
                 }
             }
         }.execute();

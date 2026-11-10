@@ -4,11 +4,15 @@
  */
 package session;
 
+import connectionSQLServer.connection;
+import java.sql.Connection;
+import java.sql.SQLException;
+
 /**
  *
  * @author admin
  */
-public class sessionSinhVien implements SessionDangNhap {
+public class sessionSinhVien {
     private String maSV;
     private String ho;
     private String ten;
@@ -46,11 +50,6 @@ public class sessionSinhVien implements SessionDangNhap {
         return maSV;
     }
 
-    @Override
-    public String getMaNguoiDung() {
-        return maSV;
-    }
-
     public void setMaSV(String maSV) {
         this.maSV = maSV;
     }
@@ -80,6 +79,14 @@ public class sessionSinhVien implements SessionDangNhap {
     }
 
     public sessionSinhVien() {
+    }
+
+    public Connection moKetNoi() throws SQLException {
+        Connection ketNoi = connection.getConnectionSV();
+        if (ketNoi == null) {
+            throw new SQLException("Không thể kết nối tới SQL Server.");
+        }
+        return ketNoi;
     }
 }
 

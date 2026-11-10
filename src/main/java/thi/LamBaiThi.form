@@ -769,9 +769,6 @@
                     <Property name="fillsViewportHeight" type="boolean" value="true"/>
                     <Property name="rowHeight" type="int" value="28"/>
                   </Properties>
-                  <Events>
-                    <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="tblCauThiMouseClicked"/>
-                  </Events>
                 </Component>
               </SubComponents>
             </Container>

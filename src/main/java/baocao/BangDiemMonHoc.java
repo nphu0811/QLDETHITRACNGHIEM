@@ -1,23 +1,125 @@
 package baocao;
 
-import session.SessionDangNhap;
+import Helper.DateHelper;
+import java.sql.Date;
+import java.util.Objects;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JComboBox;
+import javax.swing.table.DefaultTableModel;
+import connectionSQLServer.QuanLyDAO;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.JOptionPane;
+
+import session.sessionGiaoVien;
+import trangchu.TrangChuGV;
 
 /**
  * Giao diện BangDiemMonHoc. Nghiệp vụ sẽ được bổ sung trong các event handler.
  * Chỉnh bố cục bằng tab Design của NetBeans và giữ file .form đi kèm.
  */
 public class BangDiemMonHoc extends javax.swing.JFrame {
-    private final SessionDangNhap nguoiDung;
+    private final sessionGiaoVien nguoiDung;
 
     public BangDiemMonHoc() {
         this(null);
     }
 
-    public BangDiemMonHoc(SessionDangNhap nguoiDung) {
+    public BangDiemMonHoc(sessionGiaoVien nguoiDung) {
         initComponents();
         this.nguoiDung = nguoiDung;
         getContentPane().setBackground(new java.awt.Color(245, 246, 248));
         setLocationRelativeTo(null);
+
+        boolean daDangNhap = nguoiDung != null && nguoiDung.coKetNoi();
+        btnXemBangDiem.setEnabled(daDangNhap);
+        btnXemBanIn.setEnabled(false);
+        btnIn.setEnabled(false);
+        if (daDangNhap) {
+            try {
+                napCombo(cboLop, QuanLyDAO.layLop(nguoiDung), "Chọn lớp");
+                napCombo(cboMonHoc, QuanLyDAO.layDanhMucMonHoc(nguoiDung), "Chọn môn học");
+            } catch (SQLException e) {
+                baoLoi(e);
+            }
+        }
+    }
+
+    record BaoCao(String maLop, String maMon, String lop, String mon, String lan, List<Object[]> diem) {
+    }
+
+    private BaoCao baoCao;
+
+    BangDiemMonHoc(sessionGiaoVien nguoiDung, BaoCao baoCao) {
+        this(nguoiDung);
+        if (baoCao != null) {
+            chonMa(cboLop, baoCao.maLop());
+            chonMa(cboMonHoc, baoCao.maMon());
+            cboLanThi.setSelectedItem(baoCao.lan());
+            hienThiBangDiem(baoCao);
+        }
+    }
+
+    private void hienThiBangDiem(BaoCao duLieu) {
+        baoCao = duLieu;
+        ArrayList<Object[]> danhSach = new ArrayList<>();
+        for (Object[] dong : duLieu.diem()) {
+            danhSach.add(new Object[]{danhSach.size() + 1, dong[0], dong[1], dong[2],
+                DateHelper.dinhDang((Date) dong[4]), dong[5], dong[6]});
+        }
+        DefaultTableModel model = (DefaultTableModel) tblBangDiem.getModel();
+        model.setRowCount(0);
+        for (Object[] dong : danhSach) {
+            model.addRow(dong);
+        }
+        txtTenLop.setText(duLieu.lop());
+        txtTenMonHoc.setText(duLieu.mon());
+        txtSoSinhVien.setText(String.valueOf(danhSach.size()));
+        btnXemBanIn.setEnabled(!danhSach.isEmpty());
+        btnIn.setEnabled(!danhSach.isEmpty());
+    }
+
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    private void napCombo(JComboBox combo, List<Object[]> danhSach, String goiY) {
+        DefaultComboBoxModel<LuaChon> model = new DefaultComboBoxModel<>();
+        model.addElement(new LuaChon("", goiY));
+        for (Object[] dong : danhSach) {
+            String ma = Objects.toString(dong[0], "");
+            String ten = Objects.toString(dong[1], "");
+            model.addElement(new LuaChon(ma, ten.isEmpty() ? ma : ma + " - " + ten));
+        }
+        combo.setModel(model);
+    }
+
+    private record LuaChon(String ma, String ten) {
+        @Override
+        public String toString() {
+            return ten;
+        }
+    }
+
+    private String maDaChon(JComboBox<?> combo) {
+        return combo.getSelectedItem() instanceof LuaChon muc ? muc.ma() : "";
+    }
+
+    private void chonMa(JComboBox<?> combo, String ma) {
+        for (int i = 0; i < combo.getItemCount(); i++) {
+            if (combo.getItemAt(i) instanceof LuaChon muc && muc.ma().equalsIgnoreCase(ma)) {
+                combo.setSelectedIndex(i);
+                return;
+            }
+        }
+        combo.setSelectedIndex(combo.getItemCount() == 0 ? -1 : 0);
+    }
+
+    private void baoLoi(SQLException e) {
+        String noiDung = switch (e.getErrorCode()) {
+            case 2601, 2627 -> "Mã đã tồn tại.";
+            case 547 -> "Dữ liệu đang được sử dụng hoặc thông tin liên quan không hợp lệ.";
+            default -> e.getMessage();
+        };
+        JOptionPane.showMessageDialog(pnlNoiDung, noiDung, "Thông báo", JOptionPane.ERROR_MESSAGE);
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})
@@ -293,15 +395,29 @@ public class BangDiemMonHoc extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnXemBangDiemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnXemBangDiemActionPerformed
-        // TODO: Bổ sung xử lý cho nút này sau khi hoàn thành giao diện.
+        String maLop = maDaChon(cboLop);
+        String maMon = maDaChon(cboMonHoc);
+        if (maLop.isEmpty() || maMon.isEmpty()) {
+            JOptionPane.showMessageDialog(pnlNoiDung, "Vui lòng chọn lớp và môn học.");
+            return;
+        }
+        String lan = (String) cboLanThi.getSelectedItem();
+        try {
+            ArrayList<Object[]> diem = QuanLyDAO.layBangDiemMonHoc(nguoiDung,
+                    maLop, maMon, Integer.parseInt(lan));
+            hienThiBangDiem(new BaoCao(maLop, maMon, cboLop.getSelectedItem().toString(),
+                    cboMonHoc.getSelectedItem().toString(), lan, diem));
+        } catch (SQLException e) {
+            baoLoi(e);
+        }
     }//GEN-LAST:event_btnXemBangDiemActionPerformed
 
     private void btnXemBanInActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnXemBanInActionPerformed
-        trangchu.DieuHuong.moForm(this, new baocao.InBangDiem(nguoiDung), nguoiDung);
+        TrangChuGV.moFormCon(this, new InBangDiem(nguoiDung, baoCao));
     }//GEN-LAST:event_btnXemBanInActionPerformed
 
     private void btnInActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInActionPerformed
-        // TODO: Bổ sung xử lý cho nút này sau khi hoàn thành giao diện.
+        InBangDiem.inBang(tblBangDiem, pnlNoiDung, nguoiDung, baoCao);
     }//GEN-LAST:event_btnInActionPerformed
 
     public static void main(String[] args) {

@@ -1,23 +1,116 @@
 package quanly;
 
-import session.SessionDangNhap;
+import connectionSQLServer.QuanLyDAO;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import javax.swing.JOptionPane;
+import javax.swing.ListSelectionModel;
+import javax.swing.table.DefaultTableModel;
+import models.MonHoc;
+import session.sessionGiaoVien;
 
 /**
- * Giao diện NhapMonHoc. Nghiệp vụ sẽ được bổ sung trong các event handler.
+ * Quản lý danh mục môn học.
  * Chỉnh bố cục bằng tab Design của NetBeans và giữ file .form đi kèm.
  */
 public class NhapMonHoc extends javax.swing.JFrame {
-    private final SessionDangNhap nguoiDung;
+    private final sessionGiaoVien nguoiDung;
+    private final DefaultTableModel bangMonHoc;
+    private final DotChinhSua dot;
+    private ArrayList<MonHoc> danhSachMonHoc = new ArrayList<>();
+    private String maTim = "";
+    private String tenTim = "";
 
     public NhapMonHoc() {
         this(null);
     }
 
-    public NhapMonHoc(SessionDangNhap nguoiDung) {
+    public NhapMonHoc(sessionGiaoVien nguoiDung) {
         initComponents();
         this.nguoiDung = nguoiDung;
+        bangMonHoc = (DefaultTableModel) tblMonHoc.getModel();
+        tblMonHoc.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         getContentPane().setBackground(new java.awt.Color(245, 246, 248));
         setLocationRelativeTo(null);
+
+        dot = new DotChinhSua(tblMonHoc, new DotChinhSua.Nut(btnThem, btnHieuChinh, btnXoa, btnGhi, btnPhucHoi, btnTim),
+                this::docMonHoc, this::dienMonHoc, this::baoLoi, List.of(txtMaMH, txtTenMH), List.of(txtMaMH), 0);
+        if (nguoiDung != null && nguoiDung.coKetNoi()) taiDanhSachMonHoc();
+        capNhatCheDo();
+    }
+
+    private void capNhatCheDo() {
+        dot.capNhatGiaoDien(nguoiDung != null && nguoiDung.coKetNoi());
+    }
+
+    private void taiDanhSachMonHoc() {
+        try {
+            danhSachMonHoc = QuanLyDAO.layMonHoc(nguoiDung);
+        } catch (SQLException e) {
+            baoLoi(e);
+            return;
+        }
+
+        maTim = "";
+        tenTim = "";
+        hienThiDanhSach();
+    }
+
+    private void hienThiDanhSach() {
+        bangMonHoc.setRowCount(0);
+        for (MonHoc mon : danhSachMonHoc) {
+            String ma = mon.getMaMH().toLowerCase(Locale.ROOT);
+            String ten = mon.getTenMH() == null ? "" : mon.getTenMH().toLowerCase(Locale.ROOT);
+            if (ma.contains(maTim) && ten.contains(tenTim)) {
+                bangMonHoc.addRow(new Object[]{mon.getMaMH(), mon.getTenMH()});
+            }
+        }
+        capNhatCheDo();
+    }
+
+    // Kiểm tra mã trên cả danh sách, kể cả môn không hiện trong kết quả tìm.
+    private int timDongTheoMa(String maMH) {
+        for (int dong = 0; dong < danhSachMonHoc.size(); dong++) {
+            if (maMH.equalsIgnoreCase(danhSachMonHoc.get(dong).getMaMH())) {
+                return dong;
+            }
+        }
+        return -1;
+    }
+
+    private Object[] docMonHoc() {
+        String maMH = txtMaMH.getText().strip();
+        String tenMH = txtTenMH.getText().strip();
+        if (maMH.isEmpty() || maMH.length() > 5) {
+            txtMaMH.requestFocusInWindow();
+            throw new IllegalArgumentException("Mã môn học phải có từ 1 đến 5 ký tự.");
+        }
+        if (dot.dangThem() && timDongTheoMa(maMH) >= 0) throw new IllegalArgumentException("Mã môn học đã có.");
+        if (tenMH.isEmpty() || tenMH.length() > 50) {
+            txtTenMH.requestFocusInWindow();
+            throw new IllegalArgumentException("Tên môn học phải có từ 1 đến 50 ký tự.");
+        }
+        return new Object[]{maMH, tenMH};
+    }
+
+    private void dienMonHoc(Object[] dong) {
+        txtMaMH.setText(DotChinhSua.chuoi(dong, 0));
+        txtTenMH.setText(DotChinhSua.chuoi(dong, 1));
+    }
+
+    private void thongBao(String noiDung) {
+        JOptionPane.showMessageDialog(pnlNoiDung, noiDung);
+    }
+
+    private void baoLoi(SQLException e) {
+        String noiDung = switch (e.getErrorCode()) {
+            case 2601, 2627 -> "Mã môn học đã có.";
+            case 547 -> "Không thể xóa môn học đang được sử dụng.";
+            default -> e.getMessage();
+        };
+        thongBao(noiDung);
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})
@@ -86,40 +179,6 @@ public class NhapMonHoc extends javax.swing.JFrame {
                 .addGap(8, 8, 8)
                 .addGroup(pnlTxtTenMHLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(txtTenMH, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))));
-        pnlTxtTuKhoa = new javax.swing.JPanel();
-        pnlTxtTuKhoa.setBackground(new java.awt.Color(255, 255, 255));
-        lblTxtTuKhoa = new javax.swing.JLabel();
-        lblTxtTuKhoa.setText("Tìm môn học");
-        lblTxtTuKhoa.setFont(new java.awt.Font("Segoe UI", 1, 13));
-        lblTxtTuKhoa.setForeground(new java.awt.Color(36, 43, 54));
-        txtTuKhoa = new javax.swing.JTextField();
-        txtTuKhoa.setFont(new java.awt.Font("Segoe UI", 0, 14));
-        txtTuKhoa.setForeground(new java.awt.Color(36, 43, 54));
-        txtTuKhoa.setBackground(new java.awt.Color(255, 255, 255));
-        txtTuKhoa.setEditable(true);
-        javax.swing.GroupLayout pnlTxtTuKhoaLayout = new javax.swing.GroupLayout(pnlTxtTuKhoa);
-        pnlTxtTuKhoa.setLayout(pnlTxtTuKhoaLayout);
-        pnlTxtTuKhoaLayout.setHorizontalGroup(pnlTxtTuKhoaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlTxtTuKhoaLayout.createSequentialGroup()
-                .addComponent(lblTxtTuKhoa, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(pnlTxtTuKhoaLayout.createSequentialGroup()
-                .addComponent(txtTuKhoa, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
-        pnlTxtTuKhoaLayout.setVerticalGroup(pnlTxtTuKhoaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlTxtTuKhoaLayout.createSequentialGroup()
-                .addGroup(pnlTxtTuKhoaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lblTxtTuKhoa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(8, 8, 8)
-                .addGroup(pnlTxtTuKhoaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(txtTuKhoa, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))));
-        btnTimKiem = new javax.swing.JButton();
-        btnTimKiem.setText("Tìm kiếm");
-        btnTimKiem.setFont(new java.awt.Font("Segoe UI", 0, 14));
-        btnTimKiem.setBackground(new java.awt.Color(245, 246, 248));
-        btnTimKiem.setForeground(new java.awt.Color(36, 43, 54));
-        btnTimKiem.setOpaque(true);
-        btnTimKiem.setContentAreaFilled(true);
-        btnTimKiem.setFocusPainted(false);
-        btnTimKiem.addActionListener(this::btnTimKiemActionPerformed);
         btnThem = new javax.swing.JButton();
         btnThem.setText("Thêm");
         btnThem.setFont(new java.awt.Font("Segoe UI", 0, 14));
@@ -187,6 +246,12 @@ public class NhapMonHoc extends javax.swing.JFrame {
         tblMonHoc.setModel(new javax.swing.table.DefaultTableModel(new Object[][] {}, new String[] {"Mã môn học", "Tên môn học"}) {
             @Override public boolean isCellEditable(int row, int column) { return false; }
         });
+        tblMonHoc.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblMonHocMouseClicked(evt);
+            }
+        });
         scrTblMonHoc.setViewportView(tblMonHoc);
         javax.swing.GroupLayout pnlNoiDungLayout = new javax.swing.GroupLayout(pnlNoiDung);
         pnlNoiDung.setLayout(pnlNoiDungLayout);
@@ -199,10 +264,6 @@ public class NhapMonHoc extends javax.swing.JFrame {
                 .addComponent(pnlTxtMaMH, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGap(8, 8, 8)
                 .addComponent(pnlTxtTenMH, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(pnlNoiDungLayout.createSequentialGroup()
-                .addComponent(pnlTxtTuKhoa, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(8, 8, 8)
-                .addComponent(btnTimKiem, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(pnlNoiDungLayout.createSequentialGroup()
                 .addComponent(btnThem, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGap(8, 8, 8)
@@ -230,10 +291,6 @@ public class NhapMonHoc extends javax.swing.JFrame {
                 .addGroup(pnlNoiDungLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(pnlTxtMaMH, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(pnlTxtTenMH, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(8, 8, 8)
-                .addGroup(pnlNoiDungLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(pnlTxtTuKhoa, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnTimKiem, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(8, 8, 8)
                 .addGroup(pnlNoiDungLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnThem, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -267,32 +324,71 @@ public class NhapMonHoc extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnTimKiemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTimKiemActionPerformed
-        // TODO: Bổ sung xử lý cho nút này sau khi hoàn thành giao diện.
-    }//GEN-LAST:event_btnTimKiemActionPerformed
+    private void tblMonHocMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblMonHocMouseClicked
+        int dong = tblMonHoc.rowAtPoint(evt.getPoint());
+        if (!dot.dangNhap() && dong >= 0) {
+            dienMonHoc(new Object[]{tblMonHoc.getValueAt(dong, 0), tblMonHoc.getValueAt(dong, 1)});
+        }
+    }//GEN-LAST:event_tblMonHocMouseClicked
 
     private void btnThemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnThemActionPerformed
-        // TODO: Bổ sung xử lý cho nút này sau khi hoàn thành giao diện.
+        dot.them();
+        capNhatCheDo();
+        txtMaMH.requestFocusInWindow();
     }//GEN-LAST:event_btnThemActionPerformed
 
     private void btnXoaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnXoaActionPerformed
-        // TODO: Bổ sung xử lý cho nút này sau khi hoàn thành giao diện.
+        int dong = tblMonHoc.getSelectedRow();
+        if (dong < 0) {
+            thongBao("Vui lòng chọn môn học để xóa.");
+            return;
+        }
+        int dongModel = tblMonHoc.convertRowIndexToModel(dong);
+        String maMH = (String) bangMonHoc.getValueAt(dongModel, 0);
+        String tenMH = (String) bangMonHoc.getValueAt(dongModel, 1);
+        int chon = JOptionPane.showConfirmDialog(pnlNoiDung, "Xóa môn học " + maMH + "?",
+                "Xóa môn học", JOptionPane.YES_NO_OPTION);
+        if (chon != JOptionPane.YES_OPTION) return;
+
+        try {
+            QuanLyDAO.xoaMonHoc(nguoiDung, maMH, tenMH);
+            danhSachMonHoc.removeIf(mon -> maMH.equals(mon.getMaMH()));
+            hienThiDanhSach();
+            txtMaMH.setText("");
+            txtTenMH.setText("");
+        } catch (SQLException e) {
+            baoLoi(e);
+        }
     }//GEN-LAST:event_btnXoaActionPerformed
 
     private void btnHieuChinhActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHieuChinhActionPerformed
-        // TODO: Bổ sung xử lý cho nút này sau khi hoàn thành giao diện.
+        dot.hieuChinh();
+        capNhatCheDo();
+        txtTenMH.requestFocusInWindow();
     }//GEN-LAST:event_btnHieuChinhActionPerformed
 
     private void btnPhucHoiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPhucHoiActionPerformed
-        // TODO: Bổ sung xử lý cho nút này sau khi hoàn thành giao diện.
+        dot.phucHoi(() -> QuanLyDAO.phucHoiMonHoc(nguoiDung), this::taiDanhSachMonHoc);
+        capNhatCheDo();
     }//GEN-LAST:event_btnPhucHoiActionPerformed
 
     private void btnTimActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTimActionPerformed
-        // TODO: Bổ sung xử lý cho nút này sau khi hoàn thành giao diện.
+        if (dot.dangNhap()) {
+            dot.huy();
+            capNhatCheDo();
+            return;
+        }
+        String[] tuKhoa = DotChinhSua.tuKhoa(pnlNoiDung, "Mã môn học", "Tên môn học");
+        if (tuKhoa == null) return;
+        maTim = tuKhoa[0].toLowerCase(Locale.ROOT);
+        tenTim = tuKhoa[1].toLowerCase(Locale.ROOT);
+        hienThiDanhSach();
+        dienMonHoc(null);
     }//GEN-LAST:event_btnTimActionPerformed
 
     private void btnGhiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGhiActionPerformed
-        // TODO: Bổ sung xử lý cho nút này sau khi hoàn thành giao diện.
+        dot.ghi((thaoTac, truoc, sau) -> QuanLyDAO.ghiMonHoc(nguoiDung, thaoTac, truoc, sau), this::taiDanhSachMonHoc);
+        capNhatCheDo();
     }//GEN-LAST:event_btnGhiActionPerformed
 
     public static void main(String[] args) {
@@ -319,10 +415,6 @@ public class NhapMonHoc extends javax.swing.JFrame {
     private javax.swing.JPanel pnlTxtTenMH;
     private javax.swing.JLabel lblTxtTenMH;
     private javax.swing.JTextField txtTenMH;
-    private javax.swing.JPanel pnlTxtTuKhoa;
-    private javax.swing.JLabel lblTxtTuKhoa;
-    private javax.swing.JTextField txtTuKhoa;
-    private javax.swing.JButton btnTimKiem;
     private javax.swing.JButton btnThem;
     private javax.swing.JButton btnXoa;
     private javax.swing.JButton btnHieuChinh;

@@ -8,17 +8,17 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 import javax.swing.table.DefaultTableModel;
-import session.BaiThi;
-import session.CaThi;
-import session.CauHoi;
-import session.SessionDangNhap;
+import models.BaiThi;
+import models.CaThi;
+import models.CauHoi;
 import session.sessionSinhVien;
+import trangchu.TrangChuSV;
 /**
  * Làm bài và lưu mỗi lựa chọn xuống SQL để có thể tiếp tục sau khi đóng app.
  * Chỉnh bố cục bằng tab Design của NetBeans và giữ file .form đi kèm.
  */
 public class LamBaiThi extends javax.swing.JFrame {
-    private final SessionDangNhap nguoiDung;
+    private final sessionSinhVien nguoiDung;
     private CaThi cathi;
     private BaiThi baiThi;
     private int viTriCauHoi;
@@ -35,17 +35,16 @@ public class LamBaiThi extends javax.swing.JFrame {
         this(null, null);
     }
 
-    public LamBaiThi(SessionDangNhap nguoiDung, CaThi cathi) {
+    public LamBaiThi(sessionSinhVien nguoiDung, CaThi cathi) {
         initComponents();
         this.nguoiDung = nguoiDung;
         this.cathi = cathi;
-        if (nguoiDung instanceof sessionSinhVien) {
-            sessionSinhVien sinhVien = (sessionSinhVien) nguoiDung;
-            txtHoTen.setText(sinhVien.getHo() + " " + sinhVien.getTen());
-            txtMaSV.setText(sinhVien.getMaSV());
-            txtLop.setText(sinhVien.getTenLop());
+        if (nguoiDung != null) {
+            txtHoTen.setText(nguoiDung.getHo() + " " + nguoiDung.getTen());
+            txtMaSV.setText(nguoiDung.getMaSV());
+            txtLop.setText(nguoiDung.getTenLop());
         }
-        btnTroVe.setVisible(nguoiDung instanceof sessionSinhVien);
+        btnTroVe.setVisible(nguoiDung != null);
         btnTroVe.setEnabled(false);
         choPhepLamBai(false);
         rdoA.addActionListener(e -> luuTienDo("A"));
@@ -57,7 +56,7 @@ public class LamBaiThi extends javax.swing.JFrame {
         });
         getContentPane().setBackground(new java.awt.Color(245, 246, 248));
         setLocationRelativeTo(null);
-        if (nguoiDung instanceof sessionSinhVien && cathi != null) moBaiThi();
+        if (nguoiDung != null && cathi != null) moBaiThi();
         else lblMoTa.setText("Chọn ca thi sau khi đăng nhập sinh viên.");
     }
 
@@ -78,37 +77,40 @@ public class LamBaiThi extends javax.swing.JFrame {
         lblMoTa.setText("Đang tải bài thi...");
         hangDoiSQL.execute(() -> {
             try {
-                BaiThi duLieu = ThiDAO.mo(nguoiDung.getMaNguoiDung(), cathi);
-                SwingUtilities.invokeLater(() -> {
-                    if (!isDisplayable()) return;
-                    baiThi = duLieu;
-                    cathi = baiThi.caThi;
-                    if (baiThi.daNop) {
-                        moKetQua(baiThi);
-                        return;
-                    }
-                    txtMonThi.setText(cathi.getTenMH());
-                    txtLanThi.setText(String.valueOf(cathi.getLan()));
-                    txtTrinhDo.setText(cathi.getTrinhDo());
-                    lblNgayThi.setText("Ngày thi: " + cathi.getNgaythi());
-                    DefaultTableModel model = (DefaultTableModel) tblCauThi.getModel();
-                    model.setRowCount(0);
-                    for (int i = 0; i < baiThi.cauHoi.size(); i++)
-                        model.addRow(new Object[]{i + 1, baiThi.cauHoi.get(i).getCauTraLoi()});
-                    capNhatSoCauDaLam();
-                    choPhepLamBai(true);
-                    hienThiCauHoi(baiThi.viTriCau);
-                    lblMoTa.setText("Tiến độ được lưu sau mỗi lựa chọn.");
-                    batDauDongHo(baiThi.conLaiMillis, baiThi.mocDocThoiGian);
-                });
+                BaiThi duLieu = ThiDAO.mo(nguoiDung, cathi);
+                SwingUtilities.invokeLater(() -> hienThiBaiThi(duLieu));
             } catch (SQLException e) {
                 SwingUtilities.invokeLater(() -> {
                     if (!isDisplayable()) return;
                     JOptionPane.showMessageDialog(this, e.getMessage());
-                    trangchu.DieuHuong.moForm(this, new ChonCaThi(nguoiDung), nguoiDung);
+                    new ChonCaThi(nguoiDung).setVisible(true);
+                    dispose();
                 });
             }
         });
+    }
+
+    private void hienThiBaiThi(BaiThi duLieu) {
+        if (!isDisplayable()) return;
+        baiThi = duLieu;
+        cathi = baiThi.caThi;
+        if (baiThi.daNop) {
+            moKetQua(baiThi);
+            return;
+        }
+        txtMonThi.setText(cathi.getTenMH());
+        txtLanThi.setText(String.valueOf(cathi.getLan()));
+        txtTrinhDo.setText(cathi.getTrinhDo());
+        lblNgayThi.setText("Ngày thi: " + cathi.getNgaythi());
+        DefaultTableModel model = (DefaultTableModel) tblCauThi.getModel();
+        model.setRowCount(0);
+        for (int i = 0; i < baiThi.cauHoi.size(); i++)
+            model.addRow(new Object[]{i + 1, baiThi.cauHoi.get(i).getCauTraLoi()});
+        capNhatSoCauDaLam();
+        choPhepLamBai(true);
+        hienThiCauHoi(baiThi.viTriCau);
+        lblMoTa.setText("Tiến độ được lưu sau mỗi lựa chọn.");
+        batDauDongHo(baiThi.conLaiMillis, baiThi.mocDocThoiGian);
     }
 
     private void hienThiCauHoi(int viTri) {
@@ -177,7 +179,7 @@ public class LamBaiThi extends javax.swing.JFrame {
         int viTri = viTriCauHoi;
         hangDoiSQL.execute(() -> {
             try {
-                ThiDAO.luu(nguoiDung.getMaNguoiDung(), cathi, viTri, luaChon);
+                ThiDAO.luu(nguoiDung, cathi, viTri, luaChon);
                 SwingUtilities.invokeLater(() -> {
                     if (!isDisplayable()) return;
                     baiThi.viTriCau = viTri;
@@ -230,7 +232,7 @@ public class LamBaiThi extends javax.swing.JFrame {
         lblMoTa.setText("Đang nộp bài...");
         hangDoiSQL.execute(() -> {
             try {
-                BaiThi ketQua = ThiDAO.nop(nguoiDung.getMaNguoiDung(), cathi);
+                BaiThi ketQua = ThiDAO.nop(nguoiDung, cathi);
                 SwingUtilities.invokeLater(() -> { if (isDisplayable()) moKetQua(ketQua); });
             } catch (SQLException e) {
                 SwingUtilities.invokeLater(() -> {
@@ -245,7 +247,8 @@ public class LamBaiThi extends javax.swing.JFrame {
     }
 
     private void moKetQua(BaiThi ketQua) {
-        trangchu.DieuHuong.moForm(this, new KetQuaThi(nguoiDung, ketQua), nguoiDung);
+        new KetQuaThi(nguoiDung, ketQua).setVisible(true);
+        dispose();
     }
 
     @Override
@@ -624,11 +627,6 @@ public class LamBaiThi extends javax.swing.JFrame {
         });
         tblCauThi.setFillsViewportHeight(true);
         tblCauThi.setRowHeight(28);
-        tblCauThi.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                tblCauThiMouseClicked(evt);
-            }
-        });
         scrTblCauThi.setViewportView(tblCauThi);
 
         lblDaTraLoi.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
@@ -764,13 +762,9 @@ public class LamBaiThi extends javax.swing.JFrame {
 
     private void btnTroVeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTroVeActionPerformed
         if (dangLuu || dangNop) return;
-        trangchu.DieuHuong.moForm(this, new trangchu.TrangChu(nguoiDung), nguoiDung);
+        new TrangChuSV(nguoiDung).setVisible(true);
+        dispose();
     }//GEN-LAST:event_btnTroVeActionPerformed
-
-    private void tblCauThiMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblCauThiMouseClicked
-        // TODO add your handling code here:
-        moCauDangChon();
-    }//GEN-LAST:event_tblCauThiMouseClicked
 
     public static void main(String[] args) {
         try {

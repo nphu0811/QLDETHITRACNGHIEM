@@ -1,4 +1,4 @@
-package session;
+package models;
 
 // Mỗi mục trong combobox giữ cả mã môn và tên môn.
 public class MonHoc {

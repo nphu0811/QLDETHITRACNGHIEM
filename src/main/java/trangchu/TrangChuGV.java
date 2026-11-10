@@ -1,133 +1,133 @@
 package trangchu;
-import connectionSQLServer.ThiDAO;
-import java.sql.SQLException;
-import javax.swing.JOptionPane;
-import javax.swing.SwingWorker;
-import session.CaThi;
-import session.SessionDangNhap;
-import session.sessionGiaoVien;
-import session.sessionSinhVien;
-/**
- * Giao diện TrangChu. Nghiệp vụ sẽ được bổ sung trong các event handler.
- * Chỉnh bố cục bằng tab Design của NetBeans và giữ file .form đi kèm.
- */
-public class TrangChu extends javax.swing.JFrame {
-    private final SessionDangNhap nguoiDung;
-    private javax.swing.JFrame formDangMo;
-    private CaThi baiThiDangDo;
 
-    public TrangChu() {
+import java.awt.BorderLayout;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.Rectangle;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.Scrollable;
+import javax.swing.SwingConstants;
+import session.sessionGiaoVien;
+
+
+public class TrangChuGV extends javax.swing.JFrame {
+    private static final String MENU_GIAO_VIEN = "menuGiaoVien";
+
+    private final sessionGiaoVien nguoiDung;
+    private JFrame formDangMo;
+
+    public TrangChuGV() {
         this(null);
     }
 
-    public TrangChu(SessionDangNhap nguoiDung) {
+    public TrangChuGV(sessionGiaoVien nguoiDung) {
         initComponents();
         this.nguoiDung = nguoiDung;
-        if (this.nguoiDung != null) {
-            txtMaNguoiDung.setText(this.nguoiDung.getMaNguoiDung());
-            txtHoTen.setText(this.nguoiDung.getHo() + " " + this.nguoiDung.getTen());
-            if (nguoiDung instanceof sessionGiaoVien) {
-                sessionGiaoVien giaoVien = (sessionGiaoVien) nguoiDung;
-                if(giaoVien.getSoDTLL() != null){
-                    txtSoDTLL.setText(giaoVien.getSoDTLL());
-                }else{
-                    txtSoDTLL.setText("Chưa có thông tin !");
-                }
-                txtDiaChi.setText(giaoVien.getDiaChi());
-            }
-            if (nguoiDung instanceof sessionSinhVien) {
-                sessionSinhVien sinhVien = (sessionSinhVien) nguoiDung;
-                lblTxtMaNguoiDung.setText("Mã Sinh Viên");
-                txtMaLop.setText(sinhVien.getMaLop());
-                txtNgaySinh.setText(sinhVien.getNgaySinh());
-                txtDiaChi.setText(sinhVien.getDiaChi());
-                txtTenLop.setText(sinhVien.getTenLop());
-            }
-        }
-        pnlTxtMaLop.setVisible(nguoiDung instanceof sessionSinhVien);
-        pnlTxtTenLop.setVisible(nguoiDung instanceof sessionSinhVien);
-        pnlTxtNgaySinh.setVisible(nguoiDung instanceof sessionSinhVien);
-        hienThiChucNang();
-        if (nguoiDung instanceof sessionSinhVien) {
-            boCucSinhVien();
+        if (nguoiDung != null) {
+            txtMaNguoiDung.setText(nguoiDung.getMaGV());
+            txtHoTen.setText(nguoiDung.getHo() + " " + nguoiDung.getTen());
+            String soDienThoai = nguoiDung.getSoDTLL();
+            txtSoDTLL.setText(soDienThoai == null ? "Chưa có thông tin !" : soDienThoai);
+            String diaChi = nguoiDung.getDiaChi();
+            txtDiaChi.setText(diaChi == null ? "Chưa có thông tin !" : diaChi);
         } else {
-            lblQuanLy.setText("QUẢN LÝ");
-            lblThi.setText("BÁO CÁO");
-            lblTaiKhoan.setText("TÀI KHOẢN VÀ HỆ THỐNG");
-            for (javax.swing.JLabel nhan : new javax.swing.JLabel[]{lblQuanLy, lblThi, lblTaiKhoan}) {
-                nhan.setFont(new java.awt.Font("Segoe UI", 1, 13));
+            for (java.awt.Component chucNang : new java.awt.Component[]{
+                lblQuanLy, btnMonHoc, btnLopSinhVien, btnGiaoVien, btnBoDe, btnChuanBiThi,
+                lblThi, btnBangDiem, btnTaoTaiKhoan, btnDoiMatKhau, btnSaoLuuPhucHoi
+            }) {
+                chucNang.setVisible(false);
             }
-            chonMenu(btnTrangChu);
-            java.awt.Rectangle manHinh = java.awt.GraphicsEnvironment
-                    .getLocalGraphicsEnvironment().getMaximumWindowBounds();
-            setSize(Math.min(1400, manHinh.width - 48), Math.min(850, manHinh.height - 48));
         }
-        
+
+        chonMenu(btnTrangChu);
+        Rectangle manHinh = java.awt.GraphicsEnvironment
+                .getLocalGraphicsEnvironment().getMaximumWindowBounds();
+        setSize(Math.min(1400, manHinh.width - 48), Math.min(850, manHinh.height - 48));
         getContentPane().setBackground(new java.awt.Color(245, 246, 248));
         setLocationRelativeTo(null);
-        kiemTraBaiThiDangDo();
     }
 
-    private void kiemTraBaiThiDangDo() {
-        if (!(nguoiDung instanceof sessionSinhVien)) return;
-        btnChonCaThi.setEnabled(false);
-        new SwingWorker<CaThi, Void>() {
-            @Override
-            protected CaThi doInBackground() throws SQLException {
-                return ThiDAO.dangDo(nguoiDung.getMaNguoiDung());
-            }
-
-            @Override
-            protected void done() {
-                if (!isDisplayable()) return;
-                try {
-                    baiThiDangDo = get();
-                    if (baiThiDangDo != null) {
-                        btnChonCaThi.setText("Làm bài tiếp");
-                    }
-                } catch (Exception e) {
-                    JOptionPane.showMessageDialog(TrangChu.this,
-                            "Không kiểm tra được bài đang làm: " + e.getMessage());
-                }
-                btnChonCaThi.setEnabled(true);
-            }
-        }.execute();
-    }
-
-    // Giảng viên dùng cùng một menu; chỉ đổi nội dung ở bên phải.
-    public void hienThiForm(javax.swing.JFrame form) {
-        if (formDangMo != null) {
-            formDangMo.dispose();
+    public static void moFormCon(JFrame formHienTai, JFrame formMoi) {
+        TrangChuGV trangChu = timTrangChu(formHienTai);
+        if (trangChu != null) {
+            trangChu.hienThiForm(formMoi);
+        } else {
+            formMoi.setVisible(true);
+            formHienTai.dispose();
         }
+    }
+
+    public static void veTrangChuTu(JFrame formHienTai, sessionGiaoVien nguoiDung) {
+        TrangChuGV trangChu = timTrangChu(formHienTai);
+        if (trangChu != null) {
+            trangChu.hienThiTrangChu();
+        } else {
+            new TrangChuGV(nguoiDung).setVisible(true);
+            formHienTai.dispose();
+        }
+    }
+
+    public static void dangXuatTu(JFrame form) {
+        TrangChuGV trangChu = timTrangChu(form);
+        new dangNhapdangKy.DangNhap().setVisible(true);
+        if (trangChu != null) {
+            trangChu.dispose();
+        } else {
+            form.dispose();
+        }
+    }
+
+    private static TrangChuGV timTrangChu(JFrame form) {
+        Object menu = form.getRootPane().getClientProperty(MENU_GIAO_VIEN);
+        return menu instanceof TrangChuGV trangChu ? trangChu : null;
+    }
+
+    private void hienThiForm(JFrame form) {
+        dongFormDangMo();
         formDangMo = form;
-        form.getRootPane().putClientProperty("menuGiaoVien", this);
-        java.awt.Container noiDung = form.getContentPane();
-        form.setContentPane(new javax.swing.JPanel());
-        pnlManHinh.removeAll();
-        pnlManHinh.setLayout(new java.awt.BorderLayout());
-        javax.swing.JScrollPane cuon = new javax.swing.JScrollPane(new NoiDungForm(noiDung));
+        form.getRootPane().putClientProperty(MENU_GIAO_VIEN, this);
+
+        Container noiDung = form.getContentPane();
+        form.setContentPane(new JPanel());
+        JScrollPane cuon = new JScrollPane(new NoiDungForm(noiDung));
         cuon.setBorder(null);
         cuon.getVerticalScrollBar().setUnitIncrement(20);
-        pnlManHinh.add(cuon, java.awt.BorderLayout.CENTER);
-        chonMenu(menuCuaForm(form));
+        hienThiNoiDung(cuon, menuCuaForm(form));
+    }
+
+    private void hienThiTrangChu() {
+        dongFormDangMo();
+        hienThiNoiDung(pnlThongTin, btnTrangChu);
+    }
+
+    private void hienThiNoiDung(JComponent noiDung, JButton nutMenu) {
+        pnlManHinh.removeAll();
+        pnlManHinh.setLayout(new BorderLayout());
+        pnlManHinh.add(noiDung, BorderLayout.CENTER);
+        chonMenu(nutMenu);
         pnlManHinh.revalidate();
         pnlManHinh.repaint();
     }
 
-    public void hienThiTrangChu() {
+    private void dongFormDangMo() {
         if (formDangMo != null) {
+            formDangMo.getRootPane().putClientProperty(MENU_GIAO_VIEN, null);
             formDangMo.dispose();
             formDangMo = null;
         }
-        pnlManHinh.removeAll();
-        pnlManHinh.setLayout(new java.awt.BorderLayout());
-        pnlManHinh.add(pnlThongTin, java.awt.BorderLayout.CENTER);
-        chonMenu(btnTrangChu);
-        pnlManHinh.revalidate();
-        pnlManHinh.repaint();
     }
 
-    private javax.swing.JButton menuCuaForm(javax.swing.JFrame form) {
+    @Override
+    public void dispose() {
+        dongFormDangMo();
+        super.dispose();
+    }
+
+    private JButton menuCuaForm(JFrame form) {
         if (form instanceof quanly.NhapMonHoc) return btnMonHoc;
         if (form instanceof quanly.NhapLopSinhVien) return btnLopSinhVien;
         if (form instanceof quanly.NhapGiaoVien) return btnGiaoVien;
@@ -140,7 +140,7 @@ public class TrangChu extends javax.swing.JFrame {
         return btnTrangChu;
     }
 
-    private void chonMenu(javax.swing.JButton duocChon) {
+    private void chonMenu(JButton duocChon) {
         javax.swing.JButton[] menu = {btnTrangChu, btnMonHoc, btnLopSinhVien, btnGiaoVien,
             btnBoDe, btnChuanBiThi, btnBangDiem, btnTaoTaiKhoan, btnDoiMatKhau,
             btnSaoLuuPhucHoi, btnDangXuat, btnThoat};
@@ -158,94 +158,6 @@ public class TrangChu extends javax.swing.JFrame {
         }
     }
 
-    @Override
-    public void dispose() {
-        if (formDangMo != null) {
-            formDangMo.dispose();
-            formDangMo = null;
-        }
-        super.dispose();
-    }
-
-    // Sinh viên giữ trang chủ riêng với các nút chia đều thành hai cột.
-    private void boCucSinhVien() {
-        pnlNoiDung.removeAll();
-        btnTrangChu.setVisible(false);
-        lblTieuDe.setText("TRANG CHỦ SINH VIÊN");
-        lblThi.setText("Thi và kết quả");
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(pnlNoiDung);
-        pnlNoiDung.setLayout(layout);
-        layout.setHorizontalGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(lblTieuDe, 0, 740, Short.MAX_VALUE)
-            .addComponent(lblMoTa, 0, 740, Short.MAX_VALUE)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(pnlTxtMaNguoiDung, 0, 364, Short.MAX_VALUE)
-                .addGap(12)
-                .addComponent(pnlTxtHoTen, 0, 364, Short.MAX_VALUE))
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(pnlTxtMaLop, 0, 364, Short.MAX_VALUE).addGap(12)
-                .addComponent(pnlTxtTenLop, 0, 364, Short.MAX_VALUE))
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(pnlTxtNgaySinh, 0, 364, Short.MAX_VALUE).addGap(12)
-                .addComponent(pnlTxtDiaChi, 0, 364, Short.MAX_VALUE))
-            .addComponent(lblThi)
-            .addComponent(btnChonCaThi, 0, 740, Short.MAX_VALUE)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(btnKetQua, 0, 364, Short.MAX_VALUE).addGap(12)
-                .addComponent(btnBangDiem, 0, 364, Short.MAX_VALUE))
-            .addComponent(lblTaiKhoan)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(btnDangXuat, 0, 364, Short.MAX_VALUE).addGap(12)
-                .addComponent(btnThoat, 0, 364, Short.MAX_VALUE)));
-        layout.setVerticalGroup(layout.createSequentialGroup()
-            .addComponent(lblTieuDe).addGap(10)
-            .addComponent(lblMoTa, 44, 44, 44).addGap(22)
-            .addGroup(layout.createParallelGroup()
-                .addComponent(pnlTxtMaNguoiDung).addComponent(pnlTxtHoTen))
-            .addGap(12)
-            .addGroup(layout.createParallelGroup()
-                .addComponent(pnlTxtMaLop).addComponent(pnlTxtTenLop))
-            .addGap(12)
-            .addGroup(layout.createParallelGroup()
-                .addComponent(pnlTxtNgaySinh).addComponent(pnlTxtDiaChi))
-            .addGap(24).addComponent(lblThi).addGap(12)
-            .addComponent(btnChonCaThi, 48, 48, 48)
-            .addGap(12)
-            .addGroup(layout.createParallelGroup()
-                .addComponent(btnKetQua, 48, 48, 48).addComponent(btnBangDiem, 48, 48, 48))
-            .addGap(24).addComponent(lblTaiKhoan).addGap(12)
-            .addGroup(layout.createParallelGroup()
-                .addComponent(btnDangXuat, 42, 42, 42).addComponent(btnThoat, 42, 42, 42)));
-        btnDangXuat.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        btnThoat.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        pack();
-    }
-
-    // Theo đề: giáo viên được mọi quyền, sinh viên chỉ thi và xem điểm.
-    private void hienThiChucNang() {
-        boolean giaoVien = nguoiDung instanceof sessionGiaoVien;
-        boolean sinhVien = nguoiDung instanceof sessionSinhVien;
-
-        lblQuanLy.setVisible(giaoVien);
-        btnMonHoc.setVisible(giaoVien);
-        btnLopSinhVien.setVisible(giaoVien);
-        btnGiaoVien.setVisible(giaoVien);
-        btnBoDe.setVisible(giaoVien);
-        btnChuanBiThi.setVisible(giaoVien);
-        btnBangDiem.setVisible(giaoVien || sinhVien);
-        btnTaoTaiKhoan.setVisible(giaoVien);
-        btnDoiMatKhau.setVisible(giaoVien);
-        btnSaoLuuPhucHoi.setVisible(giaoVien);
-
-        lblThi.setVisible(giaoVien || sinhVien);
-        btnChonCaThi.setVisible(sinhVien);
-        btnKetQua.setVisible(sinhVien);
-        if (!giaoVien) {
-            lblTaiKhoan.setText("Phiên đăng nhập");
-        }
-        pack();
-    }
-
     @SuppressWarnings({"unchecked", "rawtypes"})
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -261,8 +173,6 @@ public class TrangChu extends javax.swing.JFrame {
         btnBoDe = new javax.swing.JButton();
         btnChuanBiThi = new javax.swing.JButton();
         lblThi = new javax.swing.JLabel();
-        btnChonCaThi = new javax.swing.JButton();
-        btnKetQua = new javax.swing.JButton();
         btnBangDiem = new javax.swing.JButton();
         lblTaiKhoan = new javax.swing.JLabel();
         btnTaoTaiKhoan = new javax.swing.JButton();
@@ -287,15 +197,6 @@ public class TrangChu extends javax.swing.JFrame {
         pnlTxtDiaChi = new javax.swing.JPanel();
         lblTxtDiaChi = new javax.swing.JLabel();
         txtDiaChi = new javax.swing.JTextField();
-        pnlTxtMaLop = new javax.swing.JPanel();
-        lblTxtMaLop = new javax.swing.JLabel();
-        txtMaLop = new javax.swing.JTextField();
-        pnlTxtTenLop = new javax.swing.JPanel();
-        lblTxtTenLop = new javax.swing.JLabel();
-        txtTenLop = new javax.swing.JTextField();
-        pnlTxtNgaySinh = new javax.swing.JPanel();
-        lblTxtNgaySinh = new javax.swing.JLabel();
-        txtNgaySinh = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("PTIT | TRANG CHỦ");
@@ -314,9 +215,9 @@ public class TrangChu extends javax.swing.JFrame {
         btnTrangChu.setText("Trang chủ");
         btnTrangChu.addActionListener(this::btnTrangChuActionPerformed);
 
-        lblQuanLy.setFont(new java.awt.Font("Segoe UI", 1, 16)); // NOI18N
+        lblQuanLy.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
         lblQuanLy.setForeground(new java.awt.Color(205, 32, 45));
-        lblQuanLy.setText("Quản lý và chuẩn bị thi");
+        lblQuanLy.setText("QUẢN LÝ");
 
         btnMonHoc.setBackground(new java.awt.Color(245, 246, 248));
         btnMonHoc.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
@@ -358,25 +259,9 @@ public class TrangChu extends javax.swing.JFrame {
         btnChuanBiThi.setOpaque(true);
         btnChuanBiThi.addActionListener(this::btnChuanBiThiActionPerformed);
 
-        lblThi.setFont(new java.awt.Font("Segoe UI", 1, 16)); // NOI18N
+        lblThi.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
         lblThi.setForeground(new java.awt.Color(205, 32, 45));
-        lblThi.setText("Thi và kết quả");
-
-        btnChonCaThi.setBackground(new java.awt.Color(205, 32, 45));
-        btnChonCaThi.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        btnChonCaThi.setForeground(new java.awt.Color(255, 255, 255));
-        btnChonCaThi.setText("Chọn ca thi");
-        btnChonCaThi.setFocusPainted(false);
-        btnChonCaThi.setOpaque(true);
-        btnChonCaThi.addActionListener(this::btnChonCaThiActionPerformed);
-
-        btnKetQua.setBackground(new java.awt.Color(245, 246, 248));
-        btnKetQua.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        btnKetQua.setForeground(new java.awt.Color(36, 43, 54));
-        btnKetQua.setText("Kết quả thi");
-        btnKetQua.setFocusPainted(false);
-        btnKetQua.setOpaque(true);
-        btnKetQua.addActionListener(this::btnKetQuaActionPerformed);
+        lblThi.setText("BÁO CÁO");
 
         btnBangDiem.setBackground(new java.awt.Color(245, 246, 248));
         btnBangDiem.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
@@ -386,9 +271,9 @@ public class TrangChu extends javax.swing.JFrame {
         btnBangDiem.setOpaque(true);
         btnBangDiem.addActionListener(this::btnBangDiemActionPerformed);
 
-        lblTaiKhoan.setFont(new java.awt.Font("Segoe UI", 1, 16)); // NOI18N
+        lblTaiKhoan.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
         lblTaiKhoan.setForeground(new java.awt.Color(205, 32, 45));
-        lblTaiKhoan.setText("Người dùng và hệ thống");
+        lblTaiKhoan.setText("TÀI KHOẢN VÀ HỆ THỐNG");
 
         btnTaoTaiKhoan.setBackground(new java.awt.Color(245, 246, 248));
         btnTaoTaiKhoan.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
@@ -443,8 +328,6 @@ public class TrangChu extends javax.swing.JFrame {
             .addComponent(btnBoDe, javax.swing.GroupLayout.PREFERRED_SIZE, 230, Short.MAX_VALUE)
             .addComponent(btnChuanBiThi, javax.swing.GroupLayout.PREFERRED_SIZE, 230, Short.MAX_VALUE)
             .addComponent(lblThi, javax.swing.GroupLayout.PREFERRED_SIZE, 230, Short.MAX_VALUE)
-            .addComponent(btnChonCaThi, javax.swing.GroupLayout.PREFERRED_SIZE, 230, Short.MAX_VALUE)
-            .addComponent(btnKetQua, javax.swing.GroupLayout.PREFERRED_SIZE, 230, Short.MAX_VALUE)
             .addComponent(btnBangDiem, javax.swing.GroupLayout.PREFERRED_SIZE, 230, Short.MAX_VALUE)
             .addComponent(lblTaiKhoan, javax.swing.GroupLayout.PREFERRED_SIZE, 230, Short.MAX_VALUE)
             .addComponent(btnTaoTaiKhoan, javax.swing.GroupLayout.PREFERRED_SIZE, 230, Short.MAX_VALUE)
@@ -474,10 +357,6 @@ public class TrangChu extends javax.swing.JFrame {
                 .addGap(4, 4, 4)
                 .addComponent(lblThi, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(4, 4, 4)
-                .addComponent(btnChonCaThi, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(btnKetQua, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
                 .addComponent(btnBangDiem, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(4, 4, 4)
                 .addComponent(lblTaiKhoan, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -611,84 +490,6 @@ public class TrangChu extends javax.swing.JFrame {
                 .addComponent(txtDiaChi, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
-        pnlTxtMaLop.setBackground(new java.awt.Color(255, 255, 255));
-        pnlTxtMaLop.setVisible(false);
-
-        lblTxtMaLop.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
-        lblTxtMaLop.setForeground(new java.awt.Color(36, 43, 54));
-        lblTxtMaLop.setText("Mã lớp");
-
-        txtMaLop.setEditable(false);
-        txtMaLop.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        txtMaLop.setForeground(new java.awt.Color(36, 43, 54));
-
-        javax.swing.GroupLayout pnlTxtMaLopLayout = new javax.swing.GroupLayout(pnlTxtMaLop);
-        pnlTxtMaLop.setLayout(pnlTxtMaLopLayout);
-        pnlTxtMaLopLayout.setHorizontalGroup(
-            pnlTxtMaLopLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(lblTxtMaLop, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(txtMaLop)
-        );
-        pnlTxtMaLopLayout.setVerticalGroup(
-            pnlTxtMaLopLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlTxtMaLopLayout.createSequentialGroup()
-                .addComponent(lblTxtMaLop)
-                .addGap(8, 8, 8)
-                .addComponent(txtMaLop, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
-        );
-
-        pnlTxtTenLop.setBackground(new java.awt.Color(255, 255, 255));
-        pnlTxtTenLop.setVisible(false);
-
-        lblTxtTenLop.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
-        lblTxtTenLop.setForeground(new java.awt.Color(36, 43, 54));
-        lblTxtTenLop.setText("Tên lớp");
-
-        txtTenLop.setEditable(false);
-        txtTenLop.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        txtTenLop.setForeground(new java.awt.Color(36, 43, 54));
-
-        javax.swing.GroupLayout pnlTxtTenLopLayout = new javax.swing.GroupLayout(pnlTxtTenLop);
-        pnlTxtTenLop.setLayout(pnlTxtTenLopLayout);
-        pnlTxtTenLopLayout.setHorizontalGroup(
-            pnlTxtTenLopLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(lblTxtTenLop, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(txtTenLop)
-        );
-        pnlTxtTenLopLayout.setVerticalGroup(
-            pnlTxtTenLopLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlTxtTenLopLayout.createSequentialGroup()
-                .addComponent(lblTxtTenLop)
-                .addGap(8, 8, 8)
-                .addComponent(txtTenLop, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
-        );
-
-        pnlTxtNgaySinh.setBackground(new java.awt.Color(255, 255, 255));
-        pnlTxtNgaySinh.setVisible(false);
-
-        lblTxtNgaySinh.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
-        lblTxtNgaySinh.setForeground(new java.awt.Color(36, 43, 54));
-        lblTxtNgaySinh.setText("Ngày sinh");
-
-        txtNgaySinh.setEditable(false);
-        txtNgaySinh.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        txtNgaySinh.setForeground(new java.awt.Color(36, 43, 54));
-
-        javax.swing.GroupLayout pnlTxtNgaySinhLayout = new javax.swing.GroupLayout(pnlTxtNgaySinh);
-        pnlTxtNgaySinh.setLayout(pnlTxtNgaySinhLayout);
-        pnlTxtNgaySinhLayout.setHorizontalGroup(
-            pnlTxtNgaySinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(lblTxtNgaySinh, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(txtNgaySinh)
-        );
-        pnlTxtNgaySinhLayout.setVerticalGroup(
-            pnlTxtNgaySinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlTxtNgaySinhLayout.createSequentialGroup()
-                .addComponent(lblTxtNgaySinh)
-                .addGap(8, 8, 8)
-                .addComponent(txtNgaySinh, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
-        );
-
         javax.swing.GroupLayout pnlThongTinLayout = new javax.swing.GroupLayout(pnlThongTin);
         pnlThongTin.setLayout(pnlThongTinLayout);
         pnlThongTinLayout.setHorizontalGroup(
@@ -700,9 +501,6 @@ public class TrangChu extends javax.swing.JFrame {
             .addComponent(pnlTxtHoTen, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(pnlTxtSoDTLL, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(pnlTxtDiaChi, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(pnlTxtMaLop, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-            .addComponent(pnlTxtTenLop, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-            .addComponent(pnlTxtNgaySinh, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
         );
         pnlThongTinLayout.setVerticalGroup(
             pnlThongTinLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -717,11 +515,6 @@ public class TrangChu extends javax.swing.JFrame {
                 .addGap(20, 20, 20)
                 .addComponent(pnlTxtHoTen, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addComponent(pnlTxtMaLop, javax.swing.GroupLayout.PREFERRED_SIZE, 0, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(pnlTxtTenLop, javax.swing.GroupLayout.PREFERRED_SIZE, 0, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(pnlTxtNgaySinh, javax.swing.GroupLayout.PREFERRED_SIZE, 0, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(20, 20, 20)
                 .addComponent(pnlTxtSoDTLL, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(20, 20, 20)
@@ -747,12 +540,12 @@ public class TrangChu extends javax.swing.JFrame {
             .addGroup(pnlNoiDungLayout.createSequentialGroup()
                 .addComponent(pnlMenu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(20, 20, 20)
-                .addComponent(pnlManHinh, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(pnlManHinh, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         pnlNoiDungLayout.setVerticalGroup(
             pnlNoiDungLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(pnlMenu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(pnlManHinh, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(pnlMenu, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(pnlManHinh, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -768,7 +561,7 @@ public class TrangChu extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(16, 16, 16)
-                .addComponent(pnlNoiDung, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(pnlNoiDung, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGap(16, 16, 16))
         );
 
@@ -776,68 +569,47 @@ public class TrangChu extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnMonHocActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMonHocActionPerformed
-        trangchu.DieuHuong.moForm(this, new quanly.NhapMonHoc(nguoiDung), nguoiDung);
+        hienThiForm(new quanly.NhapMonHoc(nguoiDung));
     }//GEN-LAST:event_btnMonHocActionPerformed
 
     private void btnLopSinhVienActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLopSinhVienActionPerformed
-        trangchu.DieuHuong.moForm(this, new quanly.NhapLopSinhVien(nguoiDung), nguoiDung);
+        hienThiForm(new quanly.NhapLopSinhVien(nguoiDung));
     }//GEN-LAST:event_btnLopSinhVienActionPerformed
 
     private void btnGiaoVienActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGiaoVienActionPerformed
-        trangchu.DieuHuong.moForm(this, new quanly.NhapGiaoVien(nguoiDung), nguoiDung);
+        hienThiForm(new quanly.NhapGiaoVien(nguoiDung));
     }//GEN-LAST:event_btnGiaoVienActionPerformed
 
     private void btnBoDeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBoDeActionPerformed
-        trangchu.DieuHuong.moForm(this, new quanly.NhapBoDe(nguoiDung), nguoiDung);
+        hienThiForm(new quanly.NhapBoDe(nguoiDung));
     }//GEN-LAST:event_btnBoDeActionPerformed
 
     private void btnChuanBiThiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnChuanBiThiActionPerformed
-        trangchu.DieuHuong.moForm(this, new quanly.ChuanBiThi(nguoiDung), nguoiDung);
+        hienThiForm(new quanly.ChuanBiThi(nguoiDung));
     }//GEN-LAST:event_btnChuanBiThiActionPerformed
 
-    private void btnChonCaThiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnChonCaThiActionPerformed
-        if (baiThiDangDo != null) {
-            trangchu.DieuHuong.moForm(this, new thi.LamBaiThi(nguoiDung, baiThiDangDo), nguoiDung);
-        } else {
-            trangchu.DieuHuong.moForm(this, new thi.ChonCaThi(nguoiDung), nguoiDung);
-        }
-    }//GEN-LAST:event_btnChonCaThiActionPerformed
-
-    private void btnKetQuaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnKetQuaActionPerformed
-        trangchu.DieuHuong.moForm(this, new thi.KetQuaThi(nguoiDung), nguoiDung);
-    }//GEN-LAST:event_btnKetQuaActionPerformed
-
     private void btnBangDiemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBangDiemActionPerformed
-        if (nguoiDung instanceof sessionSinhVien) {
-            trangchu.DieuHuong.moForm(this, new baocao.BangDiemSinhVien(nguoiDung), nguoiDung);
-        } else {
-            trangchu.DieuHuong.moForm(this, new baocao.BangDiemMonHoc(nguoiDung), nguoiDung);
-        }
+        hienThiForm(new baocao.BangDiemMonHoc(nguoiDung));
     }//GEN-LAST:event_btnBangDiemActionPerformed
 
     private void btnTaoTaiKhoanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTaoTaiKhoanActionPerformed
-        trangchu.DieuHuong.moForm(this, new taikhoan.TaoTaiKhoan(nguoiDung), nguoiDung);
+        hienThiForm(new taikhoan.TaoTaiKhoan(nguoiDung));
     }//GEN-LAST:event_btnTaoTaiKhoanActionPerformed
 
     private void btnDoiMatKhauActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDoiMatKhauActionPerformed
-        trangchu.DieuHuong.moForm(this, new taikhoan.DoiMatKhau(nguoiDung), nguoiDung);
+        hienThiForm(new taikhoan.DoiMatKhau(nguoiDung));
     }//GEN-LAST:event_btnDoiMatKhauActionPerformed
 
     private void btnSaoLuuPhucHoiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaoLuuPhucHoiActionPerformed
-        trangchu.DieuHuong.moForm(this, new hethong.SaoLuuPhucHoi(nguoiDung), nguoiDung);
+        hienThiForm(new hethong.SaoLuuPhucHoi(nguoiDung));
     }//GEN-LAST:event_btnSaoLuuPhucHoiActionPerformed
 
     private void btnDangXuatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDangXuatActionPerformed
-        if (nguoiDung instanceof sessionSinhVien) {
-            new dangNhapdangKy.DangNhapSV().setVisible(true);
-        } else {
-            new dangNhapdangKy.DangNhap().setVisible(true);
-        }
-        this.dispose();
+        dangXuatTu(this);
     }//GEN-LAST:event_btnDangXuatActionPerformed
 
     private void btnThoatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnThoatActionPerformed
-        this.dispose();
+        System.exit(0);
     }//GEN-LAST:event_btnThoatActionPerformed
 
     private void btnTrangChuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTrangChuActionPerformed
@@ -853,20 +625,51 @@ public class TrangChu extends javax.swing.JFrame {
                 }
             }
         } catch (ReflectiveOperationException | javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(TrangChu.class.getName()).log(java.util.logging.Level.WARNING, null, ex);
+            java.util.logging.Logger.getLogger(TrangChuGV.class.getName()).log(java.util.logging.Level.WARNING, null, ex);
         }
-        java.awt.EventQueue.invokeLater(() -> new TrangChu().setVisible(true));
+        java.awt.EventQueue.invokeLater(() -> new TrangChuGV().setVisible(true));
+    }
+
+    // Co giãn nội dung theo khung bên phải; form quá rộng/cao vẫn có thể cuộn.
+    private static final class NoiDungForm extends JPanel implements Scrollable {
+        private NoiDungForm(Container noiDung) {
+            super(new BorderLayout());
+            add(noiDung, BorderLayout.CENTER);
+        }
+
+        @Override
+        public Dimension getPreferredScrollableViewportSize() {
+            return getPreferredSize();
+        }
+
+        @Override
+        public int getScrollableUnitIncrement(Rectangle rect, int direction, int sign) {
+            return 20;
+        }
+
+        @Override
+        public int getScrollableBlockIncrement(Rectangle rect, int direction, int sign) {
+            return direction == SwingConstants.VERTICAL ? rect.height : rect.width;
+        }
+
+        @Override
+        public boolean getScrollableTracksViewportWidth() {
+            return getParent() != null && getParent().getWidth() >= getMinimumSize().width;
+        }
+
+        @Override
+        public boolean getScrollableTracksViewportHeight() {
+            return getParent() != null && getParent().getHeight() >= getPreferredSize().height;
+        }
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBangDiem;
     private javax.swing.JButton btnBoDe;
-    private javax.swing.JButton btnChonCaThi;
     private javax.swing.JButton btnChuanBiThi;
     private javax.swing.JButton btnDangXuat;
     private javax.swing.JButton btnDoiMatKhau;
     private javax.swing.JButton btnGiaoVien;
-    private javax.swing.JButton btnKetQua;
     private javax.swing.JButton btnLopSinhVien;
     private javax.swing.JButton btnMonHoc;
     private javax.swing.JButton btnSaoLuuPhucHoi;
@@ -881,11 +684,8 @@ public class TrangChu extends javax.swing.JFrame {
     private javax.swing.JLabel lblTieuDe;
     private javax.swing.JLabel lblTxtDiaChi;
     private javax.swing.JLabel lblTxtHoTen;
-    private javax.swing.JLabel lblTxtMaLop;
     private javax.swing.JLabel lblTxtMaNguoiDung;
-    private javax.swing.JLabel lblTxtNgaySinh;
     private javax.swing.JLabel lblTxtSoDTLL;
-    private javax.swing.JLabel lblTxtTenLop;
     private javax.swing.JLabel lblVaiTro;
     private javax.swing.JPanel pnlManHinh;
     private javax.swing.JPanel pnlMenu;
@@ -893,17 +693,11 @@ public class TrangChu extends javax.swing.JFrame {
     private javax.swing.JPanel pnlThongTin;
     private javax.swing.JPanel pnlTxtDiaChi;
     private javax.swing.JPanel pnlTxtHoTen;
-    private javax.swing.JPanel pnlTxtMaLop;
     private javax.swing.JPanel pnlTxtMaNguoiDung;
-    private javax.swing.JPanel pnlTxtNgaySinh;
     private javax.swing.JPanel pnlTxtSoDTLL;
-    private javax.swing.JPanel pnlTxtTenLop;
     private javax.swing.JTextField txtDiaChi;
     private javax.swing.JTextField txtHoTen;
-    private javax.swing.JTextField txtMaLop;
     private javax.swing.JTextField txtMaNguoiDung;
-    private javax.swing.JTextField txtNgaySinh;
     private javax.swing.JTextField txtSoDTLL;
-    private javax.swing.JTextField txtTenLop;
     // End of variables declaration//GEN-END:variables
 }

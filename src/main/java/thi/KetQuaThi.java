@@ -1,42 +1,41 @@
 package thi;
 
-import session.SessionDangNhap;
 import session.sessionSinhVien;
-import session.BaiThi;
+import models.BaiThi;
 import connectionSQLServer.ThiDAO;
 import javax.swing.JOptionPane;
 import javax.swing.SwingWorker;
+import trangchu.TrangChuSV;
 
 /**
  * Giao diện KetQuaThi. Nghiệp vụ sẽ được bổ sung trong các event handler.
  * Chỉnh bố cục bằng tab Design của NetBeans và giữ file .form đi kèm.
  */
 public class KetQuaThi extends javax.swing.JFrame {
-    private final SessionDangNhap nguoiDung;
+    private final sessionSinhVien nguoiDung;
     private BaiThi baiThi;
 
     public KetQuaThi() {
         this(null);
     }
 
-    public KetQuaThi(SessionDangNhap nguoiDung) {
+    public KetQuaThi(sessionSinhVien nguoiDung) {
         this(nguoiDung, null);
     }
 
-    public KetQuaThi(SessionDangNhap nguoiDung, BaiThi baiThi) {
+    public KetQuaThi(sessionSinhVien nguoiDung, BaiThi baiThi) {
         initComponents();
         this.nguoiDung = nguoiDung;
-        if(nguoiDung instanceof sessionSinhVien){
-            sessionSinhVien sinhVien = (sessionSinhVien) nguoiDung;
-            txtHoTen.setText(sinhVien.getHo() + " " + sinhVien.getTen());
-            txtMaSV.setText(sinhVien.getMaSV());
-            txtLop.setText(sinhVien.getTenLop());
+        if (nguoiDung != null) {
+            txtHoTen.setText(nguoiDung.getHo() + " " + nguoiDung.getTen());
+            txtMaSV.setText(nguoiDung.getMaSV());
+            txtLop.setText(nguoiDung.getTenLop());
         }
         getContentPane().setBackground(new java.awt.Color(245, 246, 248));
         setLocationRelativeTo(null);
         btnXemChiTiet.setEnabled(false);
         if (baiThi != null) hienThiKetQua(baiThi);
-        else if (nguoiDung instanceof sessionSinhVien) taiKetQuaGanNhat();
+        else if (nguoiDung != null) taiKetQuaGanNhat();
     }
 
     private void hienThiKetQua(BaiThi baiThi) {
@@ -54,7 +53,7 @@ public class KetQuaThi extends javax.swing.JFrame {
         new SwingWorker<BaiThi, Void>() {
             @Override
             protected BaiThi doInBackground() throws java.sql.SQLException {
-                return ThiDAO.xem(nguoiDung.getMaNguoiDung());
+                return ThiDAO.xem(nguoiDung);
             }
 
             @Override
@@ -385,11 +384,13 @@ public class KetQuaThi extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnXemChiTietActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnXemChiTietActionPerformed
-        trangchu.DieuHuong.moForm(this, new baocao.XemKetQua(nguoiDung, baiThi), nguoiDung);
+        new baocao.XemKetQua(nguoiDung, baiThi).setVisible(true);
+        dispose();
     }//GEN-LAST:event_btnXemChiTietActionPerformed
 
     private void btnVeTrangChuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVeTrangChuActionPerformed
-        trangchu.DieuHuong.moForm(this, new trangchu.TrangChu(nguoiDung), nguoiDung);
+        new TrangChuSV(nguoiDung).setVisible(true);
+        dispose();
     }//GEN-LAST:event_btnVeTrangChuActionPerformed
 
     public static void main(String[] args) {

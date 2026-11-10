@@ -4,11 +4,21 @@
  */
 package session;
 
+import java.sql.Connection;
+import java.sql.SQLException;
+
 /**
  *
  * @author admin
  */
-public class sessionGiaoVien implements SessionDangNhap {
+public class sessionGiaoVien {
+    @FunctionalInterface
+    public interface KetNoi {
+        Connection mo() throws SQLException;
+    }
+
+    private final KetNoi ketNoi;
+    private final String tenDangNhap;
     public String maGV;
     public String ho;
     public String ten;
@@ -19,9 +29,8 @@ public class sessionGiaoVien implements SessionDangNhap {
         return maGV;
     }
 
-    @Override
-    public String getMaNguoiDung() {
-        return maGV;
+    public String getTenDangNhap() {
+        return tenDangNhap;
     }
 
     public void setMaGV(String maGV) {
@@ -61,7 +70,22 @@ public class sessionGiaoVien implements SessionDangNhap {
     }
 
     public sessionGiaoVien() {
+        this("", null);
     }
-    
-    
+
+    public sessionGiaoVien(String tenDangNhap, KetNoi ketNoi) {
+        this.tenDangNhap = tenDangNhap;
+        this.ketNoi = ketNoi;
+    }
+
+    public boolean coKetNoi() {
+        return ketNoi != null;
+    }
+
+    public Connection moKetNoi() throws SQLException {
+        if (!coKetNoi()) {
+            throw new SQLException("Vui lòng đăng nhập bằng tài khoản giảng viên.");
+        }
+        return ketNoi.mo();
+    }
 }

@@ -1,35 +1,35 @@
 package baocao;
 
-import session.SessionDangNhap;
 import session.sessionSinhVien;
-import session.BaiThi;
-import session.CauHoi;
+import models.BaiThi;
+import models.CauHoi;
 import connectionSQLServer.ThiDAO;
 import javax.swing.JOptionPane;
 import javax.swing.SwingWorker;
 import javax.swing.table.DefaultTableModel;
+import trangchu.TrangChuSV;
 
 /**
- * Giao diện XemKetQua. Nghiệp vụ sẽ được bổ sung trong các event handler.
+ * Xem chi tiết bài thi của sinh viên đang đăng nhập.
  * Chỉnh bố cục bằng tab Design của NetBeans và giữ file .form đi kèm.
  */
 public class XemKetQua extends javax.swing.JFrame {
-    private final SessionDangNhap nguoiDung;
+    private final sessionSinhVien nguoiDung;
     private final boolean veBangDiem;
 
     public XemKetQua() {
         this(null);
     }
 
-    public XemKetQua(SessionDangNhap nguoiDung) {
+    public XemKetQua(sessionSinhVien nguoiDung) {
         this(nguoiDung, null);
     }
 
-    public XemKetQua(SessionDangNhap nguoiDung, BaiThi baiThi) {
+    public XemKetQua(sessionSinhVien nguoiDung, BaiThi baiThi) {
         this(nguoiDung, baiThi, false);
     }
 
-    public XemKetQua(SessionDangNhap nguoiDung, BaiThi baiThi, boolean veBangDiem) {
+    public XemKetQua(sessionSinhVien nguoiDung, BaiThi baiThi, boolean veBangDiem) {
         initComponents();
         this.nguoiDung = nguoiDung;
         this.veBangDiem = veBangDiem;
@@ -44,20 +44,17 @@ public class XemKetQua extends javax.swing.JFrame {
         txtDiem.setEditable(false);
         txtSoCauDung.setEditable(false);
         txtTongSoCau.setEditable(false);
-        btnTraCuu.setVisible(false);
-        btnBaiLanTruoc.setVisible(false);
-        boolean coSinhVien = nguoiDung instanceof sessionSinhVien;
+        boolean coSinhVien = nguoiDung != null;
         if (coSinhVien) {
-            sessionSinhVien sinhVien = (sessionSinhVien) nguoiDung;
-            txtLogin.setText(sinhVien.getMaSV());
-            txtHoTen.setText(sinhVien.getHo() + " " + sinhVien.getTen());
-            String tenLop = sinhVien.getTenLop();
+            txtLogin.setText(nguoiDung.getMaSV());
+            txtHoTen.setText(nguoiDung.getHo() + " " + nguoiDung.getTen());
+            String tenLop = nguoiDung.getTenLop();
             if (tenLop == null || tenLop.trim().isEmpty()) {
-                tenLop = sinhVien.getMaLop();
+                tenLop = nguoiDung.getMaLop();
             }
             txtLop.setText(tenLop);
         }
-        btnTroVe.setVisible(nguoiDung instanceof session.sessionSinhVien);
+        btnTroVe.setVisible(coSinhVien);
         getContentPane().setBackground(new java.awt.Color(245, 246, 248));
         setLocationRelativeTo(null);
         if (baiThi != null) hienThiBai(baiThi);
@@ -83,7 +80,7 @@ public class XemKetQua extends javax.swing.JFrame {
         new SwingWorker<BaiThi, Void>() {
             @Override
             protected BaiThi doInBackground() throws java.sql.SQLException {
-                return ThiDAO.xem(nguoiDung.getMaNguoiDung());
+                return ThiDAO.xem(nguoiDung);
             }
 
             @Override
@@ -127,8 +124,6 @@ public class XemKetQua extends javax.swing.JFrame {
         pnlTxtNgayThi = new javax.swing.JPanel();
         lblTxtNgayThi = new javax.swing.JLabel();
         txtNgayThi = new javax.swing.JTextField();
-        btnTraCuu = new javax.swing.JButton();
-        btnBaiLanTruoc = new javax.swing.JButton();
         scrTblChiTietBaiThi = new javax.swing.JScrollPane();
         tblChiTietBaiThi = new javax.swing.JTable();
         pnlTxtDiem = new javax.swing.JPanel();
@@ -335,24 +330,6 @@ public class XemKetQua extends javax.swing.JFrame {
                 .addComponent(txtNgayThi, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
-        btnTraCuu.setText("Tra cứu");
-        btnTraCuu.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        btnTraCuu.setBackground(new java.awt.Color(205, 32, 45));
-        btnTraCuu.setForeground(new java.awt.Color(255, 255, 255));
-        btnTraCuu.setOpaque(true);
-        btnTraCuu.setFocusPainted(false);
-        btnTraCuu.setVisible(false);
-        btnTraCuu.addActionListener(this::btnTraCuuActionPerformed);
-
-        btnBaiLanTruoc.setText("Bài thi lần trước");
-        btnBaiLanTruoc.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        btnBaiLanTruoc.setBackground(new java.awt.Color(245, 246, 248));
-        btnBaiLanTruoc.setForeground(new java.awt.Color(36, 43, 54));
-        btnBaiLanTruoc.setOpaque(true);
-        btnBaiLanTruoc.setFocusPainted(false);
-        btnBaiLanTruoc.setVisible(false);
-        btnBaiLanTruoc.addActionListener(this::btnBaiLanTruocActionPerformed);
-
         tblChiTietBaiThi.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
         tblChiTietBaiThi.setRowHeight(28);
         tblChiTietBaiThi.setAutoCreateRowSorter(true);
@@ -473,11 +450,6 @@ public class XemKetQua extends javax.swing.JFrame {
                 .addComponent(pnlTxtLanThi, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGap(8, 8, 8)
                 .addComponent(pnlTxtNgayThi, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(pnlNoiDungLayout.createSequentialGroup()
-                .addComponent(btnTraCuu, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                .addGap(8, 8, 8)
-                .addComponent(btnBaiLanTruoc, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                .addGap(444, 444, 444))
             .addComponent(scrTblChiTietBaiThi)
             .addGroup(pnlNoiDungLayout.createSequentialGroup()
                 .addComponent(pnlTxtDiem, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -505,10 +477,6 @@ public class XemKetQua extends javax.swing.JFrame {
                     .addComponent(pnlTxtLanThi, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(pnlTxtNgayThi, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(8, 8, 8)
-                .addGroup(pnlNoiDungLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnTraCuu, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnBaiLanTruoc, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
                 .addComponent(scrTblChiTietBaiThi, javax.swing.GroupLayout.PREFERRED_SIZE, 270, Short.MAX_VALUE)
                 .addGap(8, 8, 8)
                 .addGroup(pnlNoiDungLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -539,20 +507,13 @@ public class XemKetQua extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnTraCuuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTraCuuActionPerformed
-        // TODO: Bổ sung xử lý cho nút này sau khi hoàn thành giao diện.
-    }//GEN-LAST:event_btnTraCuuActionPerformed
-
-    private void btnBaiLanTruocActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBaiLanTruocActionPerformed
-        // TODO: Bổ sung xử lý cho nút này sau khi hoàn thành giao diện.
-    }//GEN-LAST:event_btnBaiLanTruocActionPerformed
-
     private void btnTroVeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTroVeActionPerformed
         if (veBangDiem) {
-            trangchu.DieuHuong.moForm(this, new BangDiemSinhVien(nguoiDung), nguoiDung);
+            new BangDiemSinhVien(nguoiDung).setVisible(true);
         } else {
-            trangchu.DieuHuong.moForm(this, new trangchu.TrangChu(nguoiDung), nguoiDung);
+            new TrangChuSV(nguoiDung).setVisible(true);
         }
+        dispose();
     }//GEN-LAST:event_btnTroVeActionPerformed
 
     public static void main(String[] args) {
@@ -570,8 +531,6 @@ public class XemKetQua extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnBaiLanTruoc;
-    private javax.swing.JButton btnTraCuu;
     private javax.swing.JButton btnTroVe;
     private javax.swing.JTextField txtLanThi;
     private javax.swing.JTextField txtLop;

@@ -1,23 +1,35 @@
 package taikhoan;
 
-import session.SessionDangNhap;
+import connectionSQLServer.QuanLyDAO;
+import java.sql.SQLException;
+import java.util.Arrays;
+import javax.swing.JOptionPane;
+
+import session.sessionGiaoVien;
+import trangchu.TrangChuGV;
 
 /**
  * Giao diện DoiMatKhau. Nghiệp vụ sẽ được bổ sung trong các event handler.
  * Chỉnh bố cục bằng tab Design của NetBeans và giữ file .form đi kèm.
  */
 public class DoiMatKhau extends javax.swing.JFrame {
-    private final SessionDangNhap nguoiDung;
+    private final sessionGiaoVien nguoiDung;
 
     public DoiMatKhau() {
         this(null);
     }
 
-    public DoiMatKhau(SessionDangNhap nguoiDung) {
+    public DoiMatKhau(sessionGiaoVien nguoiDung) {
         initComponents();
         this.nguoiDung = nguoiDung;
         getContentPane().setBackground(new java.awt.Color(245, 246, 248));
         setLocationRelativeTo(null);
+
+        boolean daDangNhap = nguoiDung != null && nguoiDung.coKetNoi();
+        btnDoiMatKhau.setEnabled(daDangNhap);
+        if (daDangNhap) {
+            cboGiaoVien.addItem(nguoiDung.getTenDangNhap());
+        }
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})
@@ -31,20 +43,20 @@ public class DoiMatKhau extends javax.swing.JFrame {
         lblTieuDe.setFont(new java.awt.Font("Segoe UI", 1, 24));
         lblTieuDe.setForeground(new java.awt.Color(205, 32, 45));
         lblMoTa = new javax.swing.JLabel();
-        lblMoTa.setText("Giáo viên đã được tạo tài khoản");
+        lblMoTa.setText("Đổi mật khẩu cho tài khoản đang đăng nhập");
         lblMoTa.setFont(new java.awt.Font("Segoe UI", 0, 13));
         lblMoTa.setForeground(new java.awt.Color(107, 114, 128));
         pnlCboGiaoVien = new javax.swing.JPanel();
         pnlCboGiaoVien.setBackground(new java.awt.Color(255, 255, 255));
         lblCboGiaoVien = new javax.swing.JLabel();
-        lblCboGiaoVien.setText("Giáo viên / tên đăng nhập");
+        lblCboGiaoVien.setText("Tên đăng nhập");
         lblCboGiaoVien.setFont(new java.awt.Font("Segoe UI", 1, 13));
         lblCboGiaoVien.setForeground(new java.awt.Color(36, 43, 54));
-        cboGiaoVien = new javax.swing.JComboBox();
+        cboGiaoVien = new javax.swing.JComboBox<>();
         cboGiaoVien.setFont(new java.awt.Font("Segoe UI", 0, 14));
         cboGiaoVien.setForeground(new java.awt.Color(36, 43, 54));
         cboGiaoVien.setBackground(new java.awt.Color(255, 255, 255));
-        cboGiaoVien.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] {"Chọn tài khoản giáo viên"}));
+        cboGiaoVien.setEnabled(false);
         javax.swing.GroupLayout pnlCboGiaoVienLayout = new javax.swing.GroupLayout(pnlCboGiaoVien);
         pnlCboGiaoVien.setLayout(pnlCboGiaoVienLayout);
         pnlCboGiaoVienLayout.setHorizontalGroup(pnlCboGiaoVienLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -59,31 +71,6 @@ public class DoiMatKhau extends javax.swing.JFrame {
                 .addGap(8, 8, 8)
                 .addGroup(pnlCboGiaoVienLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(cboGiaoVien, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))));
-        pnlTxtMatKhauCu = new javax.swing.JPanel();
-        pnlTxtMatKhauCu.setBackground(new java.awt.Color(255, 255, 255));
-        lblTxtMatKhauCu = new javax.swing.JLabel();
-        lblTxtMatKhauCu.setText("Mật khẩu hiện tại");
-        lblTxtMatKhauCu.setFont(new java.awt.Font("Segoe UI", 1, 13));
-        lblTxtMatKhauCu.setForeground(new java.awt.Color(36, 43, 54));
-        txtMatKhauCu = new javax.swing.JPasswordField();
-        txtMatKhauCu.setFont(new java.awt.Font("Segoe UI", 0, 14));
-        txtMatKhauCu.setForeground(new java.awt.Color(36, 43, 54));
-        txtMatKhauCu.setBackground(new java.awt.Color(255, 255, 255));
-        txtMatKhauCu.setEditable(true);
-        javax.swing.GroupLayout pnlTxtMatKhauCuLayout = new javax.swing.GroupLayout(pnlTxtMatKhauCu);
-        pnlTxtMatKhauCu.setLayout(pnlTxtMatKhauCuLayout);
-        pnlTxtMatKhauCuLayout.setHorizontalGroup(pnlTxtMatKhauCuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlTxtMatKhauCuLayout.createSequentialGroup()
-                .addComponent(lblTxtMatKhauCu, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(pnlTxtMatKhauCuLayout.createSequentialGroup()
-                .addComponent(txtMatKhauCu, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
-        pnlTxtMatKhauCuLayout.setVerticalGroup(pnlTxtMatKhauCuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlTxtMatKhauCuLayout.createSequentialGroup()
-                .addGroup(pnlTxtMatKhauCuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lblTxtMatKhauCu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(8, 8, 8)
-                .addGroup(pnlTxtMatKhauCuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(txtMatKhauCu, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))));
         pnlTxtMatKhauMoi = new javax.swing.JPanel();
         pnlTxtMatKhauMoi.setBackground(new java.awt.Color(255, 255, 255));
         lblTxtMatKhauMoi = new javax.swing.JLabel();
@@ -162,8 +149,6 @@ public class DoiMatKhau extends javax.swing.JFrame {
             .addGroup(pnlNoiDungLayout.createSequentialGroup()
                 .addComponent(pnlCboGiaoVien, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(pnlNoiDungLayout.createSequentialGroup()
-                .addComponent(pnlTxtMatKhauCu, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(pnlNoiDungLayout.createSequentialGroup()
                 .addComponent(pnlTxtMatKhauMoi, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(pnlNoiDungLayout.createSequentialGroup()
                 .addComponent(pnlTxtXacNhanMatKhau, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -181,9 +166,6 @@ public class DoiMatKhau extends javax.swing.JFrame {
                 .addGap(8, 8, 8)
                 .addGroup(pnlNoiDungLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(pnlCboGiaoVien, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(8, 8, 8)
-                .addGroup(pnlNoiDungLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(pnlTxtMatKhauCu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(8, 8, 8)
                 .addGroup(pnlNoiDungLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(pnlTxtMatKhauMoi, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -214,11 +196,31 @@ public class DoiMatKhau extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnDoiMatKhauActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDoiMatKhauActionPerformed
-        // TODO: Bổ sung xử lý cho nút này sau khi hoàn thành giao diện.
+        char[] matKhau = txtMatKhauMoi.getPassword();
+        char[] xacNhan = txtXacNhanMatKhau.getPassword();
+        try {
+            if (matKhau.length == 0 || matKhau.length > 128) {
+                throw new IllegalArgumentException("Mật khẩu phải có từ 1 đến 128 ký tự.");
+            }
+            if (!Arrays.equals(matKhau, xacNhan)) throw new IllegalArgumentException("Mật khẩu xác nhận không khớp.");
+            QuanLyDAO.doiMatKhau(nguoiDung, new String(matKhau));
+            txtMatKhauMoi.setText("");
+            txtXacNhanMatKhau.setText("");
+            JOptionPane.showMessageDialog(pnlNoiDung, "Đã đổi mật khẩu. Vui lòng đăng nhập lại.");
+            TrangChuGV.dangXuatTu(this);
+        } catch (IllegalArgumentException e) {
+            JOptionPane.showMessageDialog(pnlNoiDung, e.getMessage());
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(pnlNoiDung,
+                    "Đổi mật khẩu thất bại. Kiểm tra chính sách mật khẩu và quyền SQL. Mã lỗi: " + e.getErrorCode());
+        } finally {
+            Arrays.fill(matKhau, '\0');
+            Arrays.fill(xacNhan, '\0');
+        }
     }//GEN-LAST:event_btnDoiMatKhauActionPerformed
 
     private void btnHuyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHuyActionPerformed
-        trangchu.DieuHuong.moForm(this, new trangchu.TrangChu(nguoiDung), nguoiDung);
+        TrangChuGV.veTrangChuTu(this, nguoiDung);
     }//GEN-LAST:event_btnHuyActionPerformed
 
     public static void main(String[] args) {
@@ -241,10 +243,7 @@ public class DoiMatKhau extends javax.swing.JFrame {
     private javax.swing.JLabel lblMoTa;
     private javax.swing.JPanel pnlCboGiaoVien;
     private javax.swing.JLabel lblCboGiaoVien;
-    private javax.swing.JComboBox cboGiaoVien;
-    private javax.swing.JPanel pnlTxtMatKhauCu;
-    private javax.swing.JLabel lblTxtMatKhauCu;
-    private javax.swing.JPasswordField txtMatKhauCu;
+    private javax.swing.JComboBox<String> cboGiaoVien;
     private javax.swing.JPanel pnlTxtMatKhauMoi;
     private javax.swing.JLabel lblTxtMatKhauMoi;
     private javax.swing.JPasswordField txtMatKhauMoi;

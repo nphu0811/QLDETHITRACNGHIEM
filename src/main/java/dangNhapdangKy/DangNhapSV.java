@@ -5,13 +5,12 @@
 package dangNhapdangKy;
 
 import javax.swing.JOptionPane;
-import connectionSQLServer.connection;
-import java.sql.Connection;
-import java.sql.CallableStatement;
-import java.sql.ResultSet;
-import trangchu.TrangChu;
+import connectionSQLServer.ThiDAO;
+import java.sql.SQLException;
+import trangchu.TrangChuSV;
 import session.sessionSinhVien;
 import javax.swing.SwingWorker;
+import java.util.concurrent.ExecutionException;
 
 /**
  *
@@ -162,7 +161,6 @@ public class DangNhapSV extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void bthGVLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bthGVLoginActionPerformed
-        // TODO add your handling code here:
         DangNhap gv = new DangNhap();
         gv.setVisible(true);
         
@@ -170,7 +168,6 @@ public class DangNhapSV extends javax.swing.JFrame {
     }//GEN-LAST:event_bthGVLoginActionPerformed
 
     private void btnExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExitActionPerformed
-        // TODO add your handling code here:
         System.exit(0);
     }//GEN-LAST:event_btnExitActionPerformed
 
@@ -187,60 +184,34 @@ public class DangNhapSV extends javax.swing.JFrame {
         bthGVLogin.setEnabled(false);
         btnLogin.setText("Đang đăng nhập...");
 
-        // Chạy SQL ở nền để cửa sổ không bị đơ.
-        new SwingWorker<Void, Void>() {
-            sessionSinhVien sinhVien;
-            String thongBao;
-
+        new SwingWorker<sessionSinhVien, Void>() {
             @Override
-            protected Void doInBackground() {
-                try (Connection ketnoi = connection.getConnectionSV()) {
-                    if (ketnoi == null) {
-                        thongBao = "Không thể kết nối tới SQL Server !";
-                        return null;
-                    }
-                    try (CallableStatement cs = ketnoi.prepareCall("{call dbo.SP_LoginSinhVien(?)}")) {
-                        cs.setQueryTimeout(15);
-                        cs.setString(1, maSV);
-                        try (ResultSet rs = cs.executeQuery()) {
-                            if (rs.next()) {
-                                sinhVien = new sessionSinhVien();
-                                sinhVien.setHo(rs.getString("HO").trim());
-                                sinhVien.setMaLop(rs.getString("MALOP").trim());
-                                sinhVien.setMaSV(maSV);
-                                sinhVien.setTen(rs.getString("TEN"));
-                                sinhVien.setNgaySinh(rs.getString("NGAYSINH"));
-                                sinhVien.setDiaChi(rs.getString("DIACHI"));
-                                sinhVien.setTenLop(rs.getString("TENLOP"));
-                                thongBao = "Đăng nhập thành công!\nChào mừng "
-                                        + sinhVien.getHo() + " " + sinhVien.getTen() + " !";
-                            } else {
-                                thongBao = "Mã sinh viên không tồn tại!";
-                            }
-                        }
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    sinhVien = null;
-                    thongBao = "Lỗi đăng nhập: " + e.getMessage();
-                }
-                return null;
+            protected sessionSinhVien doInBackground() throws SQLException {
+                return ThiDAO.dangNhap(maSV);
             }
 
-            // SQL làm xong thì hiện thông báo và mở trang chủ.
             @Override
             protected void done() {
                 btnLogin.setText("Đăng nhập");
                 btnLogin.setEnabled(true);
                 bthGVLogin.setEnabled(true);
-                if (!isDisplayable()) {
-                    return;
-                }
-                JOptionPane.showMessageDialog(DangNhapSV.this, thongBao);
-                if (sinhVien != null) {
-                    TrangChu tc = new TrangChu(sinhVien);
-                    tc.setVisible(true);
-                    DangNhapSV.this.dispose();
+                if (!isDisplayable()) return;
+
+                try {
+                    sessionSinhVien sinhVien = get();
+                    if (sinhVien == null) {
+                        JOptionPane.showMessageDialog(DangNhapSV.this, "Mã sinh viên không tồn tại!");
+                        return;
+                    }
+                    JOptionPane.showMessageDialog(DangNhapSV.this, "Đăng nhập thành công!\nChào mừng "
+                            + sinhVien.getHo() + " " + sinhVien.getTen() + "!");
+                    new TrangChuSV(sinhVien).setVisible(true);
+                    dispose();
+                } catch (ExecutionException e) {
+                    Throwable loi = e.getCause();
+                    JOptionPane.showMessageDialog(DangNhapSV.this, "Lỗi đăng nhập: " + loi.getMessage());
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
                 }
             }
         }.execute();

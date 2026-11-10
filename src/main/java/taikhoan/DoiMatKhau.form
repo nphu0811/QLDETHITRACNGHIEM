@@ -71,7 +71,7 @@
         </Component>
         <Component class="javax.swing.JLabel" name="lblMoTa">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Giáo viên đã được tạo tài khoản" />
+            <Property name="text" type="java.lang.String" value="Đổi mật khẩu cho tài khoản đang đăng nhập" />
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Segoe UI" size="13" style="0" />
             </Property>
@@ -89,7 +89,7 @@
           <SubComponents>
             <Component class="javax.swing.JLabel" name="lblCboGiaoVien">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Giáo viên / tên đăng nhập" />
+                <Property name="text" type="java.lang.String" value="Tên đăng nhập" />
                 <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                   <Font name="Segoe UI" size="13" style="1" />
                 </Property>
@@ -109,12 +109,11 @@
                 <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                   <Color red="ff" green="ff" blue="ff" type="rgb" />
                 </Property>
-                <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-                  <StringArray count="1">
-                    <StringItem index="0" value="Chọn tài khoản giáo viên" />
-                  </StringArray>
-                </Property>
+                <Property name="enabled" type="boolean" value="false" />
               </Properties>
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;" />
+              </AuxValues>
             </Component>
           </SubComponents>
           <Layout>
@@ -137,65 +136,6 @@
                   <EmptySpace min="-2" pref="8" max="-2" attributes="0" />
                   <Group type="103" groupAlignment="0" attributes="0">
                     <Component id="cboGiaoVien" min="-2" max="-2" attributes="0" pref="36" />
-                  </Group>
-                </Group>
-              </Group>
-            </DimensionLayout>
-          </Layout>
-        </Container>
-        <Container class="javax.swing.JPanel" name="pnlTxtMatKhauCu">
-          <Properties>
-            <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-              <Color red="ff" green="ff" blue="ff" type="rgb" />
-            </Property>
-          </Properties>
-          <SubComponents>
-            <Component class="javax.swing.JLabel" name="lblTxtMatKhauCu">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Mật khẩu hiện tại" />
-                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                  <Font name="Segoe UI" size="13" style="1" />
-                </Property>
-                <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                  <Color red="24" green="2b" blue="36" type="rgb" />
-                </Property>
-              </Properties>
-            </Component>
-            <Component class="javax.swing.JPasswordField" name="txtMatKhauCu">
-              <Properties>
-                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                  <Font name="Segoe UI" size="14" style="0" />
-                </Property>
-                <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                  <Color red="24" green="2b" blue="36" type="rgb" />
-                </Property>
-                <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                  <Color red="ff" green="ff" blue="ff" type="rgb" />
-                </Property>
-                <Property name="editable" type="boolean" value="true" />
-              </Properties>
-            </Component>
-          </SubComponents>
-          <Layout>
-            <DimensionLayout dim="0">
-              <Group type="103" groupAlignment="0" attributes="0">
-                <Group type="102" attributes="0">
-                  <Component id="lblTxtMatKhauCu" max="32767" attributes="0" />
-                </Group>
-                <Group type="102" attributes="0">
-                  <Component id="txtMatKhauCu" max="32767" attributes="0" />
-                </Group>
-              </Group>
-            </DimensionLayout>
-            <DimensionLayout dim="1">
-              <Group type="103" groupAlignment="0" attributes="0">
-                <Group type="102" attributes="0">
-                  <Group type="103" groupAlignment="0" attributes="0">
-                    <Component id="lblTxtMatKhauCu" min="-2" max="-2" attributes="0" />
-                  </Group>
-                  <EmptySpace min="-2" pref="8" max="-2" attributes="0" />
-                  <Group type="103" groupAlignment="0" attributes="0">
-                    <Component id="txtMatKhauCu" min="-2" max="-2" attributes="0" pref="36" />
                   </Group>
                 </Group>
               </Group>
@@ -374,9 +314,6 @@
               <Component id="pnlCboGiaoVien" max="32767" attributes="0" />
             </Group>
             <Group type="102" attributes="0">
-              <Component id="pnlTxtMatKhauCu" max="32767" attributes="0" />
-            </Group>
-            <Group type="102" attributes="0">
               <Component id="pnlTxtMatKhauMoi" max="32767" attributes="0" />
             </Group>
             <Group type="102" attributes="0">
@@ -402,10 +339,6 @@
               <EmptySpace min="-2" pref="8" max="-2" attributes="0" />
               <Group type="103" groupAlignment="0" attributes="0">
                 <Component id="pnlCboGiaoVien" min="-2" max="-2" attributes="0" />
-              </Group>
-              <EmptySpace min="-2" pref="8" max="-2" attributes="0" />
-              <Group type="103" groupAlignment="0" attributes="0">
-                <Component id="pnlTxtMatKhauCu" min="-2" max="-2" attributes="0" />
               </Group>
               <EmptySpace min="-2" pref="8" max="-2" attributes="0" />
               <Group type="103" groupAlignment="0" attributes="0">

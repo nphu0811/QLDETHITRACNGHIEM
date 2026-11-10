@@ -1,23 +1,125 @@
 package quanly;
 
-import session.SessionDangNhap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.text.JTextComponent;
+import connectionSQLServer.QuanLyDAO;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import javax.swing.JOptionPane;
+import javax.swing.ListSelectionModel;
+
+import session.sessionGiaoVien;
 
 /**
  * Giao diện NhapGiaoVien. Nghiệp vụ sẽ được bổ sung trong các event handler.
  * Chỉnh bố cục bằng tab Design của NetBeans và giữ file .form đi kèm.
  */
 public class NhapGiaoVien extends javax.swing.JFrame {
-    private final SessionDangNhap nguoiDung;
+    private final sessionGiaoVien nguoiDung;
+    private final DotChinhSua dot;
 
     public NhapGiaoVien() {
         this(null);
     }
 
-    public NhapGiaoVien(SessionDangNhap nguoiDung) {
+    public NhapGiaoVien(sessionGiaoVien nguoiDung) {
         initComponents();
         this.nguoiDung = nguoiDung;
         getContentPane().setBackground(new java.awt.Color(245, 246, 248));
         setLocationRelativeTo(null);
+        tblGiaoVien.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        dot = new DotChinhSua(tblGiaoVien, new DotChinhSua.Nut(btnThem, btnHieuChinh, btnXoa, btnGhi, btnPhucHoi, btnTim),
+                this::docGiaoVien, this::dienGiaoVien, this::baoLoi,
+                List.of(txtMaGV, txtHoGV, txtTenGV, txtSoDT, txtDiaChiGV), List.of(txtMaGV), 0);
+        if (nguoiDung != null && nguoiDung.coKetNoi()) taiGiaoVien();
+        capNhatCheDo();
+    }
+
+    private ArrayList<Object[]> danhSachGiaoVien = new ArrayList<>();
+
+    private void capNhatCheDo() {
+        dot.capNhatGiaoDien(nguoiDung != null && nguoiDung.coKetNoi());
+    }
+
+    private void taiGiaoVien() {
+        try {
+            danhSachGiaoVien = QuanLyDAO.layGiaoVien(nguoiDung);
+            napBang(tblGiaoVien, danhSachGiaoVien);
+            dienGiaoVien(null);
+            capNhatCheDo();
+        } catch (SQLException e) {
+            baoLoi(e);
+        }
+    }
+
+    private void dienGiaoVien(Object[] dong) {
+        txtMaGV.setText(DotChinhSua.chuoi(dong, 0));
+        txtHoGV.setText(DotChinhSua.chuoi(dong, 1));
+        txtTenGV.setText(DotChinhSua.chuoi(dong, 2));
+        txtSoDT.setText(DotChinhSua.chuoi(dong, 3));
+        txtDiaChiGV.setText(DotChinhSua.chuoi(dong, 4));
+    }
+
+    private Object[] docGiaoVien() {
+        String ma = nhap(txtMaGV, "Mã giáo viên", 8, true);
+        if (dot.dangThem() && coMa(danhSachGiaoVien, ma)) throw new IllegalArgumentException("Mã giáo viên đã có.");
+        String ho = nhap(txtHoGV, "Họ", 50, true);
+        String ten = nhap(txtTenGV, "Tên", 10, true);
+        String soDT = nhap(txtSoDT, "Số điện thoại", 15, false);
+        String diaChi = nhap(txtDiaChiGV, "Địa chỉ", 50, false);
+        return new Object[]{ma, ho, ten, soDT, diaChi};
+    }
+
+    private void napBang(JTable bang, List<Object[]> danhSach) {
+        DefaultTableModel model = (DefaultTableModel) bang.getModel();
+        model.setRowCount(0);
+        for (Object[] dong : danhSach) {
+            model.addRow(dong);
+        }
+    }
+
+    private String nhap(JTextComponent oNhap, String ten, int toiDa, boolean batBuoc) {
+        String giaTri = oNhap.getText().strip();
+        if (giaTri.length() > toiDa || (batBuoc && giaTri.isEmpty())) {
+            oNhap.requestFocusInWindow();
+            throw new IllegalArgumentException(ten + (batBuoc ? " phải có từ 1 đến " : " có tối đa ") + toiDa + " ký tự.");
+        }
+        return giaTri;
+    }
+
+    private boolean coMa(List<Object[]> danhSach, String ma) {
+        for (Object[] dong : danhSach) {
+            if (ma.equalsIgnoreCase(Objects.toString(dong[0], ""))) return true;
+        }
+        return false;
+    }
+
+    private Object[] dongDaChon(JTable bang) {
+        int viTri = bang.getSelectedRow();
+        if (viTri < 0) return null;
+        int dongModel = bang.convertRowIndexToModel(viTri);
+        Object[] dong = new Object[bang.getModel().getColumnCount()];
+        for (int cot = 0; cot < dong.length; cot++) {
+            dong[cot] = bang.getModel().getValueAt(dongModel, cot);
+        }
+        return dong;
+    }
+
+    private boolean khop(Object giaTri, String tuKhoa) {
+        return Objects.toString(giaTri, "").toLowerCase(Locale.ROOT).contains(tuKhoa.toLowerCase(Locale.ROOT));
+    }
+
+    private void baoLoi(SQLException e) {
+        String noiDung = switch (e.getErrorCode()) {
+            case 2601, 2627 -> "Mã đã tồn tại.";
+            case 547 -> "Dữ liệu đang được sử dụng hoặc thông tin liên quan không hợp lệ.";
+            default -> e.getMessage();
+        };
+        JOptionPane.showMessageDialog(pnlNoiDung, noiDung, "Thông báo", JOptionPane.ERROR_MESSAGE);
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})
@@ -162,31 +264,6 @@ public class NhapGiaoVien extends javax.swing.JFrame {
                 .addGap(8, 8, 8)
                 .addGroup(pnlTxtDiaChiGVLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(txtDiaChiGV, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))));
-        pnlTxtTuKhoa = new javax.swing.JPanel();
-        pnlTxtTuKhoa.setBackground(new java.awt.Color(255, 255, 255));
-        lblTxtTuKhoa = new javax.swing.JLabel();
-        lblTxtTuKhoa.setText("Tìm giáo viên");
-        lblTxtTuKhoa.setFont(new java.awt.Font("Segoe UI", 1, 13));
-        lblTxtTuKhoa.setForeground(new java.awt.Color(36, 43, 54));
-        txtTuKhoa = new javax.swing.JTextField();
-        txtTuKhoa.setFont(new java.awt.Font("Segoe UI", 0, 14));
-        txtTuKhoa.setForeground(new java.awt.Color(36, 43, 54));
-        txtTuKhoa.setBackground(new java.awt.Color(255, 255, 255));
-        txtTuKhoa.setEditable(true);
-        javax.swing.GroupLayout pnlTxtTuKhoaLayout = new javax.swing.GroupLayout(pnlTxtTuKhoa);
-        pnlTxtTuKhoa.setLayout(pnlTxtTuKhoaLayout);
-        pnlTxtTuKhoaLayout.setHorizontalGroup(pnlTxtTuKhoaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlTxtTuKhoaLayout.createSequentialGroup()
-                .addComponent(lblTxtTuKhoa, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(pnlTxtTuKhoaLayout.createSequentialGroup()
-                .addComponent(txtTuKhoa, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
-        pnlTxtTuKhoaLayout.setVerticalGroup(pnlTxtTuKhoaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlTxtTuKhoaLayout.createSequentialGroup()
-                .addGroup(pnlTxtTuKhoaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lblTxtTuKhoa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(8, 8, 8)
-                .addGroup(pnlTxtTuKhoaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(txtTuKhoa, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))));
         btnThem = new javax.swing.JButton();
         btnThem.setText("Thêm");
         btnThem.setFont(new java.awt.Font("Segoe UI", 0, 14));
@@ -214,6 +291,15 @@ public class NhapGiaoVien extends javax.swing.JFrame {
         btnHieuChinh.setContentAreaFilled(true);
         btnHieuChinh.setFocusPainted(false);
         btnHieuChinh.addActionListener(this::btnHieuChinhActionPerformed);
+        btnPhucHoi = new javax.swing.JButton();
+        btnPhucHoi.setText("Phục hồi");
+        btnPhucHoi.setFont(new java.awt.Font("Segoe UI", 0, 14));
+        btnPhucHoi.setBackground(new java.awt.Color(245, 246, 248));
+        btnPhucHoi.setForeground(new java.awt.Color(36, 43, 54));
+        btnPhucHoi.setOpaque(true);
+        btnPhucHoi.setContentAreaFilled(true);
+        btnPhucHoi.setFocusPainted(false);
+        btnPhucHoi.addActionListener(this::btnPhucHoiActionPerformed);
         btnTim = new javax.swing.JButton();
         btnTim.setText("Tìm");
         btnTim.setFont(new java.awt.Font("Segoe UI", 0, 14));
@@ -241,6 +327,12 @@ public class NhapGiaoVien extends javax.swing.JFrame {
         tblGiaoVien.setModel(new javax.swing.table.DefaultTableModel(new Object[][] {}, new String[] {"Mã GV", "Họ", "Tên", "Số điện thoại", "Địa chỉ"}) {
             @Override public boolean isCellEditable(int row, int column) { return false; }
         });
+        tblGiaoVien.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblGiaoVienMouseClicked(evt);
+            }
+        });
         scrTblGiaoVien.setViewportView(tblGiaoVien);
         javax.swing.GroupLayout pnlNoiDungLayout = new javax.swing.GroupLayout(pnlNoiDung);
         pnlNoiDung.setLayout(pnlNoiDungLayout);
@@ -260,13 +352,13 @@ public class NhapGiaoVien extends javax.swing.JFrame {
                 .addGap(8, 8, 8)
                 .addComponent(pnlTxtDiaChiGV, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(pnlNoiDungLayout.createSequentialGroup()
-                .addComponent(pnlTxtTuKhoa, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(pnlNoiDungLayout.createSequentialGroup()
                 .addComponent(btnThem, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGap(8, 8, 8)
                 .addComponent(btnXoa, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGap(8, 8, 8)
                 .addComponent(btnHieuChinh, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(8)
+                .addComponent(btnPhucHoi, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGap(8, 8, 8)
                 .addComponent(btnTim, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGap(8, 8, 8)
@@ -291,12 +383,10 @@ public class NhapGiaoVien extends javax.swing.JFrame {
                     .addComponent(pnlTxtDiaChiGV, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(8, 8, 8)
                 .addGroup(pnlNoiDungLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(pnlTxtTuKhoa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(8, 8, 8)
-                .addGroup(pnlNoiDungLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnThem, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnXoa, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnHieuChinh, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnPhucHoi, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnTim, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnGhi, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(8, 8, 8)
@@ -322,24 +412,74 @@ public class NhapGiaoVien extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnThemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnThemActionPerformed
-        // TODO: Bổ sung xử lý cho nút này sau khi hoàn thành giao diện.
+        dot.them();
+        capNhatCheDo();
+        txtMaGV.requestFocusInWindow();
     }//GEN-LAST:event_btnThemActionPerformed
 
     private void btnXoaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnXoaActionPerformed
-        // TODO: Bổ sung xử lý cho nút này sau khi hoàn thành giao diện.
+        Object[] dong = dongDaChon(tblGiaoVien);
+        if (dong == null) {
+            JOptionPane.showMessageDialog(pnlNoiDung, "Vui lòng chọn giáo viên để xóa.");
+            return;
+        }
+        String ma = Objects.toString(dong[0], "");
+        int xacNhan = JOptionPane.showConfirmDialog(pnlNoiDung, "Xóa " + "giáo viên " + ma + "?",
+                "Xác nhận xóa", JOptionPane.YES_NO_OPTION);
+        if (xacNhan != JOptionPane.YES_OPTION) return;
+        try {
+            QuanLyDAO.xoaGiaoVien(nguoiDung, ma);
+            taiGiaoVien();
+        } catch (SQLException e) {
+            if (e.getErrorCode() == 547) {
+                JOptionPane.showMessageDialog(pnlNoiDung,
+                        "Không thể xóa giáo viên vì vẫn còn câu hỏi trong bộ đề hoặc ca thi đã đăng ký.");
+            } else {
+                baoLoi(e);
+            }
+        }
     }//GEN-LAST:event_btnXoaActionPerformed
 
     private void btnHieuChinhActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHieuChinhActionPerformed
-        // TODO: Bổ sung xử lý cho nút này sau khi hoàn thành giao diện.
+        dot.hieuChinh();
+        capNhatCheDo();
+        txtHoGV.requestFocusInWindow();
     }//GEN-LAST:event_btnHieuChinhActionPerformed
 
+    private void btnPhucHoiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPhucHoiActionPerformed
+        dot.phucHoi(() -> QuanLyDAO.phucHoiGiaoVien(nguoiDung), this::taiGiaoVien);
+        capNhatCheDo();
+    }//GEN-LAST:event_btnPhucHoiActionPerformed
+
     private void btnTimActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTimActionPerformed
-        // TODO: Bổ sung xử lý cho nút này sau khi hoàn thành giao diện.
+        if (dot.dangNhap()) {
+            dot.huy();
+            capNhatCheDo();
+            return;
+        }
+        String[] tuKhoa = DotChinhSua.tuKhoa(pnlNoiDung, "Mã giáo viên", "Họ", "Tên");
+        if (tuKhoa == null) return;
+        ArrayList<Object[]> ketQua = new ArrayList<>();
+        for (Object[] dong : danhSachGiaoVien) {
+            if (khop(dong[0], tuKhoa[0]) && khop(dong[1], tuKhoa[1]) && khop(dong[2], tuKhoa[2])) {
+                ketQua.add(dong);
+            }
+        }
+        napBang(tblGiaoVien, ketQua);
+        dienGiaoVien(null);
+        capNhatCheDo();
     }//GEN-LAST:event_btnTimActionPerformed
 
     private void btnGhiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGhiActionPerformed
-        // TODO: Bổ sung xử lý cho nút này sau khi hoàn thành giao diện.
+        dot.ghi((thaoTac, truoc, sau) -> QuanLyDAO.ghiGiaoVien(nguoiDung, thaoTac, sau), this::taiGiaoVien);
+        capNhatCheDo();
     }//GEN-LAST:event_btnGhiActionPerformed
+
+    private void tblGiaoVienMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblGiaoVienMouseClicked
+        if (!dot.dangNhap() && tblGiaoVien.rowAtPoint(evt.getPoint()) >= 0) {
+            dienGiaoVien(dongDaChon(tblGiaoVien));
+        }
+    }//GEN-LAST:event_tblGiaoVienMouseClicked
 
     public static void main(String[] args) {
         try {
@@ -374,12 +514,10 @@ public class NhapGiaoVien extends javax.swing.JFrame {
     private javax.swing.JPanel pnlTxtDiaChiGV;
     private javax.swing.JLabel lblTxtDiaChiGV;
     private javax.swing.JTextField txtDiaChiGV;
-    private javax.swing.JPanel pnlTxtTuKhoa;
-    private javax.swing.JLabel lblTxtTuKhoa;
-    private javax.swing.JTextField txtTuKhoa;
     private javax.swing.JButton btnThem;
     private javax.swing.JButton btnXoa;
     private javax.swing.JButton btnHieuChinh;
+    private javax.swing.JButton btnPhucHoi;
     private javax.swing.JButton btnTim;
     private javax.swing.JButton btnGhi;
     private javax.swing.JScrollPane scrTblGiaoVien;
