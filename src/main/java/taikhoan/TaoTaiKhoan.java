@@ -83,6 +83,17 @@ public class TaoTaiKhoan extends javax.swing.JFrame {
         }
     }
 
+    private boolean laTaiKhoanDangDangNhap(LuaChon muc) {
+        if (nguoiDung == null) return false;
+        String maDangNhap = Objects.toString(nguoiDung.getMaGV(), "").strip();
+        if (!maDangNhap.isEmpty() && maDangNhap.equalsIgnoreCase(muc.ma().strip())) {
+            return true;
+        }
+        String loginDangNhap = Objects.toString(nguoiDung.getTenDangNhap(), "").strip();
+        String loginDangChon = txtLogin.getText().strip();
+        return !loginDangNhap.isEmpty() && loginDangNhap.equalsIgnoreCase(loginDangChon);
+    }
+
     private void baoLoi(SQLException e) {
         String noiDung = switch (e.getErrorCode()) {
             case 2601, 2627 -> "Mã đã tồn tại.";
@@ -340,6 +351,11 @@ public class TaoTaiKhoan extends javax.swing.JFrame {
 
     private void btnXoaTaiKhoanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnXoaTaiKhoanActionPerformed
         if (!(cboGiaoVien.getSelectedItem() instanceof LuaChon muc) || muc.sidTaiKhoan() == null) return;
+        if (laTaiKhoanDangDangNhap(muc)) {
+            JOptionPane.showMessageDialog(pnlNoiDung,
+                    "Không thể xóa tài khoản đang đăng nhập.", "Thông báo", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
 
         int xacNhan = JOptionPane.showConfirmDialog(pnlNoiDung,
                 "Xóa tài khoản của " + muc + "?", "Xóa tài khoản", JOptionPane.YES_NO_OPTION);
