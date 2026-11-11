@@ -22,6 +22,7 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import javax.swing.WindowConstants;
+import javax.swing.event.TableModelEvent;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import session.sessionGiaoVien;
@@ -33,6 +34,7 @@ import session.sessionGiaoVien;
 public class SaoLuuPhucHoi extends javax.swing.JFrame {
     private final sessionGiaoVien nguoiDung;
     private boolean dangXuLy = false;
+    private boolean dangCapNhatChonBanSaoLuu = false;
 
     @FunctionalInterface
     private interface CongViecSQL {
@@ -200,6 +202,31 @@ public class SaoLuuPhucHoi extends javax.swing.JFrame {
         tblBanSaoLuu.getColumnModel().getColumn(0).setCellRenderer((bang, giaTri, duocChon, coFocus, dong, cot) -> {
             dauDong.setText(bang.isRowSelected(dong) ? "▸" : "");
             return dauDong;
+        });
+
+        DefaultTableModel moHinh = (DefaultTableModel) tblBanSaoLuu.getModel();
+        moHinh.addTableModelListener(e -> {
+            if (dangCapNhatChonBanSaoLuu
+                    || e.getType() != TableModelEvent.UPDATE
+                    || e.getColumn() != 1
+                    || e.getFirstRow() < 0
+                    || e.getFirstRow() >= moHinh.getRowCount()) {
+                return;
+            }
+            int dongDuocChon = e.getFirstRow();
+            if (!Boolean.TRUE.equals(moHinh.getValueAt(dongDuocChon, 1))) {
+                return;
+            }
+            dangCapNhatChonBanSaoLuu = true;
+            try {
+                for (int i = 0; i < moHinh.getRowCount(); i++) {
+                    if (i != dongDuocChon && Boolean.TRUE.equals(moHinh.getValueAt(i, 1))) {
+                        moHinh.setValueAt(Boolean.FALSE, i, 1);
+                    }
+                }
+            } finally {
+                dangCapNhatChonBanSaoLuu = false;
+            }
         });
     }
 
