@@ -76,8 +76,17 @@ public class BangDiemMonHoc extends javax.swing.JFrame {
         txtTenLop.setText(duLieu.lop());
         txtTenMonHoc.setText(duLieu.mon());
         txtSoSinhVien.setText(String.valueOf(danhSach.size()));
+        boolean hienNut = !duLieu.diem.isEmpty();
+
+        for (Object[] dong : danhSach) {
+            if (dong[4] == null || dong[5] == null || dong[6] == null) {
+                hienNut = false;
+                break;
+            }
+        }
+
         btnXemBanIn.setEnabled(!danhSach.isEmpty());
-        btnIn.setEnabled(!danhSach.isEmpty());
+        btnIn.setEnabled(hienNut);
     }
 
     @SuppressWarnings({"rawtypes", "unchecked"})

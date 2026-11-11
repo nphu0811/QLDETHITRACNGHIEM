@@ -75,7 +75,7 @@
               <Group type="102" attributes="0">
                   <Component id="pnlCboMonHoc" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="pnlTxtNgayThi" min="-2" max="-2" attributes="0"/>
+                  <Component id="pnlTxtNgayThi" max="32767" attributes="0"/>
                   <EmptySpace min="-2" pref="8" max="-2" attributes="0"/>
                   <Component id="pnlCboLanThi" max="32767" attributes="0"/>
               </Group>
@@ -410,7 +410,11 @@
             <DimensionLayout dim="0">
               <Group type="103" groupAlignment="0" attributes="0">
                   <Component id="lblTxtNgayThi" max="32767" attributes="0"/>
-                  <Component id="txtNgayThi" pref="134" max="32767" attributes="0"/>
+                  <Group type="102" attributes="0">
+                      <Component id="txtNgayThi" pref="100" max="32767" attributes="0"/>
+                      <EmptySpace min="-2" pref="6" max="-2" attributes="0"/>
+                      <Component id="lichNgayThi" min="-2" pref="60" max="-2" attributes="0"/>
+                  </Group>
               </Group>
             </DimensionLayout>
             <DimensionLayout dim="1">
@@ -418,7 +422,10 @@
                   <Group type="102" attributes="0">
                       <Component id="lblTxtNgayThi" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="8" max="-2" attributes="0"/>
-                      <Component id="txtNgayThi" min="-2" pref="36" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="txtNgayThi" min="-2" pref="36" max="-2" attributes="0"/>
+                          <Component id="lichNgayThi" min="-2" pref="36" max="-2" attributes="0"/>
+                      </Group>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -437,24 +444,21 @@
             </Component>
             <Component class="javax.swing.JFormattedTextField" name="txtNgayThi">
               <Properties>
+                <Property name="editable" type="boolean" value="false"/>
+                <Property name="enabled" type="boolean" value="false"/>
                 <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                   <Color blue="36" green="2b" red="24" type="rgb"/>
                 </Property>
-                <Property name="formatterFactory" type="javax.swing.JFormattedTextField$AbstractFormatterFactory" editor="org.netbeans.modules.form.editors.AbstractFormatterFactoryEditor" preCode="try {" postCode="} catch (java.text.ParseException ex) {&#xa;ex.printStackTrace();&#xa;}">
-                  <Format format="##/##/####" subtype="-1" type="5"/>
-                </Property>
-                <Property name="focusLostBehavior" type="int" value="3"/>
+                <Property name="toolTipText" type="java.lang.String" value="dd/MM/yyyy"/>
                 <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                   <Font name="Segoe UI" size="14" style="0"/>
                 </Property>
               </Properties>
-              <Events>
-                <EventHandler event="focusLost" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="txtNgayThiFocusLost"/>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtNgayThiActionPerformed"/>
-              </Events>
-              <AuxValues>
-                <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="((javax.swing.text.MaskFormatter) txtNgayThi.getFormatter()).setPlaceholderCharacter(&apos;_&apos;);&#xa;txtNgayThi.setValue(null);"/>
-              </AuxValues>
+            </Component>
+            <Component class="com.github.lgooddatepicker.components.DatePicker" name="lichNgayThi">
+              <Properties>
+                <Property name="opaque" type="boolean" value="false"/>
+              </Properties>
             </Component>
           </SubComponents>
         </Container>
@@ -469,7 +473,7 @@
             <DimensionLayout dim="0">
               <Group type="103" groupAlignment="0" attributes="0">
                   <Component id="lblCboLanThi" max="32767" attributes="0"/>
-                  <Component id="cboLanThi" max="32767" attributes="0"/>
+                  <Component id="cboLanThi" pref="115" max="32767" attributes="0"/>
               </Group>
             </DimensionLayout>
             <DimensionLayout dim="1">

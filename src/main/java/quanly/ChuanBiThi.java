@@ -79,6 +79,7 @@ public class ChuanBiThi extends javax.swing.JFrame {
         txtNgayThi.setEditable(false);
         lichNgayThi.setEnabled(daDangNhap && dot.dangNhap());
         btnKiemTraCauHoi.setEnabled(daDangNhap && dot.dangNhap());
+        btnHuy.setVisible(daDangNhap && dot.dangNhap());
     }
 
     private void taiCaThi() {
@@ -255,6 +256,7 @@ public class ChuanBiThi extends javax.swing.JFrame {
         btnXoa = new javax.swing.JButton();
         btnHieuChinh = new javax.swing.JButton();
         btnPhucHoi = new javax.swing.JButton();
+        btnHuy = new javax.swing.JButton();
         btnGhi = new javax.swing.JButton();
         scrTblDangKyThi = new javax.swing.JScrollPane();
         tblDangKyThi = new javax.swing.JTable();
@@ -266,19 +268,19 @@ public class ChuanBiThi extends javax.swing.JFrame {
         pnlNoiDung.setBackground(new java.awt.Color(255, 255, 255));
         pnlNoiDung.setBorder(javax.swing.BorderFactory.createEmptyBorder(24, 24, 24, 24));
 
+        lblTieuDe.setText("CHUẨN BỊ THI");
         lblTieuDe.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         lblTieuDe.setForeground(new java.awt.Color(205, 32, 45));
-        lblTieuDe.setText("CHUẨN BỊ THI");
 
+        lblMoTa.setText("Đăng ký môn thi và cấu hình bài thi cho lớp");
         lblMoTa.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
         lblMoTa.setForeground(new java.awt.Color(107, 114, 128));
-        lblMoTa.setText("Đăng ký môn thi và cấu hình bài thi cho lớp");
 
         pnlTxtMaGV.setBackground(new java.awt.Color(255, 255, 255));
 
+        lblTxtMaGV.setText("Mã giáo viên");
         lblTxtMaGV.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
         lblTxtMaGV.setForeground(new java.awt.Color(36, 43, 54));
-        lblTxtMaGV.setText("Mã giáo viên");
 
         txtMaGV.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         txtMaGV.setForeground(new java.awt.Color(36, 43, 54));
@@ -300,13 +302,13 @@ public class ChuanBiThi extends javax.swing.JFrame {
 
         pnlCboLop.setBackground(new java.awt.Color(255, 255, 255));
 
+        lblCboLop.setText("Lớp");
         lblCboLop.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
         lblCboLop.setForeground(new java.awt.Color(36, 43, 54));
-        lblCboLop.setText("Lớp");
 
+        cboLop.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Chọn lớp" }));
         cboLop.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         cboLop.setForeground(new java.awt.Color(36, 43, 54));
-        cboLop.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Chọn lớp" }));
 
         javax.swing.GroupLayout pnlCboLopLayout = new javax.swing.GroupLayout(pnlCboLop);
         pnlCboLop.setLayout(pnlCboLopLayout);
@@ -325,13 +327,13 @@ public class ChuanBiThi extends javax.swing.JFrame {
 
         pnlCboMonHoc.setBackground(new java.awt.Color(255, 255, 255));
 
+        lblCboMonHoc.setText("Môn học");
         lblCboMonHoc.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
         lblCboMonHoc.setForeground(new java.awt.Color(36, 43, 54));
-        lblCboMonHoc.setText("Môn học");
 
+        cboMonHoc.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Chọn môn học" }));
         cboMonHoc.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         cboMonHoc.setForeground(new java.awt.Color(36, 43, 54));
-        cboMonHoc.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Chọn môn học" }));
 
         javax.swing.GroupLayout pnlCboMonHocLayout = new javax.swing.GroupLayout(pnlCboMonHoc);
         pnlCboMonHoc.setLayout(pnlCboMonHocLayout);
@@ -350,13 +352,13 @@ public class ChuanBiThi extends javax.swing.JFrame {
 
         pnlCboTrinhDo.setBackground(new java.awt.Color(255, 255, 255));
 
+        lblCboTrinhDo.setText("Trình độ");
         lblCboTrinhDo.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
         lblCboTrinhDo.setForeground(new java.awt.Color(36, 43, 54));
-        lblCboTrinhDo.setText("Trình độ");
 
+        cboTrinhDo.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "A", "B", "C" }));
         cboTrinhDo.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         cboTrinhDo.setForeground(new java.awt.Color(36, 43, 54));
-        cboTrinhDo.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "A", "B", "C" }));
 
         javax.swing.GroupLayout pnlCboTrinhDoLayout = new javax.swing.GroupLayout(pnlCboTrinhDo);
         pnlCboTrinhDo.setLayout(pnlCboTrinhDoLayout);
@@ -375,13 +377,13 @@ public class ChuanBiThi extends javax.swing.JFrame {
 
         pnlCboLanThi.setBackground(new java.awt.Color(255, 255, 255));
 
+        lblCboLanThi.setText("Lần thi");
         lblCboLanThi.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
         lblCboLanThi.setForeground(new java.awt.Color(36, 43, 54));
-        lblCboLanThi.setText("Lần thi");
 
+        cboLanThi.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "1", "2" }));
         cboLanThi.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         cboLanThi.setForeground(new java.awt.Color(36, 43, 54));
-        cboLanThi.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "1", "2" }));
 
         javax.swing.GroupLayout pnlCboLanThiLayout = new javax.swing.GroupLayout(pnlCboLanThi);
         pnlCboLanThi.setLayout(pnlCboLanThiLayout);
@@ -400,16 +402,17 @@ public class ChuanBiThi extends javax.swing.JFrame {
 
         pnlTxtNgayThi.setBackground(new java.awt.Color(255, 255, 255));
 
+        lblTxtNgayThi.setText("Ngày thi");
         lblTxtNgayThi.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
         lblTxtNgayThi.setForeground(new java.awt.Color(36, 43, 54));
-        lblTxtNgayThi.setText("Ngày thi");
 
-        txtNgayThi.setForeground(new java.awt.Color(36, 43, 54));
-        txtNgayThi.setToolTipText("dd/MM/yyyy");
-        txtNgayThi.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         txtNgayThi.setEditable(false);
         txtNgayThi.setEnabled(false);
+        txtNgayThi.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        txtNgayThi.setForeground(new java.awt.Color(36, 43, 54));
+        txtNgayThi.setToolTipText("dd/MM/yyyy");
 
+        lichNgayThi.setBackground(new java.awt.Color(245, 246, 248));
         lichNgayThi.setOpaque(false);
 
         javax.swing.GroupLayout pnlTxtNgayThiLayout = new javax.swing.GroupLayout(pnlTxtNgayThi);
@@ -434,9 +437,9 @@ public class ChuanBiThi extends javax.swing.JFrame {
 
         pnlTxtSoCauThi.setBackground(new java.awt.Color(255, 255, 255));
 
+        lblTxtSoCauThi.setText("Số câu thi (10–100)");
         lblTxtSoCauThi.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
         lblTxtSoCauThi.setForeground(new java.awt.Color(36, 43, 54));
-        lblTxtSoCauThi.setText("Số câu thi (10–100)");
 
         txtSoCauThi.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         txtSoCauThi.setForeground(new java.awt.Color(36, 43, 54));
@@ -458,9 +461,9 @@ public class ChuanBiThi extends javax.swing.JFrame {
 
         pnlTxtThoiGian.setBackground(new java.awt.Color(255, 255, 255));
 
+        lblTxtThoiGian.setText("Thời gian thi (15–60 phút)");
         lblTxtThoiGian.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
         lblTxtThoiGian.setForeground(new java.awt.Color(36, 43, 54));
-        lblTxtThoiGian.setText("Thời gian thi (15–60 phút)");
 
         txtThoiGian.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         txtThoiGian.setForeground(new java.awt.Color(36, 43, 54));
@@ -482,9 +485,9 @@ public class ChuanBiThi extends javax.swing.JFrame {
 
         pnlTxtSoCauSanCo.setBackground(new java.awt.Color(255, 255, 255));
 
+        lblTxtSoCauSanCo.setText("Số câu hỏi sẵn có");
         lblTxtSoCauSanCo.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
         lblTxtSoCauSanCo.setForeground(new java.awt.Color(36, 43, 54));
-        lblTxtSoCauSanCo.setText("Số câu hỏi sẵn có");
 
         txtSoCauSanCo.setEditable(false);
         txtSoCauSanCo.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
@@ -505,55 +508,63 @@ public class ChuanBiThi extends javax.swing.JFrame {
                 .addComponent(txtSoCauSanCo, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
+        btnKiemTraCauHoi.setText("Kiểm tra đủ câu hỏi");
         btnKiemTraCauHoi.setBackground(new java.awt.Color(245, 246, 248));
+        btnKiemTraCauHoi.setFocusPainted(false);
         btnKiemTraCauHoi.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         btnKiemTraCauHoi.setForeground(new java.awt.Color(36, 43, 54));
-        btnKiemTraCauHoi.setText("Kiểm tra đủ câu hỏi");
-        btnKiemTraCauHoi.setFocusPainted(false);
         btnKiemTraCauHoi.setOpaque(true);
         btnKiemTraCauHoi.addActionListener(this::btnKiemTraCauHoiActionPerformed);
 
+        lblTrangThaiCauHoi.setText("Chưa kiểm tra số câu hỏi");
         lblTrangThaiCauHoi.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
         lblTrangThaiCauHoi.setForeground(new java.awt.Color(107, 114, 128));
-        lblTrangThaiCauHoi.setText("Chưa kiểm tra số câu hỏi");
 
+        btnThem.setText("Thêm");
         btnThem.setBackground(new java.awt.Color(245, 246, 248));
+        btnThem.setFocusPainted(false);
         btnThem.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         btnThem.setForeground(new java.awt.Color(36, 43, 54));
-        btnThem.setText("Thêm");
-        btnThem.setFocusPainted(false);
         btnThem.setOpaque(true);
         btnThem.addActionListener(this::btnThemActionPerformed);
 
+        btnXoa.setText("Xóa");
         btnXoa.setBackground(new java.awt.Color(245, 246, 248));
+        btnXoa.setFocusPainted(false);
         btnXoa.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         btnXoa.setForeground(new java.awt.Color(36, 43, 54));
-        btnXoa.setText("Xóa");
-        btnXoa.setFocusPainted(false);
         btnXoa.setOpaque(true);
         btnXoa.addActionListener(this::btnXoaActionPerformed);
 
+        btnHieuChinh.setText("Hiệu chỉnh");
         btnHieuChinh.setBackground(new java.awt.Color(245, 246, 248));
+        btnHieuChinh.setFocusPainted(false);
         btnHieuChinh.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         btnHieuChinh.setForeground(new java.awt.Color(36, 43, 54));
-        btnHieuChinh.setText("Hiệu chỉnh");
-        btnHieuChinh.setFocusPainted(false);
         btnHieuChinh.setOpaque(true);
         btnHieuChinh.addActionListener(this::btnHieuChinhActionPerformed);
 
+        btnPhucHoi.setText("Phục hồi");
         btnPhucHoi.setBackground(new java.awt.Color(245, 246, 248));
+        btnPhucHoi.setFocusPainted(false);
         btnPhucHoi.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         btnPhucHoi.setForeground(new java.awt.Color(36, 43, 54));
-        btnPhucHoi.setText("Phục hồi");
-        btnPhucHoi.setFocusPainted(false);
         btnPhucHoi.setOpaque(true);
         btnPhucHoi.addActionListener(this::btnPhucHoiActionPerformed);
 
+        btnHuy.setText("Hủy");
+        btnHuy.setBackground(new java.awt.Color(245, 246, 248));
+        btnHuy.setFocusPainted(false);
+        btnHuy.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        btnHuy.setForeground(new java.awt.Color(36, 43, 54));
+        btnHuy.setOpaque(true);
+        btnHuy.addActionListener(this::btnHuyActionPerformed);
+
+        btnGhi.setText("Ghi");
         btnGhi.setBackground(new java.awt.Color(205, 32, 45));
+        btnGhi.setFocusPainted(false);
         btnGhi.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         btnGhi.setForeground(new java.awt.Color(255, 255, 255));
-        btnGhi.setText("Ghi");
-        btnGhi.setFocusPainted(false);
         btnGhi.setOpaque(true);
         btnGhi.addActionListener(this::btnGhiActionPerformed);
 
@@ -611,7 +622,8 @@ public class ChuanBiThi extends javax.swing.JFrame {
             .addGroup(pnlNoiDungLayout.createSequentialGroup()
                 .addComponent(btnKiemTraCauHoi, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGap(8, 8, 8)
-                .addComponent(lblTrangThaiCauHoi, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(lblTrangThaiCauHoi, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
             .addGroup(pnlNoiDungLayout.createSequentialGroup()
                 .addComponent(btnThem, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGap(8, 8, 8)
@@ -620,6 +632,8 @@ public class ChuanBiThi extends javax.swing.JFrame {
                 .addComponent(btnHieuChinh, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGap(8, 8, 8)
                 .addComponent(btnPhucHoi, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(8, 8, 8)
+                .addComponent(btnHuy, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGap(8, 8, 8)
                 .addComponent(btnGhi, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addComponent(scrTblDangKyThi)
@@ -649,12 +663,13 @@ public class ChuanBiThi extends javax.swing.JFrame {
                 .addGroup(pnlNoiDungLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnKiemTraCauHoi, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lblTrangThaiCauHoi, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(8, 8, 8)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(pnlNoiDungLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnThem, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnXoa, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnHieuChinh, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnPhucHoi, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnHuy, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnGhi, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(8, 8, 8)
                 .addComponent(scrTblDangKyThi, javax.swing.GroupLayout.PREFERRED_SIZE, 240, Short.MAX_VALUE))
@@ -737,6 +752,13 @@ public class ChuanBiThi extends javax.swing.JFrame {
         capNhatCheDo();
     }//GEN-LAST:event_btnPhucHoiActionPerformed
 
+    private void btnHuyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHuyActionPerformed
+        if (dot.dangNhap()) {
+            dot.huy();
+            capNhatCheDo();
+        }
+    }//GEN-LAST:event_btnHuyActionPerformed
+
     private void btnGhiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGhiActionPerformed
         dot.ghi((thaoTac, truoc, sau) -> ghiCaThi(thaoTac, sau), this::taiCaThi);
         capNhatCheDo();
@@ -765,6 +787,7 @@ public class ChuanBiThi extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnGhi;
     private javax.swing.JButton btnHieuChinh;
+    private javax.swing.JButton btnHuy;
     private javax.swing.JButton btnKiemTraCauHoi;
     private javax.swing.JButton btnPhucHoi;
     private javax.swing.JButton btnThem;

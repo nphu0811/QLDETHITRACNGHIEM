@@ -1,12 +1,15 @@
 package thi;
 
 import Helper.DateHelper;
+import com.github.lgooddatepicker.components.DatePickerSettings;
 import connectionSQLServer.ThiDAO;
 import java.awt.Component;
 import java.sql.Date;
 import java.sql.SQLException;
-import java.time.YearMonth;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Locale;
 import java.util.concurrent.ExecutionException;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JComboBox;
@@ -25,11 +28,15 @@ import trangchu.TrangChuSV;
  */
 public class ChonCaThi extends javax.swing.JFrame {
 
+    private static final ZoneId MUI_GIO_VIET_NAM = ZoneId.of("Asia/Ho_Chi_Minh");
     private final sessionSinhVien nguoiDung;
     private boolean dangNapMonHoc = true;
-    private boolean dangThongBaoNgayThi;
     private int lanTaiCaThi;
     private CaThi cathi;
+
+    private static boolean ngayThiHopLe(LocalDate ngay) {
+        return ngay != null && ngay.getYear() <= 9999 && !ngay.isBefore(LocalDate.now(MUI_GIO_VIET_NAM));
+    }
 
     // Chữ gợi ý chỉ hiện trên ô khi chưa chọn, không nằm trong danh sách.
     private void hienThiGoiY(JComboBox<?> comboBox, String goiY) {
@@ -46,33 +53,8 @@ public class ChonCaThi extends javax.swing.JFrame {
         });
     }
 
-    // Trả về thông báo nếu ngày sai; trả về null nếu ngày hợp lệ.
-    private String kiemTraNgayThi(String ngayNhap) {
-        if (!ngayNhap.matches("[0-9]{2}/[0-9]{2}/[0-9]{4}")) {
-            return "Nhập ngày theo dạng dd/MM/yyyy. Ví dụ: 09/10/2026.";
-        }
-
-        int ngay = Integer.parseInt(ngayNhap.substring(0, 2));
-        int thang = Integer.parseInt(ngayNhap.substring(3, 5));
-        int nam = Integer.parseInt(ngayNhap.substring(6, 10));
-
-        if (nam < 1 || nam > 9999) {
-            return "Năm phải từ 0001 đến 9999.";
-        }
-        if (thang < 1 || thang > 12) {
-            return "Tháng phải từ 1 đến 12.";
-        }
-
-        int soNgayTrongThang = YearMonth.of(nam, thang).lengthOfMonth();
-        if (ngay < 1 || ngay > soNgayTrongThang) {
-            return "Tháng " + thang + " năm " + nam
-                    + " chỉ có ngày từ 1 đến " + soNgayTrongThang + ".";
-        }
-        return null;
-    }
-
     public void loadCaThiTable() {
-        if (nguoiDung == null || dangThongBaoNgayThi) {
+        if (nguoiDung == null) {
             return;
         }
 
@@ -85,28 +67,14 @@ public class ChonCaThi extends javax.swing.JFrame {
             maMH = monHoc.getMaMH();
         }
 
-        String ngayNhap = txtNgayThi.getText().trim();
+        LocalDate ngayChon = lichNgayThi.getDate();
+        Date ngayThi = ngayChon == null ? null : Date.valueOf(ngayChon);
         String lanNhap = (String) cboLanThi.getSelectedItem();
         Short lanThi;
         if (lanNhap == null) {
             lanThi = null;
         } else {
             lanThi = Short.valueOf(lanNhap);
-        }
-
-        Date ngayThi;
-        if (ngayNhap.isEmpty() || ngayNhap.equals("__/__/____")) {
-            ngayThi = null;
-        } else {
-            String loi = kiemTraNgayThi(ngayNhap);
-            if (loi != null) {
-                dangThongBaoNgayThi = true;
-                JOptionPane.showMessageDialog(this, loi);
-                dangThongBaoNgayThi = false;
-                return;
-            }
-
-            ngayThi = DateHelper.docNgay(ngayNhap);
         }
 
         // Khi tải lại danh sách, bỏ ca đã chọn và chờ dữ liệu mới.
@@ -190,13 +158,20 @@ public class ChonCaThi extends javax.swing.JFrame {
     public ChonCaThi(sessionSinhVien nguoiDung) {
         initComponents();
         this.nguoiDung = nguoiDung;
-        // Enter vẫn lọc được khi ô ngày trống hoặc chưa nhập đủ.
-        txtNgayThi.getActionMap().put(javax.swing.JTextField.notifyAction, new javax.swing.AbstractAction() {
-            @Override
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                loadCaThiTable();
-            }
+        DatePickerSettings caiDatNgayThi = new DatePickerSettings(Locale.forLanguageTag("vi-VN"));
+        caiDatNgayThi.setVisibleDateTextField(false);
+        caiDatNgayThi.setTranslationClear("Xóa ngày");
+        caiDatNgayThi.setTranslationToday("Hôm nay");
+        lichNgayThi.setSettings(caiDatNgayThi);
+        caiDatNgayThi.setVetoPolicy(ChonCaThi::ngayThiHopLe);
+        lichNgayThi.getComponentToggleCalendarButton().setText("Lịch");
+        lichNgayThi.getComponentToggleCalendarButton().setToolTipText("Chọn ngày thi từ hôm nay trở đi");
+        lichNgayThi.addDateChangeListener(e -> {
+            LocalDate ngay = e.getNewDate();
+            txtNgayThi.setText(DateHelper.dinhDang(ngay == null ? null : Date.valueOf(ngay)));
+            loadCaThiTable();
         });
+        txtNgayThi.setDisabledTextColor(txtNgayThi.getForeground());
         hienThiGoiY(cboMonHoc, "Chọn môn thi");
         hienThiGoiY(cboLanThi, "Chọn lần thi");
         if (nguoiDung != null) {
@@ -236,6 +211,7 @@ public class ChonCaThi extends javax.swing.JFrame {
         pnlTxtNgayThi = new javax.swing.JPanel();
         lblTxtNgayThi = new javax.swing.JLabel();
         txtNgayThi = new javax.swing.JFormattedTextField();
+        lichNgayThi = new com.github.lgooddatepicker.components.DatePicker();
         pnlCboLanThi = new javax.swing.JPanel();
         lblCboLanThi = new javax.swing.JLabel();
         cboLanThi = new javax.swing.JComboBox();
@@ -393,36 +369,32 @@ public class ChonCaThi extends javax.swing.JFrame {
         lblTxtNgayThi.setForeground(new java.awt.Color(36, 43, 54));
         lblTxtNgayThi.setText("Ngày thi");
 
+        txtNgayThi.setEditable(false);
+        txtNgayThi.setEnabled(false);
         txtNgayThi.setForeground(new java.awt.Color(36, 43, 54));
-        try {
-            txtNgayThi.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.MaskFormatter("##/##/####")));
-        } catch (java.text.ParseException ex) {
-            ex.printStackTrace();
-        }
-        txtNgayThi.setFocusLostBehavior(javax.swing.JFormattedTextField.PERSIST);
+        txtNgayThi.setToolTipText("dd/MM/yyyy");
         txtNgayThi.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        ((javax.swing.text.MaskFormatter) txtNgayThi.getFormatter()).setPlaceholderCharacter('_');
-        txtNgayThi.setValue(null);
-        txtNgayThi.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                txtNgayThiFocusLost(evt);
-            }
-        });
-        txtNgayThi.addActionListener(this::txtNgayThiActionPerformed);
+
+        lichNgayThi.setOpaque(false);
 
         javax.swing.GroupLayout pnlTxtNgayThiLayout = new javax.swing.GroupLayout(pnlTxtNgayThi);
         pnlTxtNgayThi.setLayout(pnlTxtNgayThiLayout);
         pnlTxtNgayThiLayout.setHorizontalGroup(
             pnlTxtNgayThiLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(lblTxtNgayThi, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(txtNgayThi, javax.swing.GroupLayout.DEFAULT_SIZE, 134, Short.MAX_VALUE)
+            .addGroup(pnlTxtNgayThiLayout.createSequentialGroup()
+                .addComponent(txtNgayThi, javax.swing.GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE)
+                .addGap(6, 6, 6)
+                .addComponent(lichNgayThi, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         pnlTxtNgayThiLayout.setVerticalGroup(
             pnlTxtNgayThiLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlTxtNgayThiLayout.createSequentialGroup()
                 .addComponent(lblTxtNgayThi)
                 .addGap(8, 8, 8)
-                .addComponent(txtNgayThi, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(pnlTxtNgayThiLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(txtNgayThi, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lichNgayThi, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)))
         );
 
         pnlCboLanThi.setBackground(new java.awt.Color(255, 255, 255));
@@ -443,7 +415,7 @@ public class ChonCaThi extends javax.swing.JFrame {
         pnlCboLanThiLayout.setHorizontalGroup(
             pnlCboLanThiLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(lblCboLanThi, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(cboLanThi, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(cboLanThi, 0, 115, Short.MAX_VALUE)
         );
         pnlCboLanThiLayout.setVerticalGroup(
             pnlCboLanThiLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -508,7 +480,7 @@ public class ChonCaThi extends javax.swing.JFrame {
             .addGroup(pnlNoiDungLayout.createSequentialGroup()
                 .addComponent(pnlCboMonHoc, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(pnlTxtNgayThi, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(pnlTxtNgayThi, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGap(8, 8, 8)
                 .addComponent(pnlCboLanThi, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addComponent(scrTblCaThi)
@@ -574,16 +546,6 @@ public class ChonCaThi extends javax.swing.JFrame {
         loadCaThiTable();
     }//GEN-LAST:event_cboLanThiActionPerformed
 
-    private void txtNgayThiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNgayThiActionPerformed
-        loadCaThiTable();
-    }//GEN-LAST:event_txtNgayThiActionPerformed
-
-    private void txtNgayThiFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtNgayThiFocusLost
-        if (!evt.isTemporary()) {
-            loadCaThiTable();
-        }
-    }//GEN-LAST:event_txtNgayThiFocusLost
-
     private void btnBatDauThiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBatDauThiActionPerformed
         int row = tblCaThi.getSelectedRow();
         if (row == -1) {
@@ -643,6 +605,7 @@ public class ChonCaThi extends javax.swing.JFrame {
     private javax.swing.JLabel lblTxtMaSV;
     private javax.swing.JLabel lblTxtNgayThi;
     private javax.swing.JLabel lblTxtTenLop;
+    private com.github.lgooddatepicker.components.DatePicker lichNgayThi;
     private javax.swing.JPanel pnlCboLanThi;
     private javax.swing.JPanel pnlCboMonHoc;
     private javax.swing.JPanel pnlNoiDung;

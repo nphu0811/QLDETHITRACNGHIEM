@@ -60,76 +60,76 @@
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
-            <Component id="lblTieuDe" min="0" pref="740" max="32767" attributes="0"/>
-            <Component id="lblMoTa" min="0" pref="740" max="32767" attributes="0"/>
-            <Group type="102" attributes="0">
-              <Component id="pnlTxtMaNguoiDung" min="0" pref="364" max="32767" attributes="0"/>
-              <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
-              <Component id="pnlTxtHoTen" min="0" pref="364" max="32767" attributes="0"/>
-            </Group>
-            <Group type="102" attributes="0">
-              <Component id="pnlTxtMaLop" min="0" pref="364" max="32767" attributes="0"/>
-              <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
-              <Component id="pnlTxtTenLop" min="0" pref="364" max="32767" attributes="0"/>
-            </Group>
-            <Group type="102" attributes="0">
-              <Component id="pnlTxtNgaySinh" min="0" pref="364" max="32767" attributes="0"/>
-              <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
-              <Component id="pnlTxtDiaChi" min="0" pref="364" max="32767" attributes="0"/>
-            </Group>
-            <Component id="lblThi" attributes="0"/>
-            <Component id="btnChonCaThi" min="0" pref="740" max="32767" attributes="0"/>
-            <Group type="102" attributes="0">
-              <Component id="btnKetQua" min="0" pref="364" max="32767" attributes="0"/>
-              <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
-              <Component id="btnBangDiem" min="0" pref="364" max="32767" attributes="0"/>
-            </Group>
-            <Component id="lblTaiKhoan" attributes="0"/>
-            <Group type="102" attributes="0">
-              <Component id="btnDangXuat" min="0" pref="364" max="32767" attributes="0"/>
-              <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
-              <Component id="btnThoat" min="0" pref="364" max="32767" attributes="0"/>
-            </Group>
+              <Component id="lblTieuDe" min="0" pref="740" max="32767" attributes="0"/>
+              <Component id="lblMoTa" min="0" pref="740" max="32767" attributes="0"/>
+              <Group type="102" attributes="0">
+                  <Component id="pnlTxtMaNguoiDung" min="0" max="32767" attributes="0"/>
+                  <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
+                  <Component id="pnlTxtHoTen" min="0" max="32767" attributes="0"/>
+              </Group>
+              <Group type="102" attributes="0">
+                  <Component id="pnlTxtMaLop" min="0" max="32767" attributes="0"/>
+                  <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
+                  <Component id="pnlTxtTenLop" min="0" max="32767" attributes="0"/>
+              </Group>
+              <Group type="102" attributes="0">
+                  <Component id="pnlTxtNgaySinh" min="0" max="32767" attributes="0"/>
+                  <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
+                  <Component id="pnlTxtDiaChi" min="0" max="32767" attributes="0"/>
+              </Group>
+              <Component id="lblThi" attributes="0"/>
+              <Component id="btnChonCaThi" min="0" pref="740" max="32767" attributes="0"/>
+              <Group type="102" attributes="0">
+                  <Component id="btnKetQua" min="0" pref="364" max="32767" attributes="0"/>
+                  <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
+                  <Component id="btnBangDiem" min="0" pref="364" max="32767" attributes="0"/>
+              </Group>
+              <Component id="lblTaiKhoan" attributes="0"/>
+              <Group type="102" attributes="0">
+                  <Component id="btnDangXuat" min="0" pref="364" max="32767" attributes="0"/>
+                  <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
+                  <Component id="btnThoat" min="0" pref="364" max="32767" attributes="0"/>
+              </Group>
           </Group>
         </DimensionLayout>
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
-            <Group type="102" attributes="0">
-              <Component id="lblTieuDe" min="-2" max="-2" attributes="0"/>
-              <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
-              <Component id="lblMoTa" min="-2" pref="44" max="-2" attributes="0"/>
-              <EmptySpace min="-2" pref="22" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" attributes="0">
-                <Component id="pnlTxtMaNguoiDung" min="-2" max="-2" attributes="0"/>
-                <Component id="pnlTxtHoTen" min="-2" max="-2" attributes="0"/>
+              <Group type="102" attributes="0">
+                  <Component id="lblTieuDe" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
+                  <Component id="lblMoTa" min="-2" pref="44" max="-2" attributes="0"/>
+                  <EmptySpace min="-2" pref="22" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Component id="pnlTxtMaNguoiDung" min="-2" max="-2" attributes="0"/>
+                      <Component id="pnlTxtHoTen" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Component id="pnlTxtMaLop" min="-2" max="-2" attributes="0"/>
+                      <Component id="pnlTxtTenLop" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Component id="pnlTxtNgaySinh" min="-2" max="-2" attributes="0"/>
+                      <Component id="pnlTxtDiaChi" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <EmptySpace min="-2" pref="24" max="-2" attributes="0"/>
+                  <Component id="lblThi" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
+                  <Component id="btnChonCaThi" min="-2" pref="48" max="-2" attributes="0"/>
+                  <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Component id="btnKetQua" min="-2" pref="48" max="-2" attributes="0"/>
+                      <Component id="btnBangDiem" min="-2" pref="48" max="-2" attributes="0"/>
+                  </Group>
+                  <EmptySpace min="-2" pref="24" max="-2" attributes="0"/>
+                  <Component id="lblTaiKhoan" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Component id="btnDangXuat" min="-2" pref="42" max="-2" attributes="0"/>
+                      <Component id="btnThoat" min="-2" pref="42" max="-2" attributes="0"/>
+                  </Group>
               </Group>
-              <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" attributes="0">
-                <Component id="pnlTxtMaLop" min="-2" max="-2" attributes="0"/>
-                <Component id="pnlTxtTenLop" min="-2" max="-2" attributes="0"/>
-              </Group>
-              <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" attributes="0">
-                <Component id="pnlTxtNgaySinh" min="-2" max="-2" attributes="0"/>
-                <Component id="pnlTxtDiaChi" min="-2" max="-2" attributes="0"/>
-              </Group>
-              <EmptySpace min="-2" pref="24" max="-2" attributes="0"/>
-              <Component id="lblThi" min="-2" max="-2" attributes="0"/>
-              <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
-              <Component id="btnChonCaThi" min="-2" pref="48" max="-2" attributes="0"/>
-              <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" attributes="0">
-                <Component id="btnKetQua" min="-2" pref="48" max="-2" attributes="0"/>
-                <Component id="btnBangDiem" min="-2" pref="48" max="-2" attributes="0"/>
-              </Group>
-              <EmptySpace min="-2" pref="24" max="-2" attributes="0"/>
-              <Component id="lblTaiKhoan" min="-2" max="-2" attributes="0"/>
-              <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" attributes="0">
-                <Component id="btnDangXuat" min="-2" pref="42" max="-2" attributes="0"/>
-                <Component id="btnThoat" min="-2" pref="42" max="-2" attributes="0"/>
-              </Group>
-            </Group>
           </Group>
         </DimensionLayout>
       </Layout>
@@ -142,7 +142,7 @@
             <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="2d" green="20" red="cd" type="rgb"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="TRANG CHỦ SINH VIÊN"/>
+            <Property name="text" type="java.lang.String" value="TRANG CH&#x1ee6; SINH VI&#xca;N"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="lblMoTa">
@@ -189,7 +189,7 @@
                 <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                   <Color blue="36" green="2b" red="24" type="rgb"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="Mã Sinh Viên"/>
+                <Property name="text" type="java.lang.String" value="M&#xe3; Sinh Vi&#xea;n"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JTextField" name="txtMaNguoiDung">
@@ -491,7 +491,7 @@
             <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="36" green="2b" red="24" type="rgb"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="K&#x1ebf;t qu&#x1ea3; thi"/>
+            <Property name="text" type="java.lang.String" value="K&#x1ebf;t qu&#x1ea3; thi g&#x1ea7;n nh&#x1ea5;t"/>
             <Property name="focusPainted" type="boolean" value="false"/>
             <Property name="opaque" type="boolean" value="true"/>
           </Properties>
@@ -510,7 +510,7 @@
             <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="36" green="2b" red="24" type="rgb"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="B&#x1ea3;ng &#x111;i&#x1ec3;m m&#xf4;n h&#x1ecd;c"/>
+            <Property name="text" type="java.lang.String" value="B&#x1ea3;ng &#x111;i&#x1ec3;m"/>
             <Property name="focusPainted" type="boolean" value="false"/>
             <Property name="opaque" type="boolean" value="true"/>
           </Properties>
@@ -526,7 +526,7 @@
             <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="2d" green="20" red="cd" type="rgb"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="Phiên đăng nhập"/>
+            <Property name="text" type="java.lang.String" value="Phi&#xea;n &#x111;&#x103;ng nh&#x1ead;p"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JButton" name="btnDangXuat">

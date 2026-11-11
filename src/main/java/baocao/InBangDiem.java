@@ -68,7 +68,15 @@ public class InBangDiem extends javax.swing.JFrame {
         for (Object[] dong : danhSach) {
             model.addRow(dong);
         }
-        btnIn.setEnabled(!danhSach.isEmpty());
+        boolean hienNut = !baoCao.diem().isEmpty();
+
+        for (Object[] dong : danhSach) {
+            if (dong[4] == null || dong[5] == null || dong[6] == null) {
+                hienNut = false;
+                break;
+            }
+        }
+        btnIn.setEnabled(hienNut);
     }
 
     static void inBang(JTable bang, Component form, BangDiemMonHoc.BaoCao baoCao) {
