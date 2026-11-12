@@ -2,17 +2,37 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
               xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
-              name="BangDiemMonHoc"
-              pageWidth="595"
-              pageHeight="842"
+              name="BangDiemMonHoc" language="java"
+              pageWidth="595" pageHeight="842"
               whenNoDataType="AllSectionsNoDetail"
-              columnWidth="555"
-              leftMargin="20"
-              rightMargin="20"
-              topMargin="20"
-              bottomMargin="20">
+              columnWidth="531" leftMargin="32" rightMargin="32"
+              topMargin="30" bottomMargin="28"
+              isSummaryWithPageHeaderAndFooter="true">
 
-    <!-- 1. PARAMETERS: Tương đương tham số SP & các XRLabel (Modifiers = Public) truyền từ Form vào Report -->
+    <!-- DejaVu fonts are bundled by jasperreports-fonts for Vietnamese output. -->
+    <style name="Base" isDefault="true" fontName="DejaVu Sans" fontSize="9"
+           forecolor="#202733" vTextAlign="Middle"/>
+    <style name="Label" style="Base" fontSize="8.5" forecolor="#626B77"/>
+    <style name="MetaValue" style="Base" fontSize="9" isBold="true"/>
+    <style name="TableHeader" style="Base" mode="Opaque" backcolor="#B51F2B"
+           forecolor="#FFFFFF" fontSize="8.5" isBold="true" hTextAlign="Center">
+        <box leftPadding="4" rightPadding="4">
+            <pen lineWidth="0.4" lineColor="#FFFFFF"/>
+        </box>
+    </style>
+    <style name="Cell" style="Base" fontSize="8.5">
+        <box leftPadding="7" rightPadding="7" topPadding="4" bottomPadding="4">
+            <pen lineWidth="0.35" lineColor="#D5DAE1"/>
+        </box>
+    </style>
+    <style name="CellCenter" style="Cell" hTextAlign="Center">
+        <box leftPadding="3" rightPadding="3"/>
+    </style>
+    <style name="CellScore" style="CellCenter" fontSize="10" isBold="true"/>
+    <style name="Muted" style="Base" fontSize="7.5" forecolor="#707985"/>
+    <style name="Signature" style="Base" fontSize="9" isBold="true" hTextAlign="Center"/>
+
+    <!-- Keep the existing parameters and stored-procedure contract. -->
     <parameter name="MA_LOP" class="java.lang.String"/>
     <parameter name="MA_MH" class="java.lang.String"/>
     <parameter name="LAN" class="java.lang.Integer"/>
@@ -21,13 +41,13 @@
     <parameter name="NGAY_THI" class="java.lang.String"/>
     <parameter name="NGUOI_LAP" class="java.lang.String"/>
     <parameter name="GIAO_VIEN" class="java.lang.String"/>
+    <parameter name="LOGO_TRUONG" class="java.net.URL" isForPrompting="false">
+        <defaultValueExpression><![CDATA[net.sf.jasperreports.engine.util.JRLoader.getResource("ptit-logo.png")]]></defaultValueExpression>
+    </parameter>
 
-    <!-- 2. QUERY STRING: Gọi Stored Procedure trong SQL Server giống hệt bước chọn SP của XtraReport -->
     <queryString language="SQL">
         <![CDATA[{call dbo.SP_BangDiemMonHocQuanLy($P{MA_LOP}, $P{MA_MH}, $P{LAN})}]]>
     </queryString>
-
-    <!-- 3. FIELDS: Các cột trả về từ SP_BangDiemMonHocQuanLy -->
     <field name="MASV" class="java.lang.String"/>
     <field name="HO" class="java.lang.String"/>
     <field name="TEN" class="java.lang.String"/>
@@ -36,283 +56,270 @@
     <field name="LAN" class="java.lang.Integer"/>
     <field name="DIEM" class="java.lang.Double"/>
 
-    <!-- 4. TITLE BAND (Tương đương ReportHeaderBand trong XtraReport - chỉ in 1 lần ở đầu trang 1) -->
     <title>
-        <band height="102" splitType="Stretch">
+        <band height="239" splitType="Prevent">
+            <image scaleImage="RetainShape" hAlign="Center" vAlign="Middle" onErrorType="Error">
+                <reportElement x="0" y="0" width="43" height="51"/>
+                <imageExpression><![CDATA[$P{LOGO_TRUONG}]]></imageExpression>
+            </image>
             <staticText>
-                <reportElement x="0" y="0" width="555" height="18" forecolor="#6B7280"/>
-                <textElement textAlignment="Center" verticalAlignment="Middle">
-                    <font fontName="Segoe UI" size="10" isBold="true"/>
-                </textElement>
-                <text><![CDATA[HỌC VIỆN CÔNG NGHỆ BƯU CHÍNH VIỄN THÔNG]]></text>
+                <reportElement x="55" y="4" width="221" height="16"/>
+                <textElement><font size="9" isBold="true"/></textElement>
+                <text><![CDATA[HỌC VIỆN CÔNG NGHỆ]]></text>
             </staticText>
             <staticText>
-                <reportElement x="0" y="20" width="555" height="26" forecolor="#CD202D"/>
-                <textElement textAlignment="Center" verticalAlignment="Middle">
-                    <font fontName="Segoe UI" size="15" isBold="true"/>
-                </textElement>
-                <text><![CDATA[BẢNG ĐIỂM THI KẾT THÚC MÔN]]></text>
+                <reportElement x="55" y="20" width="221" height="16"/>
+                <textElement><font size="9" isBold="true"/></textElement>
+                <text><![CDATA[BƯU CHÍNH VIỄN THÔNG]]></text>
             </staticText>
-
-            <!-- Thông tin Lớp & Môn học -->
             <staticText>
-                <reportElement x="0" y="52" width="60" height="20"/>
-                <textElement verticalAlignment="Middle">
-                    <font fontName="Segoe UI" size="10" isBold="true"/>
-                </textElement>
-                <text><![CDATA[Lớp:]]></text>
+                <reportElement style="Muted" x="55" y="39" width="221" height="12"/>
+                <textElement><font size="7"/></textElement>
+                <text><![CDATA[HỆ THỐNG THI TRẮC NGHIỆM]]></text>
             </staticText>
-            <textField isBlankWhenNull="true">
-                <reportElement x="60" y="52" width="215" height="20"/>
-                <textElement verticalAlignment="Middle">
-                    <font fontName="Segoe UI" size="10"/>
-                </textElement>
-                <textFieldExpression><![CDATA[$P{TEN_LOP}]]></textFieldExpression>
-            </textField>
-
             <staticText>
-                <reportElement x="285" y="52" width="65" height="20"/>
-                <textElement verticalAlignment="Middle">
-                    <font fontName="Segoe UI" size="10" isBold="true"/>
-                </textElement>
+                <reportElement x="284" y="5" width="247" height="16"/>
+                <textElement textAlignment="Center"><font size="7.8" isBold="true"/></textElement>
+                <text><![CDATA[CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="284" y="23" width="247" height="16"/>
+                <textElement textAlignment="Center"><font size="8.5" isBold="true"/></textElement>
+                <text><![CDATA[Độc lập - Tự do - Hạnh phúc]]></text>
+            </staticText>
+            <line>
+                <reportElement x="350" y="45" width="115" height="1"/>
+                <graphicElement><pen lineWidth="0.5" lineColor="#626B77"/></graphicElement>
+            </line>
+            <line>
+                <reportElement x="0" y="65" width="531" height="1"/>
+                <graphicElement><pen lineWidth="1.7" lineColor="#B51F2B"/></graphicElement>
+            </line>
+            <staticText>
+                <reportElement x="0" y="80" width="531" height="28" forecolor="#A71D28"/>
+                <textElement textAlignment="Center"><font size="17" isBold="true"/></textElement>
+                <text><![CDATA[BẢNG ĐIỂM MÔN HỌC]]></text>
+            </staticText>
+            <staticText>
+                <reportElement style="Label" x="0" y="109" width="531" height="17"/>
+                <textElement textAlignment="Center"><font size="9"/></textElement>
+                <text><![CDATA[KẾT QUẢ THI KẾT THÚC MÔN]]></text>
+            </staticText>
+            <rectangle>
+                <reportElement mode="Opaque" x="0" y="140" width="531" height="82" backcolor="#F6F7F9"/>
+                <graphicElement><pen lineWidth="0.5" lineColor="#E0E4E9"/></graphicElement>
+            </rectangle>
+            <rectangle>
+                <reportElement mode="Opaque" x="0" y="140" width="3" height="82" backcolor="#B51F2B"/>
+                <graphicElement><pen lineWidth="0"/></graphicElement>
+            </rectangle>
+            <staticText>
+                <reportElement style="Label" x="14" y="149" width="66" height="20"/>
                 <text><![CDATA[Môn học:]]></text>
             </staticText>
-            <textField isBlankWhenNull="true">
-                <reportElement x="350" y="52" width="205" height="20"/>
-                <textElement verticalAlignment="Middle">
-                    <font fontName="Segoe UI" size="10"/>
-                </textElement>
+            <textField textAdjust="ScaleFont" isBlankWhenNull="true">
+                <reportElement style="MetaValue" x="82" y="144" width="435" height="30"/>
+                <textElement><font size="10"/></textElement>
                 <textFieldExpression><![CDATA[$P{TEN_MON}]]></textFieldExpression>
             </textField>
-
-            <!-- Thông tin Lần thi & Ngày thi -->
             <staticText>
-                <reportElement x="0" y="74" width="60" height="20"/>
-                <textElement verticalAlignment="Middle">
-                    <font fontName="Segoe UI" size="10" isBold="true"/>
-                </textElement>
+                <reportElement style="Label" x="14" y="176" width="66" height="18"/>
+                <text><![CDATA[Lớp:]]></text>
+            </staticText>
+            <textField textAdjust="ScaleFont" isBlankWhenNull="true">
+                <reportElement style="MetaValue" x="82" y="174" width="251" height="22"/>
+                <textFieldExpression><![CDATA[$P{TEN_LOP}]]></textFieldExpression>
+            </textField>
+            <staticText>
+                <reportElement style="Label" x="349" y="176" width="57" height="18"/>
                 <text><![CDATA[Lần thi:]]></text>
             </staticText>
             <textField isBlankWhenNull="true">
-                <reportElement x="60" y="74" width="215" height="20"/>
-                <textElement verticalAlignment="Middle">
-                    <font fontName="Segoe UI" size="10"/>
-                </textElement>
+                <reportElement style="MetaValue" x="408" y="176" width="109" height="18"/>
                 <textFieldExpression><![CDATA[$P{LAN}]]></textFieldExpression>
             </textField>
-
+            <textField textAdjust="ScaleFont">
+                <reportElement style="Label" x="14" y="200" width="319" height="16"/>
+                <textFieldExpression><![CDATA["Mã lớp: " + ($P{MA_LOP} == null ? "" : $P{MA_LOP}) + "     |     Mã môn: " + ($P{MA_MH} == null ? "" : $P{MA_MH})]]></textFieldExpression>
+            </textField>
             <staticText>
-                <reportElement x="285" y="74" width="65" height="20"/>
-                <textElement verticalAlignment="Middle">
-                    <font fontName="Segoe UI" size="10" isBold="true"/>
-                </textElement>
+                <reportElement style="Label" x="349" y="200" width="57" height="16"/>
                 <text><![CDATA[Ngày thi:]]></text>
             </staticText>
-            <textField isBlankWhenNull="true">
-                <reportElement x="350" y="74" width="205" height="20"/>
-                <textElement verticalAlignment="Middle">
-                    <font fontName="Segoe UI" size="10"/>
-                </textElement>
+            <textField textAdjust="ScaleFont" isBlankWhenNull="true">
+                <reportElement x="408" y="200" width="109" height="16"/>
+                <textElement><font size="8.5"/></textElement>
                 <textFieldExpression><![CDATA[$P{NGAY_THI}]]></textFieldExpression>
             </textField>
         </band>
     </title>
 
-    <!-- 5. COLUMN HEADER BAND (Tương đương PageHeaderBand trong XtraReport - lặp lại tiêu đề cột ở đầu mỗi trang) -->
-    <columnHeader>
-        <band height="24" splitType="Stretch">
+    <!-- Compact context is repeated only on continuation pages. -->
+    <pageHeader>
+        <band height="54" splitType="Prevent">
+            <printWhenExpression><![CDATA[$V{PAGE_NUMBER} > 1]]></printWhenExpression>
+            <image scaleImage="RetainShape" hAlign="Center" vAlign="Middle" onErrorType="Error">
+                <reportElement x="0" y="0" width="26" height="31"/>
+                <imageExpression><![CDATA[$P{LOGO_TRUONG}]]></imageExpression>
+            </image>
             <staticText>
-                <reportElement mode="Opaque" x="0" y="0" width="35" height="24" backcolor="#F5F6F8"/>
-                <box><pen lineWidth="0.5" lineColor="#242B36"/></box>
-                <textElement textAlignment="Center" verticalAlignment="Middle">
-                    <font fontName="Segoe UI" size="10" isBold="true"/>
-                </textElement>
+                <reportElement x="37" y="0" width="494" height="18" forecolor="#A71D28"/>
+                <textElement><font size="10" isBold="true"/></textElement>
+                <text><![CDATA[BẢNG ĐIỂM MÔN HỌC]]></text>
+            </staticText>
+            <textField textAdjust="ScaleFont">
+                <reportElement style="Label" x="37" y="20" width="494" height="23"/>
+                <textFieldExpression><![CDATA[($P{TEN_LOP} == null ? "" : $P{TEN_LOP}) + "   |   " + ($P{TEN_MON} == null ? "" : $P{TEN_MON}) + "   |   Lần thi: " + ($P{LAN} == null ? "" : $P{LAN}.toString())]]></textFieldExpression>
+            </textField>
+            <line>
+                <reportElement x="0" y="47" width="531" height="1"/>
+                <graphicElement><pen lineWidth="0.8" lineColor="#B51F2B"/></graphicElement>
+            </line>
+        </band>
+    </pageHeader>
+
+    <columnHeader>
+        <band height="29" splitType="Prevent">
+            <staticText>
+                <reportElement style="TableHeader" x="0" y="0" width="30" height="29"/>
                 <text><![CDATA[STT]]></text>
             </staticText>
             <staticText>
-                <reportElement mode="Opaque" x="35" y="0" width="90" height="24" backcolor="#F5F6F8"/>
-                <box><pen lineWidth="0.5" lineColor="#242B36"/></box>
-                <textElement textAlignment="Center" verticalAlignment="Middle">
-                    <font fontName="Segoe UI" size="10" isBold="true"/>
-                </textElement>
+                <reportElement style="TableHeader" x="30" y="0" width="94" height="29"/>
                 <text><![CDATA[Mã sinh viên]]></text>
             </staticText>
             <staticText>
-                <reportElement mode="Opaque" x="125" y="0" width="180" height="24" backcolor="#F5F6F8"/>
-                <box><pen lineWidth="0.5" lineColor="#242B36"/></box>
-                <textElement textAlignment="Center" verticalAlignment="Middle">
-                    <font fontName="Segoe UI" size="10" isBold="true"/>
-                </textElement>
+                <reportElement style="TableHeader" x="124" y="0" width="177" height="29"/>
                 <text><![CDATA[Họ và tên]]></text>
             </staticText>
             <staticText>
-                <reportElement mode="Opaque" x="305" y="0" width="80" height="24" backcolor="#F5F6F8"/>
-                <box><pen lineWidth="0.5" lineColor="#242B36"/></box>
-                <textElement textAlignment="Center" verticalAlignment="Middle">
-                    <font fontName="Segoe UI" size="10" isBold="true"/>
-                </textElement>
+                <reportElement style="TableHeader" x="301" y="0" width="80" height="29"/>
                 <text><![CDATA[Ngày sinh]]></text>
             </staticText>
             <staticText>
-                <reportElement mode="Opaque" x="385" y="0" width="55" height="24" backcolor="#F5F6F8"/>
-                <box><pen lineWidth="0.5" lineColor="#242B36"/></box>
-                <textElement textAlignment="Center" verticalAlignment="Middle">
-                    <font fontName="Segoe UI" size="10" isBold="true"/>
-                </textElement>
+                <reportElement style="TableHeader" x="381" y="0" width="50" height="29"/>
                 <text><![CDATA[Điểm]]></text>
             </staticText>
             <staticText>
-                <reportElement mode="Opaque" x="440" y="0" width="115" height="24" backcolor="#F5F6F8"/>
-                <box><pen lineWidth="0.5" lineColor="#242B36"/></box>
-                <textElement textAlignment="Center" verticalAlignment="Middle">
-                    <font fontName="Segoe UI" size="10" isBold="true"/>
-                </textElement>
+                <reportElement style="TableHeader" x="431" y="0" width="100" height="29"/>
                 <text><![CDATA[Ghi chú]]></text>
             </staticText>
         </band>
     </columnHeader>
 
-    <!-- 6. DETAIL BAND (Tương đương DetailBand trong XtraReport - in từng dòng sinh viên) -->
     <detail>
-        <band height="20" splitType="Stretch">
-            <!-- STT tự tăng dùng $V{REPORT_COUNT} giống RecordNumber trong XtraReport -->
-            <textField>
-                <reportElement x="0" y="0" width="35" height="20"/>
-                <box><pen lineWidth="0.5" lineColor="#242B36"/></box>
-                <textElement textAlignment="Center" verticalAlignment="Middle">
-                    <font fontName="Segoe UI" size="9"/>
-                </textElement>
+        <band height="25" splitType="Prevent">
+            <rectangle>
+                <reportElement stretchType="ContainerHeight" mode="Opaque" x="0" y="0" width="531" height="25" backcolor="#F6F7F9">
+                    <printWhenExpression><![CDATA[$V{REPORT_COUNT} % 2 == 0]]></printWhenExpression>
+                </reportElement>
+                <graphicElement><pen lineWidth="0"/></graphicElement>
+            </rectangle>
+            <textField textAdjust="StretchHeight">
+                <reportElement style="CellCenter" stretchType="ContainerHeight" x="0" y="0" width="30" height="25"/>
                 <textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
             </textField>
-
-            <!-- Mã sinh viên -->
-            <textField isBlankWhenNull="true">
-                <reportElement x="35" y="0" width="90" height="20"/>
-                <box leftPadding="4"><pen lineWidth="0.5" lineColor="#242B36"/></box>
-                <textElement verticalAlignment="Middle">
-                    <font fontName="Segoe UI" size="9"/>
-                </textElement>
+            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
+                <reportElement style="Cell" stretchType="ContainerHeight" x="30" y="0" width="94" height="25"/>
                 <textFieldExpression><![CDATA[$F{MASV}]]></textFieldExpression>
             </textField>
-
-            <!-- Họ và tên: gộp HO + TEN giống CalculatedField trong XtraReport -->
-            <textField isBlankWhenNull="true">
-                <reportElement x="125" y="0" width="180" height="20"/>
-                <box leftPadding="5"><pen lineWidth="0.5" lineColor="#242B36"/></box>
-                <textElement verticalAlignment="Middle">
-                    <font fontName="Segoe UI" size="9"/>
-                </textElement>
+            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
+                <reportElement style="Cell" stretchType="ContainerHeight" x="124" y="0" width="177" height="25"/>
                 <textFieldExpression><![CDATA[(($F{HO} == null ? "" : $F{HO}) + " " + ($F{TEN} == null ? "" : $F{TEN})).trim()]]></textFieldExpression>
             </textField>
-
-            <!-- Ngày sinh định dạng dd/MM/yyyy -->
-            <textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
-                <reportElement x="305" y="0" width="80" height="20"/>
-                <box><pen lineWidth="0.5" lineColor="#242B36"/></box>
-                <textElement textAlignment="Center" verticalAlignment="Middle">
-                    <font fontName="Segoe UI" size="9"/>
-                </textElement>
+            <textField textAdjust="StretchHeight" pattern="dd/MM/yyyy" isBlankWhenNull="true">
+                <reportElement style="CellCenter" stretchType="ContainerHeight" x="301" y="0" width="80" height="25"/>
                 <textFieldExpression><![CDATA[$F{NGAYSINH}]]></textFieldExpression>
             </textField>
-
-            <!-- Điểm -->
-            <textField pattern="#0.##" isBlankWhenNull="true">
-                <reportElement x="385" y="0" width="55" height="20"/>
-                <box><pen lineWidth="0.5" lineColor="#242B36"/></box>
-                <textElement textAlignment="Center" verticalAlignment="Middle">
-                    <font fontName="Segoe UI" size="9"/>
-                </textElement>
+            <textField textAdjust="StretchHeight" pattern="#0.##" isBlankWhenNull="true">
+                <reportElement style="CellScore" stretchType="ContainerHeight" x="381" y="0" width="50" height="25"/>
                 <textFieldExpression><![CDATA[$F{DIEM}]]></textFieldExpression>
             </textField>
-
-            <!-- Ghi chú -->
-            <textField isBlankWhenNull="true">
-                <reportElement x="440" y="0" width="115" height="20"/>
-                <box><pen lineWidth="0.5" lineColor="#242B36"/></box>
-                <textElement textAlignment="Center" verticalAlignment="Middle">
-                    <font fontName="Segoe UI" size="9"/>
-                </textElement>
+            <textField>
+                <reportElement style="CellCenter" stretchType="ContainerHeight" x="431" y="0" width="100" height="25"/>
                 <textFieldExpression><![CDATA[""]]></textFieldExpression>
             </textField>
         </band>
     </detail>
 
-    <!-- 7. PAGE FOOTER BAND (Tương đương PageFooterBand - đánh số trang ở cuối mỗi trang) -->
     <pageFooter>
-        <band height="20" splitType="Stretch">
+        <band height="27" splitType="Prevent">
+            <line>
+                <reportElement x="0" y="3" width="531" height="1"/>
+                <graphicElement><pen lineWidth="0.5" lineColor="#D5DAE1"/></graphicElement>
+            </line>
+            <staticText>
+                <reportElement style="Muted" x="0" y="9" width="350" height="16"/>
+                <text><![CDATA[PTIT  |  Bảng điểm thi kết thúc môn]]></text>
+            </staticText>
             <textField>
-                <reportElement x="435" y="2" width="120" height="18" forecolor="#6B7280"/>
-                <textElement textAlignment="Right" verticalAlignment="Middle">
-                    <font fontName="Segoe UI" size="9"/>
-                </textElement>
-                <textFieldExpression><![CDATA["Trang " + $V{PAGE_NUMBER}]]></textFieldExpression>
+                <reportElement style="Muted" x="411" y="9" width="97" height="16"/>
+                <textElement textAlignment="Right"/>
+                <textFieldExpression><![CDATA["Trang " + $V{PAGE_NUMBER} + " /"]]></textFieldExpression>
+            </textField>
+            <textField evaluationTime="Report">
+                <reportElement style="Muted" x="511" y="9" width="20" height="16"/>
+                <textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
             </textField>
         </band>
     </pageFooter>
 
-    <!-- 8. SUMMARY BAND (Tương đương ReportFooterBand - tổng kết & chữ ký ở cuối báo cáo) -->
     <summary>
-        <band height="115" splitType="Stretch">
+        <band height="174" splitType="Prevent">
+            <rectangle>
+                <reportElement mode="Opaque" x="0" y="9" width="531" height="30" backcolor="#F0F2F5"/>
+                <graphicElement><pen lineWidth="0.5" lineColor="#D5DAE1"/></graphicElement>
+            </rectangle>
             <textField>
-                <reportElement x="0" y="6" width="280" height="18"/>
-                <textElement verticalAlignment="Middle">
-                    <font fontName="Segoe UI" size="10" isBold="true"/>
-                </textElement>
+                <reportElement x="12" y="13" width="280" height="22"/>
+                <textElement><font size="9" isBold="true"/></textElement>
                 <textFieldExpression><![CDATA["Tổng số sinh viên: " + $V{REPORT_COUNT}]]></textFieldExpression>
             </textField>
-
             <staticText>
-                <reportElement x="300" y="6" width="255" height="18" forecolor="#6B7280"/>
-                <textElement textAlignment="Center" verticalAlignment="Middle">
-                    <font fontName="Segoe UI" size="9" isItalic="true"/>
-                </textElement>
-                <text><![CDATA[Ngày ........ tháng ........ năm ........]]></text>
-            </staticText>
-
-            <staticText>
-                <reportElement x="30" y="28" width="200" height="18"/>
-                <textElement textAlignment="Center" verticalAlignment="Middle">
-                    <font fontName="Segoe UI" size="10" isBold="true"/>
-                </textElement>
-                <text><![CDATA[Người lập bảng]]></text>
+                <reportElement style="Muted" x="309" y="13" width="210" height="22">
+                    <printWhenExpression><![CDATA[$V{REPORT_COUNT} > 0]]></printWhenExpression>
+                </reportElement>
+                <textElement textAlignment="Right"/>
+                <text><![CDATA[HẾT DANH SÁCH]]></text>
             </staticText>
             <staticText>
-                <reportElement x="30" y="46" width="200" height="16" forecolor="#6B7280"/>
-                <textElement textAlignment="Center" verticalAlignment="Middle">
-                    <font fontName="Segoe UI" size="9" isItalic="true"/>
-                </textElement>
+                <reportElement style="Muted" x="292" y="13" width="227" height="22">
+                    <printWhenExpression><![CDATA[$V{REPORT_COUNT} == 0]]></printWhenExpression>
+                </reportElement>
+                <textElement textAlignment="Right"/>
+                <text><![CDATA[Chưa có dữ liệu bảng điểm]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="277" y="52" width="254" height="18" forecolor="#626B77"/>
+                <textElement textAlignment="Center"><font size="8.5" isItalic="true"/></textElement>
+                <textFieldExpression><![CDATA[java.time.LocalDate.now(java.time.ZoneId.of("Asia/Ho_Chi_Minh")).format(java.time.format.DateTimeFormatter.ofPattern("'Ngày' dd 'tháng' MM 'năm' yyyy"))]]></textFieldExpression>
+            </textField>
+            <staticText>
+                <reportElement style="Signature" x="8" y="78" width="246" height="18"/>
+                <text><![CDATA[NGƯỜI LẬP BẢNG]]></text>
+            </staticText>
+            <staticText>
+                <reportElement style="Signature" x="277" y="78" width="254" height="18"/>
+                <text><![CDATA[GIẢNG VIÊN]]></text>
+            </staticText>
+            <staticText>
+                <reportElement style="Muted" x="8" y="97" width="246" height="16"/>
+                <textElement textAlignment="Center"><font size="8" isItalic="true"/></textElement>
                 <text><![CDATA[(Ký, ghi rõ họ tên)]]></text>
             </staticText>
-            <textField isBlankWhenNull="true">
-                <reportElement x="30" y="88" width="200" height="20"/>
-                <textElement textAlignment="Center" verticalAlignment="Middle">
-                    <font fontName="Segoe UI" size="10" isBold="true"/>
-                </textElement>
+            <staticText>
+                <reportElement style="Muted" x="277" y="97" width="254" height="16"/>
+                <textElement textAlignment="Center"><font size="8" isItalic="true"/></textElement>
+                <text><![CDATA[(Ký, ghi rõ họ tên)]]></text>
+            </staticText>
+            <textField textAdjust="ScaleFont" isBlankWhenNull="true">
+                <reportElement style="Signature" x="8" y="148" width="246" height="22"/>
                 <textFieldExpression><![CDATA[$P{NGUOI_LAP}]]></textFieldExpression>
             </textField>
-
-            <staticText>
-                <reportElement x="325" y="28" width="200" height="18"/>
-                <textElement textAlignment="Center" verticalAlignment="Middle">
-                    <font fontName="Segoe UI" size="10" isBold="true"/>
-                </textElement>
-                <text><![CDATA[Giáo Viên]]></text>
-            </staticText>
-            <staticText>
-                <reportElement x="325" y="46" width="200" height="16" forecolor="#6B7280"/>
-                <textElement textAlignment="Center" verticalAlignment="Middle">
-                    <font fontName="Segoe UI" size="9" isItalic="true"/>
-                </textElement>
-                <text><![CDATA[(Ký, ghi rõ họ tên)]]></text>
-            </staticText>
-            <textField isBlankWhenNull="true">
-                <reportElement x="325" y="88" width="200" height="20"/>
-                <textElement textAlignment="Center" verticalAlignment="Middle">
-                    <font fontName="Segoe UI" size="10" isBold="true"/>
-                </textElement>
+            <textField textAdjust="ScaleFont" isBlankWhenNull="true">
+                <reportElement style="Signature" x="277" y="148" width="254" height="22"/>
                 <textFieldExpression><![CDATA[$P{GIAO_VIEN}]]></textFieldExpression>
             </textField>
         </band>
     </summary>
 </jasperReport>
-
