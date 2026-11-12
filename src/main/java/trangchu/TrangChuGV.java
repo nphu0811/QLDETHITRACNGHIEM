@@ -27,6 +27,7 @@ public class TrangChuGV extends javax.swing.JFrame {
     public TrangChuGV(sessionGiaoVien nguoiDung) {
         initComponents();
         this.nguoiDung = nguoiDung;
+        connectionSQLServer.QuanLyDAO.xoaLichSuPhucHoi(nguoiDung);
         if (nguoiDung != null) {
             txtMaNguoiDung.setText(nguoiDung.getMaGV());
             txtHoTen.setText(nguoiDung.getHo() + " " + nguoiDung.getTen());
@@ -73,6 +74,9 @@ public class TrangChuGV extends javax.swing.JFrame {
 
     public static void dangXuatTu(JFrame form) {
         TrangChuGV trangChu = timTrangChu(form);
+        if (trangChu != null) {
+            connectionSQLServer.QuanLyDAO.xoaLichSuPhucHoi(trangChu.nguoiDung);
+        }
         new dangNhapdangKy.DangNhap().setVisible(true);
         if (trangChu != null) {
             trangChu.dispose();
@@ -609,6 +613,7 @@ public class TrangChuGV extends javax.swing.JFrame {
     }//GEN-LAST:event_btnDangXuatActionPerformed
 
     private void btnThoatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnThoatActionPerformed
+        connectionSQLServer.QuanLyDAO.xoaLichSuPhucHoi(nguoiDung);
         System.exit(0);
     }//GEN-LAST:event_btnThoatActionPerformed
 

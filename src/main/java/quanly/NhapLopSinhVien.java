@@ -46,7 +46,7 @@ public class NhapLopSinhVien extends javax.swing.JFrame {
         caiDatNgaySinh.setTranslationClear("Xóa ngày");
         caiDatNgaySinh.setTranslationToday("Hôm nay");
         lichNgaySinh.setSettings(caiDatNgaySinh);
-        caiDatNgaySinh.setDateRangeLimits(LocalDate.of(1, 1, 1), LocalDate.of(9999, 12, 31));
+        caiDatNgaySinh.setDateRangeLimits(LocalDate.of(1, 1, 1), LocalDate.of(LocalDate.now().getYear() - 18, 12, 31));
         lichNgaySinh.getComponentToggleCalendarButton().setText("Lịch");
         lichNgaySinh.getComponentToggleCalendarButton().setToolTipText("Chọn ngày sinh");
         txtNgaySinh = lichNgaySinh.getComponentDateTextField();

@@ -222,6 +222,16 @@ public final class QuanLyDAO {
         ghi(giaoVien, "{call dbo.SP_GhiCaThiQuanLy(?)}", "R");
     }
 
+    public static void xoaLichSuPhucHoi(sessionGiaoVien giaoVien) {
+        if (giaoVien == null || !giaoVien.coKetNoi()) return;
+        try (Connection ketNoi = giaoVien.moKetNoi();
+             PreparedStatement lenh = ketNoi.prepareStatement(
+                     "DELETE FROM dbo.LichSuQuanLy WHERE TaiKhoan = SUSER_SID(ORIGINAL_LOGIN())")) {
+            lenh.executeUpdate();
+        } catch (SQLException ignored) {
+        }
+    }
+
     private static SQLServerDataTable bangChoGhi(String tenKieu, String... cotChuoi) throws SQLException {
         SQLServerDataTable bang = new SQLServerDataTable();
         bang.setTvpName("dbo." + tenKieu);

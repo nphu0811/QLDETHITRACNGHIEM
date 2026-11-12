@@ -5,6 +5,10 @@ import java.util.Locale;
 import java.util.Objects;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.text.AbstractDocument;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.DocumentFilter;
 import javax.swing.text.JTextComponent;
 import connectionSQLServer.QuanLyDAO;
 import java.sql.SQLException;
@@ -32,6 +36,26 @@ public class NhapGiaoVien extends javax.swing.JFrame {
         getContentPane().setBackground(new java.awt.Color(245, 246, 248));
         setLocationRelativeTo(null);
         tblGiaoVien.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        ((AbstractDocument) txtSoDT.getDocument()).setDocumentFilter(new DocumentFilter() {
+            @Override
+            public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr)
+                    throws BadLocationException {
+                if (string == null) return;
+                if (string.matches("\\d*") && fb.getDocument().getLength() + string.length() <= 10) {
+                    super.insertString(fb, offset, string, attr);
+                }
+            }
+
+            @Override
+            public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs)
+                    throws BadLocationException {
+                if (text == null) return;
+                int newLength = fb.getDocument().getLength() - length + text.length();
+                if (text.matches("\\d*") && newLength <= 10) {
+                    super.replace(fb, offset, length, text, attrs);
+                }
+            }
+        });
         dot = new DotChinhSua(tblGiaoVien, new DotChinhSua.Nut(btnThem, btnHieuChinh, btnXoa, btnGhi, btnPhucHoi, btnTim),
                 this::docGiaoVien, this::dienGiaoVien, this::baoLoi,
                 List.of(txtMaGV, txtHoGV, txtTenGV, txtSoDT, txtDiaChiGV), List.of(txtMaGV), 0);
@@ -69,7 +93,11 @@ public class NhapGiaoVien extends javax.swing.JFrame {
         if (dot.dangThem() && coMa(danhSachGiaoVien, ma)) throw new IllegalArgumentException("Mã giáo viên đã có.");
         String ho = nhap(txtHoGV, "Họ", 50, true);
         String ten = nhap(txtTenGV, "Tên", 10, true);
-        String soDT = nhap(txtSoDT, "Số điện thoại", 15, false);
+        String soDT = nhap(txtSoDT, "Số điện thoại", 10, true);
+        if (!soDT.matches("^0[35789]\\d{8}$")) {
+            txtSoDT.requestFocusInWindow();
+            throw new IllegalArgumentException("Số điện thoại không đúng định dạng Việt Nam (10 chữ số, bắt đầu bằng 03, 05, 07, 08 hoặc 09).");
+        }
         String diaChi = nhap(txtDiaChiGV, "Địa chỉ", 50, false);
         return new Object[]{ma, ho, ten, soDT, diaChi};
     }

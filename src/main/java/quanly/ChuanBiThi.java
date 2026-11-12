@@ -137,8 +137,32 @@ public class ChuanBiThi extends javax.swing.JFrame {
         kiemTraNgayThi(ngayChon);
         Date ngay = Date.valueOf(ngayChon);
         short soCau = (short) nhapSo(txtSoCauThi, "Số câu thi", 10, 100);
+        String trinhDo = (String) cboTrinhDo.getSelectedItem();
+        if (dot.dangThem()) {
+            try {
+                kiemTraDuCauHoi(maMH, trinhDo, soCau, true);
+            } catch (SQLException e) {
+                throw new IllegalArgumentException("Không kiểm tra được số câu hỏi: " + e.getMessage(), e);
+            }
+        }
         short thoiGian = (short) nhapSo(txtThoiGian, "Thời gian thi", 15, 60);
-        return new Object[]{nguoiDung.getMaGV(), maLop, maMH, cboTrinhDo.getSelectedItem(), ngay, lan, soCau, thoiGian};
+        return new Object[]{nguoiDung.getMaGV(), maLop, maMH, trinhDo, ngay, lan, soCau, thoiGian};
+    }
+
+    private void kiemTraDuCauHoi(String maMH, String trinhDo, int soCau, boolean nemLoiNeuThieu) throws SQLException {
+        Object[] dem = QuanLyDAO.demCauHoiThi(nguoiDung, maMH, trinhDo);
+        int cungMuc = ((Number) dem[0]).intValue();
+        int thapHon = ((Number) dem[1]).intValue();
+        int canCungMuc = "C".equals(trinhDo) ? soCau : (int) Math.round(soCau * 0.7);
+        int canThapHon = soCau - canCungMuc;
+        txtSoCauSanCo.setText(cungMuc + " đúng trình độ, " + thapHon + " thấp hơn");
+        boolean du = cungMuc >= canCungMuc && thapHon >= canThapHon;
+        String thongBaoThieu = "Cần " + canCungMuc + " câu đúng trình độ và " + canThapHon + " câu thấp hơn";
+        lblTrangThaiCauHoi.setText(du ? "Đủ câu hỏi" : thongBaoThieu);
+        if (nemLoiNeuThieu && !du) {
+            throw new IllegalArgumentException("Chưa đủ câu hỏi! " + thongBaoThieu
+                    + " (hiện có " + cungMuc + " đúng trình độ, " + thapHon + " thấp hơn).");
+        }
     }
 
     private static boolean ngayThiHopLe(LocalDate ngay) {
@@ -703,14 +727,7 @@ public class ChuanBiThi extends javax.swing.JFrame {
             if (maMH.isEmpty()) throw new IllegalArgumentException("Vui lòng chọn môn học.");
             int soCau = nhapSo(txtSoCauThi, "Số câu thi", 10, 100);
             String trinhDo = (String) cboTrinhDo.getSelectedItem();
-            Object[] dem = QuanLyDAO.demCauHoiThi(nguoiDung, maMH, trinhDo);
-            int cungMuc = ((Number) dem[0]).intValue();
-            int thapHon = ((Number) dem[1]).intValue();
-            int canCungMuc = "C".equals(trinhDo) ? soCau : (int) Math.round(soCau * 0.7);
-            int canThapHon = soCau - canCungMuc;
-            txtSoCauSanCo.setText(cungMuc + " đúng trình độ, " + thapHon + " thấp hơn");
-            lblTrangThaiCauHoi.setText(cungMuc >= canCungMuc && thapHon >= canThapHon
-                    ? "Đủ câu hỏi" : "Cần " + canCungMuc + " câu đúng trình độ và " + canThapHon + " câu thấp hơn");
+            kiemTraDuCauHoi(maMH, trinhDo, soCau, false);
         } catch (IllegalArgumentException e) {
             JOptionPane.showMessageDialog(pnlNoiDung, e.getMessage());
         } catch (SQLException e) {
