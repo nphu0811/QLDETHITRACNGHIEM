@@ -160,7 +160,6 @@ final class DotChinhSua {
         dongBanDau = dongDaChon();
         capNhatBang(() -> {
             cheDo = cheDoMoi;
-            if (dangThem()) lamRongBang();
             hienDong(dangThem() ? -1 : Math.max(dongBanDau, 0));
         });
     }
@@ -368,11 +367,6 @@ final class DotChinhSua {
     private int dongDaChon() {
         int dong = bang.getSelectedRow();
         return dong < 0 ? -1 : bang.convertRowIndexToModel(dong);
-    }
-
-    private void lamRongBang() {
-        chonDong(-1);
-        model.setRowCount(0);
     }
 
     private void chonDong(int dong) {
