@@ -46,7 +46,7 @@
     </parameter>
 
     <queryString language="SQL">
-        <![CDATA[{call dbo.SP_BangDiemMonHocQuanLy($P{MA_LOP}, $P{MA_MH}, $P{LAN})}]]>
+        <![CDATA[{call dbo.SP_PhieuInBangDiemMonHoc($P{MA_LOP}, $P{MA_MH}, $P{LAN})}]]>
     </queryString>
     <field name="MASV" class="java.lang.String"/>
     <field name="HO" class="java.lang.String"/>

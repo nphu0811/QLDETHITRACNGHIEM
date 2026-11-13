@@ -290,26 +290,6 @@
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnXemBangDiemActionPerformed" />
           </Events>
         </Component>
-        <Component class="javax.swing.JButton" name="btnXemBanIn">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="Xem bản in" />
-            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-              <Font name="Segoe UI" size="14" style="0" />
-            </Property>
-            <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-              <Color red="f5" green="f6" blue="f8" type="rgb" />
-            </Property>
-            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-              <Color red="24" green="2b" blue="36" type="rgb" />
-            </Property>
-            <Property name="opaque" type="boolean" value="true" />
-            <Property name="contentAreaFilled" type="boolean" value="true" />
-            <Property name="focusPainted" type="boolean" value="false" />
-          </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnXemBanInActionPerformed" />
-          </Events>
-        </Component>
         <Component class="javax.swing.JButton" name="btnIn">
           <Properties>
             <Property name="text" type="java.lang.String" value="In bảng điểm" />
@@ -553,8 +533,6 @@
             <Group type="102" attributes="0">
               <Component id="btnXemBangDiem" max="32767" attributes="0" />
               <EmptySpace min="-2" pref="8" max="-2" attributes="0" />
-              <Component id="btnXemBanIn" max="32767" attributes="0" />
-              <EmptySpace min="-2" pref="8" max="-2" attributes="0" />
               <Component id="btnIn" max="32767" attributes="0" />
             </Group>
             <Group type="102" attributes="0">
@@ -588,7 +566,6 @@
               <EmptySpace min="-2" pref="8" max="-2" attributes="0" />
               <Group type="103" groupAlignment="0" attributes="0">
                 <Component id="btnXemBangDiem" min="-2" max="-2" attributes="0" pref="40" />
-                <Component id="btnXemBanIn" min="-2" max="-2" attributes="0" pref="40" />
                 <Component id="btnIn" min="-2" max="-2" attributes="0" pref="40" />
               </Group>
               <EmptySpace min="-2" pref="8" max="-2" attributes="0" />

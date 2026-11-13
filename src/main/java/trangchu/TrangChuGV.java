@@ -137,7 +137,7 @@ public class TrangChuGV extends javax.swing.JFrame {
         if (form instanceof quanly.NhapGiaoVien) return btnGiaoVien;
         if (form instanceof quanly.NhapBoDe) return btnBoDe;
         if (form instanceof quanly.ChuanBiThi) return btnChuanBiThi;
-        if (form instanceof baocao.BangDiemMonHoc || form instanceof baocao.InBangDiem) return btnBangDiem;
+        if (form instanceof baocao.BangDiemMonHoc) return btnBangDiem;
         if (form instanceof taikhoan.TaoTaiKhoan) return btnTaoTaiKhoan;
         if (form instanceof taikhoan.DoiMatKhau) return btnDoiMatKhau;
         if (form instanceof hethong.SaoLuuPhucHoi) return btnSaoLuuPhucHoi;

@@ -1,8 +1,19 @@
 package baocao;
 
 import Helper.DateHelper;
+import java.io.InputStream;
+import java.sql.Connection;
 import java.sql.Date;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
+import net.sf.jasperreports.view.JasperViewer;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.table.DefaultTableModel;
@@ -34,7 +45,6 @@ public class BangDiemMonHoc extends javax.swing.JFrame {
 
         boolean daDangNhap = nguoiDung != null && nguoiDung.coKetNoi();
         btnXemBangDiem.setEnabled(daDangNhap);
-        btnXemBanIn.setEnabled(false);
         btnIn.setEnabled(false);
         if (daDangNhap) {
             try {
@@ -85,7 +95,6 @@ public class BangDiemMonHoc extends javax.swing.JFrame {
             }
         }
 
-        btnXemBanIn.setEnabled(!danhSach.isEmpty());
         btnIn.setEnabled(hienNut);
     }
 
@@ -229,15 +238,6 @@ public class BangDiemMonHoc extends javax.swing.JFrame {
         btnXemBangDiem.setContentAreaFilled(true);
         btnXemBangDiem.setFocusPainted(false);
         btnXemBangDiem.addActionListener(this::btnXemBangDiemActionPerformed);
-        btnXemBanIn = new javax.swing.JButton();
-        btnXemBanIn.setText("Xem bản in");
-        btnXemBanIn.setFont(new java.awt.Font("Segoe UI", 0, 14));
-        btnXemBanIn.setBackground(new java.awt.Color(245, 246, 248));
-        btnXemBanIn.setForeground(new java.awt.Color(36, 43, 54));
-        btnXemBanIn.setOpaque(true);
-        btnXemBanIn.setContentAreaFilled(true);
-        btnXemBanIn.setFocusPainted(false);
-        btnXemBanIn.addActionListener(this::btnXemBanInActionPerformed);
         btnIn = new javax.swing.JButton();
         btnIn.setText("In bảng điểm");
         btnIn.setFont(new java.awt.Font("Segoe UI", 0, 14));
@@ -348,8 +348,6 @@ public class BangDiemMonHoc extends javax.swing.JFrame {
             .addGroup(pnlNoiDungLayout.createSequentialGroup()
                 .addComponent(btnXemBangDiem, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGap(8, 8, 8)
-                .addComponent(btnXemBanIn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(8, 8, 8)
                 .addComponent(btnIn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(pnlNoiDungLayout.createSequentialGroup()
                 .addComponent(scrTblBangDiem, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -374,7 +372,6 @@ public class BangDiemMonHoc extends javax.swing.JFrame {
                 .addGap(8, 8, 8)
                 .addGroup(pnlNoiDungLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnXemBangDiem, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnXemBanIn, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnIn, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(8, 8, 8)
                 .addGroup(pnlNoiDungLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -421,12 +418,80 @@ public class BangDiemMonHoc extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnXemBangDiemActionPerformed
 
-    private void btnXemBanInActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnXemBanInActionPerformed
-        TrangChuGV.moFormCon(this, new InBangDiem(nguoiDung, baoCao));
-    }//GEN-LAST:event_btnXemBanInActionPerformed
+    private static volatile JasperReport cachedBangDiemReport;
+
+    private static JasperReport layMauBaoCao() throws Exception {
+        JasperReport report = cachedBangDiemReport;
+        if (report != null) return report;
+        synchronized (BangDiemMonHoc.class) {
+            if (cachedBangDiemReport == null) {
+                try (InputStream mauBaoCao = BangDiemMonHoc.class.getResourceAsStream("/Helper/BangDiemMonHoc.jrxml")) {
+                    if (mauBaoCao == null) return null;
+                    cachedBangDiemReport = JasperCompileManager.compileReport(mauBaoCao);
+                }
+            }
+            return cachedBangDiemReport;
+        }
+    }
 
     private void btnInActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInActionPerformed
-        InBangDiem.inBang(tblBangDiem, pnlNoiDung, nguoiDung, baoCao);
+        if (baoCao == null || baoCao.diem().isEmpty() || tblBangDiem.getRowCount() == 0) return;
+
+        String ngayThi = null;
+        for (Object[] dong : baoCao.diem()) {
+            String ngay = DateHelper.dinhDang((Date) dong[4]);
+            if (ngayThi == null) ngayThi = ngay;
+            else if (!ngayThi.equals(ngay)) ngayThi = "Nhiều ngày";
+        }
+        String tenNguoiLap = nguoiDung != null
+                ? (Objects.toString(nguoiDung.getHo(), "") + " " + Objects.toString(nguoiDung.getTen(), "")).strip()
+                : "";
+
+        Map<String, Object> thamSo = new HashMap<>();
+        thamSo.put("MA_LOP", baoCao.maLop());
+        thamSo.put("MA_MH", baoCao.maMon());
+        thamSo.put("LAN", Integer.parseInt(baoCao.lan()));
+        thamSo.put("TEN_LOP", baoCao.lop());
+        thamSo.put("TEN_MON", baoCao.mon());
+        thamSo.put("NGAY_THI", ngayThi);
+        thamSo.put("NGUOI_LAP", tenNguoiLap);
+        thamSo.put("GIAO_VIEN", tenNguoiLap);
+
+        try {
+            JasperReport report = layMauBaoCao();
+            if (report == null) {
+                JOptionPane.showMessageDialog(pnlNoiDung, "Không tìm thấy mẫu báo cáo /Helper/BangDiemMonHoc.jrxml");
+                return;
+            }
+            JasperPrint banIn;
+            if (nguoiDung != null && nguoiDung.coKetNoi()) {
+                try (Connection ketNoi = nguoiDung.moKetNoi()) {
+                    banIn = JasperFillManager.fillReport(report, thamSo, ketNoi);
+                }
+            } else {
+                Collection<Map<String, ?>> duLieu = new ArrayList<>();
+                for (Object[] dong : baoCao.diem()) {
+                    Map<String, Object> banGhi = new HashMap<>();
+                    banGhi.put("MASV", dong[0]);
+                    banGhi.put("HO", dong[1]);
+                    banGhi.put("TEN", dong[2]);
+                    banGhi.put("NGAYSINH", dong[3]);
+                    banGhi.put("NGAYTHI", dong[4]);
+                    banGhi.put("LAN", dong[5] instanceof Number n ? n.intValue() : null);
+                    banGhi.put("DIEM", dong[6] instanceof Number n ? n.doubleValue() : null);
+                    duLieu.add(banGhi);
+                }
+                banIn = JasperFillManager.fillReport(report, thamSo, new JRMapCollectionDataSource(duLieu));
+            }
+            JasperViewer viewer = new JasperViewer(banIn, false);
+            viewer.setTitle("PTIT | BẢNG ĐIỂM THI KẾT THÚC MÔN");
+            viewer.setSize(950, 750);
+            viewer.setLocationRelativeTo(pnlNoiDung);
+            viewer.setFitPageZoomRatio();
+            viewer.setVisible(true);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(pnlNoiDung, "Không in được bảng điểm: " + e.getMessage());
+        }
     }//GEN-LAST:event_btnInActionPerformed
 
     public static void main(String[] args) {
@@ -457,7 +522,6 @@ public class BangDiemMonHoc extends javax.swing.JFrame {
     private javax.swing.JLabel lblCboLanThi;
     private javax.swing.JComboBox cboLanThi;
     private javax.swing.JButton btnXemBangDiem;
-    private javax.swing.JButton btnXemBanIn;
     private javax.swing.JButton btnIn;
     private javax.swing.JScrollPane scrTblBangDiem;
     private javax.swing.JTable tblBangDiem;
