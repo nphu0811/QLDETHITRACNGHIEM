@@ -168,7 +168,7 @@ final class DotChinhSua {
         if ((coBanNhap() || coDongChoGhi()) && JOptionPane.showConfirmDialog(bang,
                 "Bỏ các thay đổi chưa ghi?", "Hủy", JOptionPane.YES_NO_OPTION) != JOptionPane.YES_OPTION) return;
         capNhatBang(() -> {
-           
+            lamRongBang();
             for (Object[] dong : bangGoc) model.addRow(dong);
             hienDong(dongBanDau);
             ketThuc();
@@ -205,6 +205,7 @@ final class DotChinhSua {
                 return;
             }
             ketThuc();
+            lamRongBang();
             hienDong(-1);
             taiLai.run();
         });
@@ -217,6 +218,7 @@ final class DotChinhSua {
         }
         try {
             phucHoiDaGhi.phucHoi();
+            lamRongBang();
             hienDong(-1);
             taiLai.run();
         } catch (SQLException e) {
@@ -365,6 +367,11 @@ final class DotChinhSua {
     private int dongDaChon() {
         int dong = bang.getSelectedRow();
         return dong < 0 ? -1 : bang.convertRowIndexToModel(dong);
+    }
+
+    private void lamRongBang() {
+        chonDong(-1);
+        model.setRowCount(0);
     }
 
     private void chonDong(int dong) {
