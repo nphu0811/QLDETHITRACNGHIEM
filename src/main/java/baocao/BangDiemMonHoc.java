@@ -75,7 +75,7 @@ public class BangDiemMonHoc extends javax.swing.JFrame {
         baoCao = duLieu;
         ArrayList<Object[]> danhSach = new ArrayList<>();
         for (Object[] dong : duLieu.diem()) {
-            danhSach.add(new Object[]{danhSach.size() + 1, dong[0], dong[1], dong[2],
+            danhSach.add(new Object[]{dong[0], dong[1], dong[2],
                 DateHelper.dinhDang((Date) dong[4]), dong[5], dong[6]});
         }
         DefaultTableModel model = (DefaultTableModel) tblBangDiem.getModel();
@@ -86,14 +86,7 @@ public class BangDiemMonHoc extends javax.swing.JFrame {
         txtTenLop.setText(duLieu.lop());
         txtTenMonHoc.setText(duLieu.mon());
         txtSoSinhVien.setText(String.valueOf(danhSach.size()));
-        boolean hienNut = !duLieu.diem.isEmpty();
-
-        for (Object[] dong : danhSach) {
-            if (dong[4] == null || dong[5] == null || dong[6] == null) {
-                hienNut = false;
-                break;
-            }
-        }
+        boolean hienNut = !danhSach.isEmpty();
 
         btnIn.setEnabled(hienNut);
     }
@@ -253,7 +246,7 @@ public class BangDiemMonHoc extends javax.swing.JFrame {
         tblBangDiem.setRowHeight(28);
         tblBangDiem.setAutoCreateRowSorter(true);
         tblBangDiem.setFillsViewportHeight(true);
-        tblBangDiem.setModel(new javax.swing.table.DefaultTableModel(new Object[][] {}, new String[] {"STT", "Mã sinh viên", "Họ", "Tên", "Ngày thi", "Lần thi", "Điểm"}) {
+        tblBangDiem.setModel(new javax.swing.table.DefaultTableModel(new Object[][] {}, new String[] {"Mã sinh viên", "Họ", "Tên", "Ngày thi", "Lần thi", "Điểm"}) {
             @Override public boolean isCellEditable(int row, int column) { return false; }
         });
         scrTblBangDiem.setViewportView(tblBangDiem);
